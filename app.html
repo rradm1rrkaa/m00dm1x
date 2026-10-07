@@ -772,7 +772,8 @@ setTheme(mode,1);onS();
 @media(max-width:560px){.g{grid-template-columns:1fr}.g .card{grid-template-columns:1fr}.g .card>*,.g .card>.th{grid-column:1;grid-row:auto}.g .card>.th{height:160px}}
 /* без картинок: карточки текстовые, окно места в одну колонку */
 .g .card{grid-template-columns:1fr;min-height:180px}.g .card>*{grid-column:1}
-.pc:has(.pl){max-width:760px}.pl{grid-template-columns:1fr;height:auto;max-height:90vh;overflow:auto}.pll{display:none}.plr{overflow:visible;padding:28px}
+.pc:has(.pl){max-width:1120px}.pl{grid-template-columns:1fr 1fr;height:min(90vh,720px);overflow:hidden}.pll{display:none}.plr{overflow:auto;padding:28px;min-height:0}.rvc{border-left:1px solid var(--b);background:rgba(128,128,128,.07)}
+@media(max-width:760px){.pl{grid-template-columns:1fr;height:auto;max-height:90vh;overflow:auto}.plr{overflow:visible;padding:20px}.rvc{border-left:0;border-top:1px solid var(--b)}}
 /* окно места: слева фото, справа информация */
 .pc:has(.pl){max-width:1120px;width:94vw;padding:0;overflow:hidden;max-height:90vh}
 .pl{display:grid;grid-template-columns:1fr 1fr;height:min(90vh,720px)}.pll{position:relative;background:#000;min-height:0}
@@ -813,7 +814,7 @@ $("pfc").innerHTML=`<div class="pl"><div class="pll"><div class="car"><div class
 <h2 style="margin:0 0 4px">${esc(p[0])}</h2><p class="m" style="margin:0">${esc(D[ci][0]+" "+D[ci][1])}${p[2]?` · 📍 ${esc(p[2])}`:""}</p>
 <p style="margin:8px 0"><span class="st ${st.open?"o":"x"}">${st.open?"Открыто":"Закрыто"}</span> 🕒 ${st.h}${F.t?` (на ${F.t})`:""} · ${free(ci,p)?"🆓 Бесплатно":"💳 Платно"}</p><p>${esc(p[1])}</p>
 <p style="margin:0">${r?`★ <b>${r.avg.toFixed(1)}</b> · отзывов: ${r.n}`:"Оценок пока нет"} · 👍 ${(X.likes[key]||[]).length} · 🚶 Пойдут: ${(X.go[key]||[]).length}${vm?`<br><small>Были: ${fd(vm.at)}</small>`:""}</p>
-${rc?`<small class="rcl">📣 ${esc(rc)}</small>`:""}<div id="pr" style="margin:8px 0 6px"></div><h3>Отзывы</h3><div id="prl"><p class="m">Загрузка…</p></div><button class="btn" id="rcl">Закрыть</button></div></div>`;
+${rc?`<small class="rcl">📣 ${esc(rc)}</small>`:""}<div id="pr" style="margin:8px 0 6px"></div></div><div class="plr rvc"><h3 style="margin-top:0">Отзывы</h3><div id="prl"><p class="m">Загрузка…</p></div><button class="btn" id="rcl">Закрыть</button></div></div>`;
 const mv=d=>{ix=(ix+d+3)%3;$("trk").style.transform=`translateX(-${ix*100}%)`};$("cpv").onclick=()=>mv(-1);$("cnx").onclick=()=>mv(1);
 const pr=$("pr"),mk=(t,f,on)=>{const b=document.createElement("button");b.className="vb"+(on?" on":"");b.textContent=t;b.onclick=f;pr.appendChild(b)},re=()=>{R();openPlace(ci,p)};
 mk(U.favs.includes(key)?"♥ В избранном":"♡ В избранное",async()=>{try{U=await api("fav",{key});re()}catch(e){toast(e.message)}},U.favs.includes(key));
@@ -824,7 +825,7 @@ mk(vm?VD:"✔ Был здесь",async()=>{try{if(vm){U=await api("unvisit",{pla
 mk("✏️ Написать отзыв",()=>openRev(ci,p));mk("🚶 Позвать на прогулку",()=>openWalk(ci,p));
 mk("🗺 2ГИС",()=>window.open("https://2gis.kz/astana/search/"+encodeURIComponent(p[0]),"_blank","noopener"));
 $("rcl").onclick=closePf;$("pf").hidden=false;
-api("reviews",{key}).then(l=>{const b=$("prl");if(!b)return;b.innerHTML=l.length?"":"<p class='m'>Пока нет отзывов.</p>";l.slice(0,5).forEach(x=>{const d=document.createElement("div");d.className="rv";d.innerHTML=`<div class="rh">${avt(x.login,"sm",x.avatar)}<div><b>${esc(x.login)}</b><br><span class="sr">${stars(x.rating)}</span> <small class="m">${fd(x.at)}</small></div></div>${x.text?`<p>${esc(x.text)}</p>`:""}`;d.appendChild(rvBar(key,x,()=>openPlace(ci,p)));b.appendChild(d)})}).catch(()=>{})};
+api("reviews",{key}).then(l=>{const b=$("prl");if(!b)return;b.innerHTML=l.length?"":"<p class='m'>Пока нет отзывов.</p>";l.forEach(x=>{const d=document.createElement("div");d.className="rv";d.innerHTML=`<div class="rh">${avt(x.login,"sm",x.avatar)}<div><b>${esc(x.login)}</b><br><span class="sr">${stars(x.rating)}</span> <small class="m">${fd(x.at)}</small></div></div>${x.text?`<p>${esc(x.text)}</p>`:""}`;d.appendChild(rvBar(key,x,()=>openPlace(ci,p)));b.appendChild(d)})}).catch(()=>{})};
 const O0=openRev;openRev=async function(ci,p){await O0(ci,p);const key=ci+"|"+p[0],rl=$("rl");if(!rl)return;try{const l=await api("reviews",{key});[...rl.querySelectorAll(".rv")].forEach((e,i)=>{if(l[i])e.insertBefore(rvBar(key,l[i],()=>openRev(ci,p)),e.querySelector("button"))})}catch(e){}};
 // профиль: оценка и отзыв рядом с каждым посещённым местом
 const M0=openMe;openMe=function(){M0();if(U.guest)return;api("export").then(ex=>{const sec=[...document.querySelectorAll("#pfc .pb")].find(s=>/Где вы были/.test(s.textContent)),lis=sec?[...sec.querySelectorAll("li")]:[],vs=U.visits.slice().reverse().slice(0,50);
