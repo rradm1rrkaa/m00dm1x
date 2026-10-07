@@ -818,6 +818,8 @@ ready=true;
 .pll .car{height:100%;margin:0;border-radius:0}.pll .trk{height:100%}.pll .sl{aspect-ratio:auto;height:100%}.plr{padding:26px;overflow:auto;min-height:0}
 @media(max-width:760px){.pl{grid-template-columns:1fr;height:auto;max-height:90vh;overflow:auto}.pll{height:240px}.plr{overflow:visible}}
 .rvb{display:flex;gap:6px;margin-top:6px}.rvb .vb{margin:0;padding:4px 10px}
+/* компактное окно места: высота по содержимому, длинное — прокручивается внутри колонки */
+@media(min-width:761px){.pc:has(.pl){max-width:880px;max-height:min(86vh,640px)}.pc:has(.pl) .pl{height:auto;max-height:min(86vh,640px);overflow:hidden;align-items:stretch}.pc:has(.pl) .plr{padding:18px 22px;max-height:min(86vh,640px);overflow:auto}}
 </style>
 <script>
 (function(){
