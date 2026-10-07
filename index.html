@@ -4,7 +4,7 @@
 <title>MoonMix — отдых в Астане</title>
 <script>try{document.documentElement.dataset.theme=localStorage.getItem("moonmix_theme")||"dark"}catch(e){document.documentElement.dataset.theme="dark"}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Manrope:wght@400;600;700&family=Bad+Script&family=Marck+Script&display=swap" rel="stylesheet"><style>/* MoonMix — «Восход» (light) и «Закат» (dark) */
-:root{--t:#10233a;--m:#3d5470;--a:#c2410c;--ag:linear-gradient(135deg,#ff9a3c,#ff5d7a);--c:rgba(255,255,255,.28);--b:rgba(255,255,255,.55);--bg:#cfe6fb;--pn:rgba(255,255,255,.2);--ts:rgba(255,255,255,.55);--sh:0 10px 34px rgba(30,70,120,.16);--ease:cubic-bezier(.22,.8,.24,1);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root{--pad:clamp(20px,5vw,112px);--t:#10233a;--m:#3d5470;--a:#c2410c;--ag:linear-gradient(135deg,#ff9a3c,#ff5d7a);--c:rgba(255,255,255,.28);--b:rgba(255,255,255,.55);--bg:#cfe6fb;--pn:rgba(255,255,255,.2);--ts:rgba(255,255,255,.55);--sh:0 10px 34px rgba(30,70,120,.16);--ease:cubic-bezier(.22,.8,.24,1);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 :root[data-theme="dark"]{--t:#f6f0fd;--m:#cdc1e3;--a:#ffb27a;--c:rgba(26,16,54,.3);--b:rgba(255,255,255,.16);--bg:#140f2c;--pn:rgba(14,10,34,.22);--ts:rgba(0,0,0,.5);--sh:0 10px 34px rgba(0,0,0,.38)}
 html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
 body{margin:0;background:var(--bg);color:var(--t);font:16px/1.55 Manrope,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;transition:color .6s,background-color .6s}
@@ -46,8 +46,8 @@ main{max-width:1000px;margin:0 auto;padding:0 16px 40px}
 footer{text-align:center;color:var(--m);font-size:.85rem}
 [hidden]{display:none!important}
 .m{color:var(--m)}.er{color:#ff3d78;min-height:1.3em;margin:6px 0 0}
-#auth{display:flex;min-height:100vh;min-height:100svh;box-sizing:border-box;padding:calc(20px + env(safe-area-inset-top,0px)) 16px calc(20px + env(safe-area-inset-bottom,0px))}
-.ac{width:100%;max-width:440px;margin:auto;padding:26px;border-radius:24px;background:var(--pn);border:1px solid var(--b);box-shadow:var(--sh);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-sizing:border-box}.ac h1{margin:0 0 8px}
+#auth{display:flex;box-sizing:border-box;padding:4px var(--pad) 40px}#try{padding-bottom:0}#try>.m{margin-bottom:12px}
+.ac{width:100%;max-width:600px;margin:0 auto;padding:20px;border-radius:24px;background:var(--pn);border:1px solid var(--b);box-shadow:var(--sh);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-sizing:border-box}.ac h1{margin:0 0 8px}
 .tb{display:flex;gap:8px;margin:18px 0 0}.tb button{flex:1;padding:11px;border:1px solid var(--b);border-radius:14px;background:var(--c);color:var(--t);font:inherit;cursor:pointer}.tb button:hover{transform:translateY(-2px)}
 .btn.c{text-align:center;color:#fff;background:var(--ag);border-color:transparent}
 #app{padding:0 8px;animation:fade .8s}
@@ -69,26 +69,27 @@ footer{text-align:center;color:var(--m);font-size:.85rem}
 #app footer{max-width:1000px;margin:0 auto 24px;padding:14px 16px;border-radius:18px;background:var(--pn);border:1px solid var(--b);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
 
 /* ===== обзор сайта ===== */
-.ld{max-width:1040px;margin:0 auto;padding:0 16px}
-.hero{min-height:100vh;min-height:100svh;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:90px 0 60px}
+.ld{max-width:none;margin:0;padding:0 var(--pad)}
+.hero{min-height:100vh;min-height:100svh;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:90px 0 50px}
 .hero>*{animation:up .9s var(--ease) backwards}.hero>*:nth-child(2){animation-delay:.1s}.hero>*:nth-child(3){animation-delay:.2s}.hero>*:nth-child(4){animation-delay:.3s}.hero>*:nth-child(5){animation-delay:.4s}.hero>*:nth-child(6){animation-delay:.6s}
 .hero .logo{font-size:4.4rem;line-height:1;display:inline-block;animation:bob 5s ease-in-out infinite;filter:drop-shadow(0 8px 24px rgba(255,200,120,.5))}
 .hero h1{font-size:clamp(2.6rem,8vw,4.6rem);margin:8px 0 10px;line-height:1.05}
 .hero .tag{font-family:Fraunces,Georgia,"Times New Roman",serif;font-size:clamp(1.15rem,3.4vw,1.75rem);margin:0 0 14px;text-shadow:0 1px 14px var(--ts)}
-.hero p.m{max-width:640px;margin:0 auto 28px;font-size:1.05rem;color:var(--t);text-shadow:0 1px 18px var(--ts),0 0 3px var(--ts)}
+.hero p.m{max-width:900px;margin:0 auto 24px;font-size:1.05rem;color:var(--t);text-shadow:0 1px 18px var(--ts),0 0 3px var(--ts)}
 .cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
 .cta a{display:inline-block;text-decoration:none;padding:14px 26px;border-radius:16px;border:1px solid var(--b);background:var(--c);color:var(--t);font-weight:700;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
 .cta a.p{background:var(--ag);color:#fff;border-color:transparent;box-shadow:0 8px 24px rgba(255,93,122,.35)}.cta a:hover{transform:translateY(-3px)}
 .hint{margin-top:46px;color:var(--t);text-shadow:0 1px 12px var(--ts);font-size:.9rem;animation:bob 2.6s ease-in-out infinite!important}
-.sec{padding:64px 0 10px}.sec>h2{text-align:center;font-size:clamp(1.6rem,4.4vw,2.4rem);margin:0 0 8px}.sec>.m{text-align:center;max-width:640px;margin:0 auto 32px}
-.win{background:var(--c);border:1px solid var(--b);border-radius:22px;padding:22px;box-shadow:var(--sh);-webkit-backdrop-filter:blur(14px) saturate(1.4);backdrop-filter:blur(14px) saturate(1.4);box-sizing:border-box}
+.sec{padding:44px 0 4px}.sec>h2{text-align:center;font-size:clamp(1.6rem,3.2vw,2.8rem);margin:0 0 6px}.sec>.m{text-align:center;max-width:900px;margin:0 auto 22px}
+.win{background:var(--c);border:1px solid var(--b);border-radius:20px;padding:16px;box-shadow:var(--sh);-webkit-backdrop-filter:blur(14px) saturate(1.4);backdrop-filter:blur(14px) saturate(1.4);box-sizing:border-box}
 .win h3{margin:0 0 6px;font-size:1.2rem}.win p{margin:0;color:var(--m)}.win .ic{font-size:2rem;line-height:1;display:block;margin-bottom:8px}
-.steps,.feat,.th3{display:grid;gap:16px}.steps{grid-template-columns:repeat(auto-fit,minmax(270px,1fr))}.feat{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}.th3{grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.steps,.feat,.th3{display:grid;gap:14px}.steps{grid-template-columns:repeat(auto-fit,minmax(270px,1fr))}.feat{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}.th3{grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+@media(min-width:1100px){.steps,.feat,.th3{grid-template-columns:repeat(3,1fr)}}
 .step .n{width:40px;height:40px;border-radius:50%;background:var(--ag);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;margin-bottom:10px;box-shadow:0 6px 18px rgba(255,93,122,.4)}
 .rvl{opacity:0;transform:translateY(36px) scale(.97);transition:opacity .85s var(--ease),transform .85s var(--ease),border-color .4s,box-shadow .4s;transition-delay:var(--d,0ms)}
 .rvl.rl{transform:translateX(-24px)}.rvl.rr{transform:translateX(24px)}
 .rvl.in{opacity:1;transform:none}.win.rvl.in:hover{transform:translateY(-5px);border-color:var(--a)}
-.mk{margin-top:14px;padding:12px;border-radius:14px;background:rgba(128,128,128,.12);border:1px solid var(--b);font-size:.9rem;text-align:left}
+.mk{margin-top:10px;padding:10px;border-radius:14px;background:rgba(128,128,128,.12);border:1px solid var(--b);font-size:.9rem;text-align:left}
 .mk .q{color:var(--a);font-size:.8rem;font-weight:700;margin:0}.mk b{display:block;margin:2px 0 4px}
 .mk .o{padding:8px 12px;border:1px solid var(--b);border-radius:11px;margin:6px 0 0;background:var(--c)}.mk .o.on{background:var(--ag);color:#fff;border-color:transparent}
 .mk .bub{max-width:90%;padding:8px 12px;border-radius:14px;background:rgba(128,128,128,.2);margin:6px 0 0}.mk .bub.me{margin-left:auto;background:var(--ag);color:#fff}
@@ -96,7 +97,7 @@ footer{text-align:center;color:var(--m);font-size:.85rem}
 .vb2{display:inline-block;padding:5px 10px;border:1px solid var(--a);border-radius:9px;color:var(--a);font-weight:600;font-size:.82rem;margin:8px 6px 0 0}.vb2.dn{background:var(--ag);color:#fff;border-color:transparent}
 .mk .row2{display:flex;gap:10px;align-items:center}.mk .av0{width:34px;height:34px;border-radius:50%;background:var(--ag);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none}
 .mk .heart{float:right;color:#ff3d78;font-size:1.2rem}
-.tile{position:relative;height:160px;border-radius:22px;overflow:hidden;border:1px solid var(--b);box-shadow:var(--sh)}
+.tile{position:relative;height:clamp(160px,20vh,230px);border-radius:22px;overflow:hidden;border:1px solid var(--b);box-shadow:var(--sh)}
 .tile .lb{position:absolute;left:0;right:0;bottom:0;padding:34px 16px 14px;color:#fff;background:linear-gradient(transparent,rgba(5,5,30,.72));text-shadow:none}.tile .lb b{display:block;font-family:Fraunces,Georgia,serif;font-size:1.2rem}.tile .lb span{font-size:.88rem;opacity:.9}
 .tile .em{position:absolute;left:50%;top:38%;transform:translate(-50%,-50%);font-size:3.2rem;animation:bob 5s ease-in-out infinite}
 .t1{background:linear-gradient(180deg,#2a1b5e 0%,#c0456f 62%,#ff9a5a 100%)}.t2{background:linear-gradient(180deg,#8fc8ff 0%,#cfe9ff 55%,#ffe3b0 100%)}.t3{background:radial-gradient(ellipse at 50% 40%,#1b2052,#0c1034 55%,#04061a)}
@@ -149,57 +150,55 @@ footer a{color:var(--a);font-weight:600}
 :root.nightsky[data-theme="light"] .pc{background:#1c1438}
 
 /* ===== заголовок «прописью» и footer ===== */
-.hero>h1#wt{animation:none;font-family:"Bad Script","Marck Script","Segoe Script","Brush Script MT",cursive;font-weight:400;font-size:clamp(2.5rem,8.5vw,5.4rem);line-height:1.2;letter-spacing:0;margin:0 0 14px}
+.hero>h1#wt{animation:none;font-family:"Bad Script","Marck Script","Segoe Script","Brush Script MT",cursive;font-weight:400;font-size:clamp(2.5rem,8.5vw,7.2rem);line-height:1.2;letter-spacing:0;margin:0 0 14px}
 #wt .w{display:inline-block;white-space:nowrap}
 #wt .lt{display:inline-block;animation:wr .5s ease-out both}
 @keyframes wr{from{clip-path:inset(-25% 100% -35% -5%);opacity:.2}to{clip-path:inset(-25% -12% -35% -5%);opacity:1}}
 .hero>p.tag{animation-delay:2.3s}.hero>p.m{animation-delay:2.7s}.hero>.demo{animation-delay:3.1s}
 .hero>.hint{opacity:0;animation:fade .8s ease 3.5s forwards,bob 2.6s ease-in-out 3.5s infinite!important}
 @media(prefers-reduced-motion:reduce){.hero>.hint{opacity:1}}
-.fw{max-width:1040px;margin:0 auto;padding:30px 16px calc(28px + env(safe-area-inset-bottom,0px))}
-.ft{position:relative;padding:30px 28px 22px;border-radius:26px;border:1px solid var(--b);background:var(--pn);box-shadow:var(--sh);-webkit-backdrop-filter:blur(16px) saturate(1.4);backdrop-filter:blur(16px) saturate(1.4);overflow:hidden}
+.fw{width:100%;margin:0;padding:0;box-sizing:border-box}
+.ft{position:relative;display:flex;align-items:center;justify-content:space-between;gap:18px 48px;flex-wrap:wrap;width:100%;box-sizing:border-box;padding:24px var(--pad) calc(24px + env(safe-area-inset-bottom,0px));border:0;border-top:1px solid var(--b);border-radius:0;background:var(--pn);-webkit-backdrop-filter:blur(16px) saturate(1.4);backdrop-filter:blur(16px) saturate(1.4)}
 .ft::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:var(--ag)}
 .fn{font-family:Fraunces,Georgia,serif;font-weight:700;font-size:1.7rem;background:var(--ag);-webkit-background-clip:text;background-clip:text;color:transparent;display:inline-block}
-.fb p{margin:4px 0 0;color:var(--m);max-width:520px}.fb .fm b{color:var(--t)}
-.fg{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:22px 0 18px}
-.fc{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--b);border-radius:16px;background:var(--c);color:var(--t);text-decoration:none;min-width:0}
-.fc:hover{transform:translateY(-3px);border-color:var(--a);box-shadow:var(--sh)}
-.fc b{display:block;font-size:.95rem}.fc small{display:block;color:var(--m);font-size:.85rem;overflow-wrap:anywhere}
-.fi{flex:none;width:42px;height:42px;border-radius:50%;background:var(--ag);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(255,93,122,.35)}.fi svg{width:21px;height:21px}
-.fl{padding-top:14px;border-top:1px solid var(--b);color:var(--m);font-size:.85rem;text-align:center}.fl a{color:var(--a);font-weight:600}
+.fw{text-align:left}.fb p{margin:2px 0 0;color:var(--m)}
+.fg{display:flex;flex-wrap:wrap;gap:8px 36px}
+.fg a{color:var(--t);font-weight:700;text-decoration:none;padding:4px 0;border-bottom:2px solid transparent}
+.fg a:hover,.fg a:focus-visible{color:var(--a);border-color:var(--a)}
+@media(min-width:1600px){body{font-size:18px}}
 </style></head><body><div id="sky"><div id="stars"></div><div id="sun"></div><div id="moon"></div><div id="clouds"></div><svg id="hill" viewBox="0 0 100 34" preserveAspectRatio="none"><path id="hf" d="M0 14Q14 5 30 10T58 6T82 11T100 8L100 34L0 34Z"/><path id="hp" d="M0 18Q12 11 26 16T52 14T76 17T100 13L100 34L0 34Z"/></svg></div><button id="th" class="tbtn thf"></button>
 <div class="ld">
-<section class="hero"><h1 id="wt">Добро пожаловать в MoonMix</h1><p class="tag">Места Астаны под ваше настроение</p>
-<p class="m">Ответьте на 5 вопросов — и получите подборку из 88 мест и идей для отдыха в Астане: парки, кафе, бани, бассейны, ТЦ, аттракционы. Отмечайте, где побывали, находите друзей с похожим настроением и зовите их гулять.</p>
+<section class="hero"><h1 id="wt">Arthur Meridian</h1><p class="tag">Места Астаны под ваше настроение</p>
+<p class="m">Ответьте на 25 вопросов — и получите подборку из 188 мест и идей для отдыха в Астане: парки, кафе, бани, бассейны, ТЦ, аттракционы. Отмечайте, где побывали, находите друзей с похожим настроением и зовите их гулять.</p>
 <div class="hint">Листайте вниз — расскажем, как всё устроено ↓</div></section>
 
 <section class="sec"><h2 class="rvl">Как это работает</h2><p class="m rvl">Три шага от «не знаю, куда пойти» до отметки «я здесь был».</p>
 <div class="steps" data-stag>
-<div class="win step rvl rl"><div class="n">1</div><h3>Пройдите тест</h3><p>5 коротких вопросов о том, чего хочется и сколько сил.</p>
-<div class="mk"><p class="q">Вопрос 5 из 5</p><b>Как вы себя чувствуете?</b><div class="o">Радостно</div><div class="o">Задумчиво</div><div class="o on">Грустно, плохое настроение</div></div></div>
+<div class="win step rvl rl"><div class="n">1</div><h3>Пройдите тест</h3><p>25 вопросов о силах, настроении и желаниях — результат точнее и тоньше.</p>
+<div class="mk"><p class="q">Вопрос 12 из 25</p><b>Какой темп вам сейчас по душе?</b><div class="o">Лежать и ничего не делать</div><div class="o on">Неспешно идти</div><div class="o">Активно двигаться</div></div></div>
 <div class="win step rvl"><div class="n">2</div><h3>Получите подборку</h3><p>Мы подберём места из 10 категорий: от уединения и прогулок до вечеринок и бань.</p>
-<div class="mk"><span class="heart">♥</span><b>Ботанический сад</b>Тихие аллеи, оранжереи и пруды — спокойное место, чтобы побыть наедине.<br><small style="color:var(--a);font-weight:600">📍 Район Ишима</small></div></div>
+<div class="mk"><b>Ботанический сад</b>Тихие аллеи, оранжереи и пруды — спокойное место, чтобы побыть наедине.<br><small style="color:var(--a);font-weight:600">Район Ишима</small></div></div>
 <div class="win step rvl rr"><div class="n">3</div><h3>Отмечайте и делитесь</h3><p>Ставьте «Был здесь», сохраняйте в избранное, оставляйте оценки и отзывы.</p>
-<div class="mk"><span class="vb2 dn">✔ Вы были здесь</span><span class="vb2">💬 Отзывы</span><span class="vb2">🚶 Предложить прогулку</span><div style="margin-top:8px;color:#ffb020">★★★★☆ <span class="m">4,6 · 12 отзывов</span></div></div></div>
+<div class="mk"><span class="vb2 dn">Вы были здесь</span><span class="vb2">Отзывы</span><span class="vb2">Предложить прогулку</span><div style="margin-top:8px;color:#ffb020">★★★★☆ <span class="m">4,6 · 12 отзывов</span></div></div></div>
 </div></section>
 
 <section class="sec"><h2 class="rvl">Что здесь можно делать</h2><p class="m rvl">Не только выбирать места — но и ходить туда вместе.</p>
 <div class="feat" data-stag>
-<div class="win rvl rl"><span class="ic">🎯</span><h3>Подборка по настроению</h3><p>88 мест и идей в 10 категориях, поиск и объяснение, почему место попало в подборку. Вкладка «Для вас» собирается по результатам теста.</p></div>
-<div class="win rvl rr"><span class="ic">♥</span><h3>Избранное и «Был здесь»</h3><p>Сохраняйте понравившееся и отмечайте посещённое. Отметку можно снять — история в профиле всегда актуальна.</p></div>
-<div class="win rvl rl"><span class="ic">⭐</span><h3>Оценки и отзывы</h3><p>Ставьте оценки, читайте отзывы других и заглядывайте в профили авторов.</p></div>
-<div class="win rvl rr"><span class="ic">🗺</span><h3>Открыть в 2ГИС</h3><p>Одна кнопка — и место откроется в 2ГИС: на сайте или в приложении, если оно у вас есть.</p></div>
-<div class="win rvl rl"><span class="ic">🔍</span><h3>Друзья по настроению</h3><p>Мы покажем людей с похожим настроением. Отправьте запрос — человек увидит, кто вы, и сможет принять или отклонить.</p>
-<div class="mk"><div class="row2"><div class="av0">А</div><div><b style="margin:0">Алия · совпадение 86%</b><span class="m">Хочется тишины и покоя</span></div></div><span class="vb2 dn">➕ Добавить в друзья</span><span class="vb2">👤 Профиль</span></div></div>
-<div class="win rvl rr"><span class="ic">💬</span><h3>Чаты и прогулки</h3><p>Пишите друзьям и приглашайте их на прогулку прямо с карточки места — приглашение придёт в чат.</p>
-<div class="mk"><div class="bub me"><b style="margin:0">🚶 Вы предлагаете прогулку</b>Центральный парк<small>⏳ Ждёт ответа</small></div><div class="bub">✔ Идём! Прогулка: Центральный парк</div></div></div>
+<div class="win rvl rl"><h3>Подборка по настроению</h3><p>188 мест и идей в 10 категориях, поиск и объяснение, почему место попало в подборку. Вкладка «Для вас» собирается по результатам теста.</p></div>
+<div class="win rvl rr"><h3>Избранное и «Был здесь»</h3><p>Сохраняйте понравившееся и отмечайте посещённое. Отметку можно снять — история в профиле всегда актуальна.</p></div>
+<div class="win rvl rl"><h3>Оценки и отзывы</h3><p>Ставьте оценки, читайте отзывы других и заглядывайте в профили авторов.</p></div>
+<div class="win rvl rr"><h3>Открыть в 2ГИС</h3><p>Одна кнопка — и место откроется в 2ГИС: на сайте или в приложении, если оно у вас есть.</p></div>
+<div class="win rvl rl"><h3>Друзья по настроению</h3><p>Мы покажем людей с похожим настроением. Отправьте запрос — человек увидит, кто вы, и сможет принять или отклонить.</p>
+<div class="mk"><div class="row2"><div class="av0">А</div><div><b style="margin:0">Алия · совпадение 86%</b><span class="m">Хочется тишины и покоя</span></div></div><span class="vb2 dn">Добавить в друзья</span><span class="vb2">Профиль</span></div></div>
+<div class="win rvl rr"><h3>Чаты и прогулки</h3><p>Пишите друзьям и приглашайте их на прогулку прямо с карточки места — приглашение придёт в чат.</p>
+<div class="mk"><div class="bub me"><b style="margin:0">Вы предлагаете прогулку</b>Центральный парк<small>Ждёт ответа</small></div><div class="bub">Идём! Прогулка: Центральный парк</div></div></div>
 </div></section>
 
 <section class="sec"><h2 class="rvl">Три темы — под ваше настроение</h2><p class="m rvl">Небо над сайтом плавно меняется, пока вы листаете страницу.</p>
 <div class="th3" data-stag>
 <div class="tile t1 rvl rl"><div class="lb"><b>Закат</b><span>Тёплые сумерки и первые звёзды</span></div></div>
 <div class="tile t2 rvl"><div class="lb"><b>Восход</b><span>Светлое утреннее небо и облака</span></div></div>
-<div class="tile t3 rvl rr"><div class="lb"><b>Грусть</b><span>Космос, Сатурн и грустный человечек. Появляется, если выбрать «Грустно» в тесте</span></div></div>
+<div class="tile t3 rvl rr"><div class="lb"><b>Грусть</b><span>Космос, Сатурн и грустный человечек. Появляется, если по итогам теста настроение окажется низким</span></div></div>
 </div></section>
 </div>
 <div class="ld"><section class="sec" id="try"><h2 class="rvl">Готовы попробовать?</h2><p class="m rvl">Создайте аккаунт или загляните как гость — тест и подборка работают сразу.</p>
@@ -210,17 +209,8 @@ footer a{color:var(--a);font-weight:600}
 <label class="lbl" for="lg">Логин</label><input id="lg" maxlength="32" autocomplete="username" autocapitalize="off" spellcheck="false">
 <label class="lbl" for="pw">Пароль (от 6 символов)</label><input id="pw" type="password" maxlength="100" autocomplete="current-password">
 <button class="btn c" id="sub">Войти</button><p id="err" class="er" role="alert"></p><a class="btn" href="app.html?guest=1" style="text-decoration:none;text-align:center;box-sizing:border-box">Продолжить как гость</a></div></div>
-<footer class="fw"><div class="ft">
-<div class="fb"><div class="fn">MoonMix</div><p>Места Астаны под ваше настроение — от рассвета до глубокой ночи.</p><p class="fm">Создатель проекта: <b>rradm1rrkaa</b></p></div>
-<nav class="fg" aria-label="Контакты создателя">
-<a class="fc" href="https://t.me/rradm1rrkaa" target="_blank" rel="noopener noreferrer"><span class="fi"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M9.04 15.3l-.38 5.3c.54 0 .78-.23 1.06-.5l2.55-2.44 5.28 3.87c.97.54 1.66.26 1.92-.9l3.48-16.3c.31-1.43-.52-2-1.46-1.65L1.1 10.5c-1.4.54-1.38 1.32-.24 1.67l5.24 1.63L18.3 6.1c.58-.35 1.1-.16.67.22z"/></svg></span><span><b>Telegram</b><small>@rradm1rrkaa</small></span></a>
-<a class="fc" href="https://github.com/rradm1rrkaa" target="_blank" rel="noopener noreferrer"><span class="fi"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.1.79-.25.79-.56v-2c-3.2.7-3.87-1.54-3.87-1.54-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.76 2.69 1.25 3.35.96.1-.74.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.62 1.59.23 2.76.11 3.05.74.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.25 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg></span><span><b>GitHub</b><small>github.com/rradm1rrkaa</small></span></a>
-<a class="fc" href="https://www.instagram.com/rradm1rrkaa/" target="_blank" rel="noopener noreferrer"><span class="fi"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1.3" fill="currentColor"/></svg></span><span><b>Instagram</b><small>@rradm1rrkaa</small></span></a>
-<a class="fc" href="https://wa.me/+77781013899" target="_blank" rel="noopener noreferrer"><span class="fi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.6-1.2A9 9 0 1 0 12 3z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path fill="currentColor" d="M9 8.5c0 3.5 3 6.5 6.5 6.5l1-1.6-2-1-.9.8c-.9-.3-2-1.4-2.3-2.3l.8-.9-1-2z"/></svg></span><span><b>WhatsApp</b><small>Написать в чат</small></span></a>
-<a class="fc" href="tel:+77781013899"><span class="fi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></span><span><b>Телефон</b><small>+7 778 101 38 99</small></span></a>
-</nav>
-<div class="fl">© MoonMix · <a href="#" id="plk">Конфиденциальность и условия</a> · <a href="#" id="plk2">Как удалить данные</a></div></div></footer>
-<div id="pf" hidden><div class="pc" id="pfc" role="dialog" aria-modal="true" aria-label="Конфиденциальность и условия"></div></div>
+<footer class="fw"><div class="ft"><div class="fb"><div class="fn">MoonMix</div><p>Места Астаны под ваше настроение.</p></div><nav class="fg" aria-label="Контакты создателя"><a href="https://t.me/rradm1rrkaa" target="_blank" rel="noopener noreferrer">Telegram</a><a href="https://github.com/rradm1rrkaa" target="_blank" rel="noopener noreferrer">GitHub</a><a href="https://www.instagram.com/rradm1rrkaa/" target="_blank" rel="noopener noreferrer">Instagram</a><a href="https://wa.me/+77781013899" target="_blank" rel="noopener noreferrer">WhatsApp</a><a href="tel:+77781013899">Телефон</a></nav></div></footer>
+
 <script>// «Бэкенд» в браузере: все данные хранятся в LS. Используется обеими страницами.
 const LS=(()=>{try{const t="__t";localStorage.setItem(t,"1");localStorage.removeItem(t);return localStorage}catch(e){
   const g=()=>{try{return JSON.parse(window.name)||{}}catch{return {}}};
@@ -380,20 +370,8 @@ function setMode(m){mode=m;$("tl").className=m=="login"?"on":"";$("tr").classNam
 $("tl").onclick=()=>setMode("login");$("tr").onclick=()=>setMode("register");
 async function submit(){try{await DB.call(mode,{login:$("lg").value.trim(),password:$("pw").value});location.replace("app.html")}catch(e){$("err").textContent=e.message}}
 $("sub").onclick=submit;$("pw").onkeydown=e=>{if(e.key=="Enter")submit()};
-const POLICY=`<h2 style="margin:0 0 4px">🔒 Конфиденциальность и условия</h2>
-<p class="m" style="margin:0">MoonMix — демонстрационная версия. Текст обновлён: октябрь 2026.</p>
-<h3>Что сохраняется</h3><ul><li>логин и защищённый хеш пароля;</li><li>результаты теста и история настроения;</li><li>избранное, отметки «Был здесь», оценки и отзывы;</li><li>друзья, запросы, сообщения и приглашения на прогулку;</li><li>аватарка, если вы её загрузили.</li></ul>
-<h3>Где хранится</h3><p>Только в localStorage вашего браузера на этом устройстве. Данные не отправляются на сервер, не видны другим людям и не переносятся между устройствами; друзья и чаты работают лишь между аккаунтами в одном браузере. Шрифты загружаются с Google Fonts, поэтому Google получает технические данные запроса (IP-адрес, браузер).</p>
-<h3>Пароли</h3><p>В демо-версии нет серверной авторизации. Не используйте здесь пароли от важных сервисов.</p>
-<h3>Как удалить данные</h3><p>Профиль → «Удалить аккаунт и данные» (удаляются профиль, отзывы, запросы и переписка), либо очистите данные сайта в настройках браузера. Перед удалением можно скачать копию: «Скачать мои данные».</p>
-<h3>Условия</h3><ul><li>Сервис информационный: адреса, часы работы и цены могут устареть — проверяйте перед визитом.</li><li>Пишите уважительно; за публикуемое вы отвечаете сами.</li><li>Рейтинги и профили на главной странице — примеры интерфейса, а не реальные данные.</li></ul>
-<h3>Контакты</h3><p>Вопросы по данным: Telegram @rradm1rrkaa.</p>`;
-function closePf(){$("pf").hidden=true}
-function openPolicy(){$("pfc").innerHTML=POLICY+'<button class="btn" id="rcl">Закрыть</button>';$("pf").hidden=false;$("rcl").onclick=closePf;$("rcl").focus()}
-["plk","plk2"].forEach(i=>$(i).onclick=e=>{e.preventDefault();openPolicy()});
-$("pf").onclick=e=>{if(e.target.id=="pf")closePf()};addEventListener("keydown",e=>{if(e.key=="Escape")closePf()});
 if(/[?&]reg\b/.test(location.search))setMode("register");
-(function(){const h=document.getElementById("wt"),t="Добро пожаловать в MoonMix";h.setAttribute("aria-label",t);h.textContent="";let n=0;
+(function(){const h=document.getElementById("wt"),t="Arthur Meridian";h.setAttribute("aria-label",t);h.textContent="";let n=0;
 t.split(" ").forEach((wd,k,a)=>{const w=document.createElement("span");w.className="w";w.setAttribute("aria-hidden","true");[...wd].forEach(ch=>{const s=document.createElement("span");s.className="lt";s.textContent=ch;s.style.animationDelay=(.3+n++*.075)+"s";w.appendChild(s)});h.appendChild(w);if(k<a.length-1)h.appendChild(document.createTextNode(" "))})})();
 (async()=>{try{await DB.call("me");location.replace("app.html")}catch{}})();
 (function(){const els=[...document.querySelectorAll(".rvl")];
@@ -441,7 +419,7 @@ function onS(){const h=document.documentElement.scrollHeight-innerHeight;p=h>0?M
 addEventListener("scroll",onS,{passive:true});addEventListener("resize",onS);
 if(window.ResizeObserver)new ResizeObserver(onS).observe(document.body);
 function setTheme(t,np){mode=t;document.documentElement.dataset.theme=t;if(!np)try{localStorage.setItem("moonmix_theme",t)}catch(e){}
-if(th){th.textContent=t=="dark"?"☀️ Восход":"🌇 Закат";th.title=t=="dark"?"Сейчас закат. Переключить на восход":"Сейчас восход. Переключить на закат"}kick()}
+if(th){th.textContent=t=="dark"?"Восход":"Закат";th.title=t=="dark"?"Сейчас закат. Переключить на восход":"Сейчас восход. Переключить на закат"}kick()}
 if(th)th.onclick=()=>setTheme(mode=="dark"?"light":"dark");
 setTheme(mode,1);onS();
 })();
