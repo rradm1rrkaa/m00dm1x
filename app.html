@@ -523,7 +523,13 @@ let off="";try{off=localStorage.getItem("moodmix_sad_off")||""}catch(e){}
 if(k&&(a||off!==window.moodSadAt)){if(a)try{localStorage.removeItem("moodmix_sad_off")}catch(e){}MoodTheme.set(k,1)}
 else if(["sad","fun"].includes(MoodTheme.get()))MoodTheme.set(MoodTheme.pref(),1);else MoodTheme.refresh()}
 // во время теста: если по уже данным ответам видно, что человеку тяжело — тема меняется сразу
-function liveSad(){if(!window.MoodTheme)return;const R=ANS.length>=3?calc():null,k=R?(R.sad?"sad":ANS.length>=8&&R.fun?"fun":""):"",c=MoodTheme.get();
+// грустный ответ: низкое настроение (кроме тревоги/напряжения) — по самому ответу, без накопления среднего
+function isSadAns(i,j){const o=QS[i]&&QS[i][2][j];if(!o)return false;const d=parseO(o[1]);return d.V===0||(d.V===1&&!(d.T>=3))||(i===2&&j===0)||(i===22&&j===3)||(i===24&&j<=1)}
+let sadLive=0; // номер ответа, на котором человек «сорвался» в грусть, пока шла тема «Веселье»
+function liveSad(){if(!window.MoodTheme)return;const n=ANS.length,c=MoodTheme.get();
+if(sadLive&&n<sadLive)sadLive=0;
+if(!sadLive&&c==="fun"&&n&&isSadAns(n-1,ANS[n-1]))sadLive=n;
+const R=n>=3?calc():null,k=sadLive?"sad":R?(R.sad?"sad":n>=8&&R.fun?"fun":""):"";
 if(k&&c!==k)MoodTheme.set(k,1);else if(!k&&(c==="sad"||c==="fun"))MoodTheme.set(MoodTheme.pref(),1)}
 const DK=["E","V","S","N","T","P"],DN={E:"Энергия",V:"Настроение",S:"Общительность",N:"Тяга к новому",T:"Напряжение",P:"Тяга к природе"};
 // «Идеальный профиль» состояния для каждой категории: E V S N T P (0–100)
@@ -554,7 +560,7 @@ if(V>=65)return"Спокойное, светлое настроение";
 if(E<=32)return"Мало сил";
 return"Ровное, спокойное настроение"}
 const dimWhy=(c,d)=>{const k=DK.map((k,i)=>[Math.abs(d[k]-CP[c][i]),k]).sort((a,b)=>a[0]-b[0])[0][1];return DN[k].toLowerCase()+" "+d[k]+"%"};
-function startQ(){qi=0;ANS=[];sadF=0;try{if(window.MoodTheme&&MoodTheme.get()!==MoodTheme.pref())MoodTheme.set(MoodTheme.pref(),1)}catch(e){}view("quiz");Q()}
+function startQ(){qi=0;ANS=[];sadF=0;sadLive=0;try{if(window.MoodTheme&&MoodTheme.get()!==MoodTheme.pref())MoodTheme.set(MoodTheme.pref(),1)}catch(e){}view("quiz");Q()}
 function Q(){const el=$("quiz");if(qi>=QS.length)return fin();const t=QS[qi],pr=Math.round(qi/QS.length*100);
 el.innerHTML=`${qi?"":"<h1 style='margin:0 0 6px'>Ваше настроение</h1><p class='m'>Ответьте на "+QS.length+" вопросов — чем честнее ответы, тем точнее подборка мест.</p>"}<p class="qn">Вопрос ${qi+1} из ${QS.length}</p><div class="meter qp"><i style="width:${pr}%"></i></div><h2>${t[0]}</h2><div class="opts"></div>`;
 const bx=el.querySelector(".opts");
