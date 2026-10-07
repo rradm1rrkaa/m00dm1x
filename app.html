@@ -712,7 +712,7 @@ const fr=new FileReader();fr.onerror=bad;fr.onload=()=>{const im=new Image();im.
 $("pf").onclick=e=>{if(e.target.id=="pf")closePf()};addEventListener("keydown",e=>{if(e.key=="Escape"&&!$("pf").hidden){clearInterval(CT);closePf()}});
 new MutationObserver(()=>document.documentElement.classList.toggle("lock",!$("pf").hidden)).observe($("pf"),{attributes:true,attributeFilter:["hidden"]});
 $("cdt").textContent=CATALOG.updated;$("reg").onclick=()=>location.href="index.html?reg#auth";
-(async()=>{let ok=false;try{U=await api("me");ok=true}catch{if(GUEST)startGuest();else location.replace("index.html")}
+(async()=>{let ok=false;try{U=await api("me");ok=true}catch{if(GUEST)startGuest();else location.replace("index.html?from=app")}
 // ошибка загрузки/отрисовки не должна выкидывать на index.html: он вернёт обратно на app.html и получится бесконечный цикл
 if(ok)try{await loadRT();enter()}catch(e){console.error(e);try{enter()}catch(e2){console.error(e2)}}})();
 
