@@ -373,7 +373,7 @@ $("tl").onclick=()=>setMode("login");$("tr").onclick=()=>setMode("register");
 async function submit(){try{await DB.call(mode,{login:$("lg").value.trim(),password:$("pw").value});location.replace("app.html")}catch(e){$("err").textContent=e.message}}
 $("sub").onclick=submit;$("pw").onkeydown=e=>{if(e.key=="Enter")submit()};
 if(/[?&]reg\b/.test(location.search))setMode("register");
-(function(){const h=document.getElementById("wt"),t="Добро пожаловать в MoonMix";h.setAttribute("aria-label",t);h.textContent="";let n=0;
+(function(){const h=document.getElementById("wt"),t="Welcome to MoonMix";h.setAttribute("aria-label",t);h.textContent="";let n=0;
 t.split(" ").forEach((wd,k,a)=>{const w=document.createElement("span");w.className="w";w.setAttribute("aria-hidden","true");[...wd].forEach(ch=>{const s=document.createElement("span");s.className="lt";s.textContent=ch;s.style.animationDelay=(.3+n++*.075)+"s";w.appendChild(s)});h.appendChild(w);if(k<a.length-1)h.appendChild(document.createTextNode(" "))})})();
 (async()=>{try{await DB.call("me");location.replace("app.html")}catch{}})();
 (function(){const els=[...document.querySelectorAll(".rvl")];

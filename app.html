@@ -757,4 +757,60 @@ window.MoonTheme={set:(t,np)=>setTheme(t,np),refresh:()=>setTheme(mode,1),get:()
 if(rm){const sv=g("cosmosSvg");if(sv&&sv.pauseAnimations)sv.pauseAnimations()}
 setTheme(mode,1);onS();
 })();
-</script></body></html>
+</script><style>
+.st{display:inline-block;margin:4px 6px 0 0;padding:2px 9px;border-radius:99px;font-weight:700;font-size:.78rem}.st.o{background:rgba(60,190,110,.22);color:#4cd98a}.st.x{background:rgba(240,80,90,.2);color:#ff7b86}
+.pr{display:inline-block;margin-top:4px;font-size:.78rem;opacity:.85}.rcl{display:block;margin-top:6px;font-size:.8rem;color:var(--a)}
+#flt{display:flex;flex-wrap:wrap;gap:8px;margin:2px 0 10px}#flt select,#flt input{width:auto;margin:0;padding:8px 10px;border-radius:12px;font-size:.85rem}#flt label{font-size:.78rem;color:var(--m);display:flex;flex-direction:column;gap:2px}
+.car{position:relative;overflow:hidden;border-radius:16px;margin-bottom:12px}.trk{display:flex;transition:transform .4s var(--ease)}.sl{min-width:100%;aspect-ratio:16/9}.sl img{width:100%;height:100%;display:block;object-fit:cover}
+.cb{position:absolute;top:50%;transform:translateY(-50%)!important;width:34px;height:34px;border:0;border-radius:50%;background:rgba(0,0,0,.45);color:#fff;font-size:1.3rem;cursor:pointer}.cb.l{left:8px}.cb.r{right:8px}
+.vb.on{background:var(--ag);color:#fff;border-color:transparent}
+</style>
+<script>
+(function(){
+const HR=[[9,20],[20,4],[0,24],[10,22],[7,22],[10,23],[8,21],[9,23],[11,24],[11,22]],F={t:"",o:0,rt:"",pr:""},me=()=>U.login.toLowerCase();
+const hrs=(ci,p)=>/рын(ок|ки)/i.test(p[0])?[8,18]:/парк|сад|аллея|набережн|площадь|сквер/i.test(p[0])?[0,24]:HR[ci]||[9,21];
+const pad=n=>String(n%24).padStart(2,"0")+":00",free=(ci,p)=>ci===2||/парк|сад|аллея|набережн|площадь|сквер/i.test(p[0]);
+function status(ci,p,t){const[o,c]=hrs(ci,p),d=new Date(),m=t?(+t.slice(0,2))*60+(+t.slice(3,5)):d.getHours()*60+d.getMinutes();
+const all=o===0&&c===24,open=all||(c<=o?(m>=o*60||m<c*60):(m>=o*60&&m<c*60));return{open,txt:all?"круглосуточно":open?"до "+pad(c):"откроется в "+pad(o),h:all?"Круглосуточно":pad(o)+"–"+pad(c)}}
+const PX=()=>{try{return Object.assign({likes:{},recs:{},go:{}},JSON.parse(localStorage.getItem("moonmix_px")||"{}"))}catch(e){return{likes:{},recs:{},go:{}}}},SV=x=>{try{localStorage.setItem("moonmix_px",JSON.stringify(x))}catch(e){}};
+function tg(f,k){const x=PX(),a=x[f][k]||[],i=a.indexOf(me());i<0?a.push(me()):a.splice(i,1);x[f][k]=a;SV(x)}
+const recTxt=k=>{const a=PX().recs[k]||[];return!a.length?"":a.length===1?(a[0]===me()?"Вы рекомендуете":a[0]+" рекомендует"):"Рекомендовано: "+a.length+" польз."};
+const R0=R;R=function(){R0();px()};
+function px(){const out=$("out"),ch=[...out.children];let ci=-1;
+ch.forEach(e=>{if(e.tagName==="H2"){ci=D.findIndex(d=>d[0]+" "+d[1]===e.textContent);return}if(!e.classList.contains("g"))return;
+[...e.children].forEach(c=>{const nm=c.querySelector(".ttl").textContent,p=D[ci][2].find(x=>x[0]===nm),k=ci+"|"+nm,st=status(ci,p,F.t),r=RT[k];
+if(F.o&&!st.open||F.pr==="f"&&!free(ci,p)||F.pr==="p"&&free(ci,p)||F.rt==="n"&&r||F.rt==="a"&&!r||(F.rt==="3"||F.rt==="4")&&!(r&&r.avg>=+F.rt))return c.remove();
+c.querySelector(".rt").insertAdjacentHTML("beforebegin",`<small class="st ${st.open?"o":"x"}">${st.open?"Открыто":"Закрыто"} · ${st.txt}</small><small class="pr">${free(ci,p)?"🆓 Бесплатно":"💳 Платно"}</small>`);
+const rc=recTxt(k);if(rc)c.querySelector(".act").insertAdjacentHTML("beforebegin",`<small class="rcl">📣 ${esc(rc)}</small>`);
+const b=document.createElement("button");b.className="vb";b.textContent="✏️";b.title="Написать отзыв";b.setAttribute("aria-label","Написать отзыв");b.onclick=()=>openRev(ci,p);c.querySelector(".row").appendChild(b)});
+if(!e.children.length){let x=e.previousElementSibling;e.remove();while(x&&x.classList.contains("why")){const y=x.previousElementSibling;x.remove();x=y}if(x&&x.tagName==="H2")x.remove()}});
+if(!out.children.length)out.innerHTML="<p class='m'>Ничего не найдено.</p>"}
+// фильтры
+$("tabs").insertAdjacentHTML("beforebegin",`<div id="flt"><label>Время<input type="time" id="ft"></label><label>Статус<select id="fo"><option value="0">Все</option><option value="1">Только открытые</option></select></label><label>Оценка<select id="fr"><option value="">Любая</option><option value="4">4★ и выше</option><option value="3">3★ и выше</option><option value="a">Есть отзывы</option><option value="n">Без отзывов</option></select></label><label>Цена<select id="fp"><option value="">Любая</option><option value="f">Бесплатно</option><option value="p">Платно</option></select></label></div>`);
+const fu=()=>{F.t=$("ft").value;F.o=+$("fo").value;F.rt=$("fr").value;F.pr=$("fp").value;AN=1;R()};["ft","fo","fr","fp"].forEach(i=>$(i).onchange=fu);
+const svg=(ci,p,i)=>{let h=0;for(const ch of p[0])h=(h*31+ch.charCodeAt(0))%360;h=(h+i*45)%360;return"data:image/svg+xml,"+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="hsl(${h},60%,45%)"/><stop offset="1" stop-color="hsl(${(h+60)%360},65%,25%)"/></linearGradient></defs><rect width="640" height="360" fill="url(#g)"/><text x="320" y="190" font-size="110" text-anchor="middle">${D[ci][0]}</text><text x="320" y="300" font-size="26" fill="#fff" text-anchor="middle" font-family="sans-serif">Фото ${i+1}</text></svg>`)};
+openPlace=function(ci,p){const key=ci+"|"+p[0],r=RT[key],vm=U.visits.filter(v=>v.place===p[0]).pop(),st=status(ci,p,F.t),X=PX(),m=me(),has=a=>(X[a][key]||[]).includes(m),rc=recTxt(key);let ix=0;
+$("pfc").innerHTML=`<div class="car"><div class="trk" id="trk">${[0,1,2].map(i=>`<div class="sl"><img src="${svg(ci,p,i)}" alt="Фото ${i+1}"></div>`).join("")}</div><button class="cb l" id="cpv" aria-label="Назад">‹</button><button class="cb r" id="cnx" aria-label="Вперёд">›</button></div>
+<h2 style="margin:0 0 4px">${esc(p[0])}</h2><p class="m" style="margin:0">${esc(D[ci][0]+" "+D[ci][1])}${p[2]?` · 📍 ${esc(p[2])}`:""}</p>
+<p style="margin:8px 0"><span class="st ${st.open?"o":"x"}">${st.open?"Открыто":"Закрыто"}</span> 🕒 ${st.h}${F.t?` (на ${F.t})`:""} · ${free(ci,p)?"🆓 Бесплатно":"💳 Платно"}</p><p>${esc(p[1])}</p>
+<p style="margin:0">${r?`★ <b>${r.avg.toFixed(1)}</b> · отзывов: ${r.n}`:"Оценок пока нет"} · 👍 ${(X.likes[key]||[]).length} · 🚶 Пойдут: ${(X.go[key]||[]).length}${vm?`<br><small>Были: ${fd(vm.at)}</small>`:""}</p>
+${rc?`<small class="rcl">📣 ${esc(rc)}</small>`:""}<div id="pr" style="margin:8px 0 6px"></div><h3>Отзывы</h3><div id="prl"><p class="m">Загрузка…</p></div><button class="btn" id="rcl">Закрыть</button>`;
+const mv=d=>{ix=(ix+d+3)%3;$("trk").style.transform=`translateX(-${ix*100}%)`};$("cpv").onclick=()=>mv(-1);$("cnx").onclick=()=>mv(1);
+const pr=$("pr"),mk=(t,f,on)=>{const b=document.createElement("button");b.className="vb"+(on?" on":"");b.textContent=t;b.onclick=f;pr.appendChild(b)},re=()=>{R();openPlace(ci,p)};
+mk(U.favs.includes(key)?"♥ В избранном":"♡ В избранное",async()=>{try{U=await api("fav",{key});re()}catch(e){toast(e.message)}},U.favs.includes(key));
+mk(has("go")?"🚶 Вы пойдёте":"🚶 Пойду",()=>{tg("go",key);re()},has("go"));
+mk(has("likes")?"👍 Лайк поставлен":"👍 Лайк",()=>{tg("likes",key);re()},has("likes"));
+mk(has("recs")?"📣 Вы рекомендуете":"📣 Рекомендовать пользователям",()=>{tg("recs",key);re()},has("recs"));
+mk(vm?VD:"✔ Был здесь",async()=>{try{if(vm){U=await api("unvisit",{place:p[0]})}else{U=await api("visit",{place:p[0],cat:D[ci][1]})}re()}catch(e){toast(e.message)}},!!vm);
+mk("✏️ Написать отзыв",()=>openRev(ci,p));mk("🚶 Позвать на прогулку",()=>openWalk(ci,p));
+mk("🗺 2ГИС",()=>window.open("https://2gis.kz/astana/search/"+encodeURIComponent(p[0]),"_blank","noopener"));
+$("rcl").onclick=closePf;$("pf").hidden=false;
+api("reviews",{key}).then(l=>{const b=$("prl");if(!b)return;b.innerHTML=l.length?"":"<p class='m'>Пока нет отзывов.</p>";l.slice(0,5).forEach(x=>{const d=document.createElement("div");d.className="rv";d.innerHTML=`<div class="rh">${avt(x.login,"sm",x.avatar)}<div><b>${esc(x.login)}</b><br><span class="sr">${stars(x.rating)}</span> <small class="m">${fd(x.at)}</small></div></div>${x.text?`<p>${esc(x.text)}</p>`:""}`;b.appendChild(d)})}).catch(()=>{})};
+// профиль: оценка и отзыв рядом с каждым посещённым местом
+const M0=openMe;openMe=function(){M0();if(U.guest)return;api("export").then(ex=>{const sec=[...document.querySelectorAll("#pfc .pb")].find(s=>/Где вы были/.test(s.textContent)),lis=sec?[...sec.querySelectorAll("li")]:[],vs=U.visits.slice().reverse().slice(0,50);
+lis.forEach((li,i)=>{const v=vs[i];if(!v)return;const ci=D.findIndex(d=>d[1]===v.cat),p=ci>=0&&D[ci][2].find(x=>x[0]===v.place),rv=(ex.reviews||[]).find(x=>x.key===ci+"|"+v.place);
+li.insertAdjacentHTML("beforeend",`<br><small>${rv?`<span class="sr">${stars(rv.rating)}</span>${rv.text?" · "+esc(rv.text):""}`:'<span class="m">Без оценки</span>'}</small> `);
+if(p){const b=document.createElement("button");b.className="vb";b.textContent="✏️";b.title="Написать отзыв";b.onclick=()=>openRev(ci,p);li.appendChild(b)}})}).catch(()=>{})};
+})();
+</script>
+</body></html>
