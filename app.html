@@ -117,7 +117,7 @@ textarea:focus{border-color:var(--a);box-shadow:0 0 0 4px rgba(255,140,70,.22)}
 .pc *{text-shadow:none!important}
 .pc .btn,.pc input,.pc textarea{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(128,128,128,.14)}.pc .btn.c{background:var(--ag)}
 
-.card{cursor:pointer}
+.card{cursor:pointer}.ttl{all:unset;cursor:pointer}.ttl:focus-visible{outline:3px solid var(--a);outline-offset:2px;border-radius:6px}.card small.fmt{display:block;color:var(--m);font-weight:600;margin-bottom:4px}.why{margin:-4px 0 12px;font-size:.92rem}
 .vb.done{background:var(--ag);color:#fff;border-color:transparent;box-shadow:0 6px 18px rgba(255,93,122,.35)}
 @media(max-width:480px){#fr .fl,#fnd .fl,#cht .fl{display:none}}
 .cm{display:flex;flex-direction:column;gap:6px;max-height:48vh;overflow:auto;padding:4px 2px;margin:10px 0}
@@ -128,13 +128,22 @@ textarea:focus{border-color:var(--a);box-shadow:0 0 0 4px rgba(255,140,70,.22)}
 .bd{display:inline-block;min-width:18px;height:18px;padding:0 5px;margin-left:6px;border-radius:9px;background:#ff3d78;color:#fff;font-size:.72rem;line-height:18px;text-align:center;font-weight:700;box-sizing:border-box}
 @keyframes pop{40%{transform:scale(1.18)}}.pop{animation:pop .45s var(--ease)}
 
+
+/* ===== правки по аудиту: переполнение, подписи, фокус, демо-плашки ===== */
+html{overflow-x:hidden}body{overflow-x:clip;max-width:100%}
+:focus-visible{outline:3px solid var(--a);outline-offset:2px}
+.lbl{display:block;margin:14px 0 -4px;font-size:.88rem;font-weight:700;color:var(--t);text-align:left}
+.vh{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.demo{max-width:560px;margin:14px auto 0;padding:10px 14px;box-sizing:border-box;border-radius:14px;border:1px solid var(--b);background:var(--c);color:var(--t);font-size:.88rem;line-height:1.45;text-align:left;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+footer a{color:var(--a);font-weight:600}
+.pc ul{padding-left:18px}
 </style></head><body>
 <div id="sky"><div id="stars"></div><div id="sun"></div><div id="moon"></div><div id="clouds"><b></b><b></b><b></b></div><svg id="hill" viewBox="0 0 100 34" preserveAspectRatio="none"><path id="hf" d="M0 14Q14 5 30 10T58 6T82 11T100 8L100 34L0 34Z"/><path id="hp" d="M0 18Q12 11 26 16T52 14T76 17T100 13L100 34L0 34Z"/></svg></div>
 <div id="quiz" class="gate" hidden></div>
-<div id="app" hidden><header><h1>🌙 MoonMix</h1><div class="hr"><button id="fnd" class="tbtn" aria-label="Найти друзей">🔍<span class="fl"> Найти друзей</span></button><button id="fr" class="tbtn" aria-label="Мои друзья">❤️<span class="fl"> Мои друзья</span><span class="bd" id="frb" hidden></span></button><button id="cht" class="tbtn" aria-label="Чаты">💬<span class="fl"> Чаты</span><span class="bd" id="chb" hidden></span></button><button id="th" class="tbtn"></button><button id="av" aria-label="Профиль"></button></div></header>
-<div class="bar"><div id="ban"></div><input id="q" placeholder="Поиск по местам…"><div class="tabs" id="tabs"></div></div><main id="out"></main>
-<footer>Часы работы и цены меняются — уточняйте перед визитом.</footer></div>
-<div id="pf" hidden><div class="pc" id="pfc"></div></div><div id="toast"></div>
+<div id="app" hidden><header><h1>🌙 MoonMix</h1><div class="hr"><button id="fnd" class="tbtn" aria-label="Найти друзей">🔍<span class="fl"> Найти друзей</span></button><button id="fr" class="tbtn" aria-label="Мои друзья">❤️<span class="fl"> Мои друзья</span><span class="bd" id="frb" hidden></span></button><button id="cht" class="tbtn" aria-label="Чаты">💬<span class="fl"> Чаты</span><span class="bd" id="chb" hidden></span></button><button id="reg" class="tbtn" hidden>✨ Создать аккаунт</button><button id="th" class="tbtn"></button><button id="av" aria-label="Профиль"></button></div></header>
+<div class="bar"><div id="ban"></div><label class="lbl" for="q">Поиск по местам</label><input id="q" placeholder="Например: парк, баня, кофе" autocomplete="off"><div class="tabs" id="tabs"></div></div><main id="out"></main>
+<footer>Каталог составлен вручную, обновлён: <span id="cdt"></span>. Адреса, часы работы и цены меняются — уточняйте перед визитом.<br>Демо-версия: аккаунты и данные хранятся только в вашем браузере. <a href="#" id="plk">Конфиденциальность и условия</a></footer></div>
+<div id="pf" hidden><div class="pc" id="pfc" role="dialog" aria-modal="true"></div></div><div id="toast"></div>
 <script>// «Бэкенд» в браузере: все данные хранятся в LS. Используется обеими страницами.
 const LS=(()=>{try{const t="__t";localStorage.setItem(t,"1");localStorage.removeItem(t);return localStorage}catch(e){
   const g=()=>{try{return JSON.parse(window.name)||{}}catch{return {}}};
@@ -148,12 +157,19 @@ const DB = {
   cyrb(s) { let a = 0xdeadbeef, b = 0x41c6ce57; for (let i = 0; i < s.length; i++) { const c = s.charCodeAt(i); a = Math.imul(a ^ c, 2654435761); b = Math.imul(b ^ c, 1597334677); }
     a = Math.imul(a ^ (a >>> 16), 2246822507) ^ Math.imul(b ^ (b >>> 13), 3266489909); b = Math.imul(b ^ (b >>> 16), 2246822507) ^ Math.imul(a ^ (a >>> 13), 3266489909);
     return (4294967296 * (2097151 & b) + (a >>> 0)).toString(16); },
+  // Пароли: PBKDF2-SHA256 (600 000 итераций) — "p:". Старые хеши ("s:", "c:") принимаются и переписываются при входе.
   async hash(pw, salt, alg) {
-    const s = salt + pw, sub = globalThis.crypto && crypto.subtle;
-    alg = alg || (sub ? "s:" : "c:");
-    if (alg === "s:" && sub) { const h = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s)); return "s:" + [...new Uint8Array(h)].map(x => x.toString(16).padStart(2, "0")).join(""); }
-    return "c:" + this.cyrb(s);
+    const sub = globalThis.crypto && crypto.subtle, hex = b => [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, "0")).join("");
+    alg = alg || (sub ? "p:" : "c:");
+    const enc = new TextEncoder();
+    if (alg === "p:" && sub) {
+      const key = await sub.importKey("raw", enc.encode(pw), "PBKDF2", false, ["deriveBits"]);
+      return "p:" + hex(await sub.deriveBits({ name: "PBKDF2", hash: "SHA-256", salt: enc.encode(salt), iterations: 600000 }, key, 256));
+    }
+    if (alg === "s:" && sub) return "s:" + hex(await sub.digest("SHA-256", enc.encode(salt + pw)));
+    return "c:" + this.cyrb(salt + pw);
   },
+  salt() { const a = new Uint8Array(16); (globalThis.crypto || {}).getRandomValues ? crypto.getRandomValues(a) : a.forEach((_, i) => a[i] = Math.random() * 256); return [...a].map(x => x.toString(16).padStart(2, "0")).join(""); },
   async call(p, b = {}) {
     const d = this.load();
     if (p === "register") {
@@ -162,13 +178,14 @@ const DB = {
       if (typeof password !== "string" || password.length < 6 || password.length > 100) throw new Error("Пароль: от 6 символов");
       const k = login.toLowerCase();
       if (d.users[k]) throw new Error("Такой логин уже занят");
-      const salt = Math.random().toString(36).slice(2) + Date.now().toString(36);
+      const salt = this.salt();
       d.users[k] = { login, salt, hash: await this.hash(password, salt), created: new Date().toISOString(), favs: [], visits: [], moods: [] };
       this.store(d); LS.setItem(this.S, k); return this.pub(d.users[k]);
     }
     if (p === "login") {
-      const u = d.users[String(b.login || "").toLowerCase()];
-      if (!u || u.hash !== await this.hash(String(b.password || ""), u.salt, u.hash.slice(0, 2))) throw new Error("Неверный логин или пароль");
+      const u = d.users[String(b.login || "").toLowerCase()], pw = String(b.password || ""), al = u && u.hash.slice(0, 2);
+      if (!u || u.hash !== await this.hash(pw, u.salt, al)) throw new Error("Неверный логин или пароль");
+      if (al !== "p:" && globalThis.crypto && crypto.subtle) { u.hash = await this.hash(pw, u.salt, "p:"); this.store(d); }
       LS.setItem(this.S, u.login.toLowerCase()); return this.pub(u);
     }
     if (p === "logout") { LS.removeItem(this.S); return { ok: true }; }
@@ -177,6 +194,13 @@ const DB = {
     const ok = (v, n) => typeof v === "string" && v.length > 0 && v.length <= n;
     d.requests = d.requests || [];
     for (const [a, ua] of Object.entries(d.users)) for (const f of (ua.friends || [])) { const fu = d.users[f]; if (fu && !(fu.friends || []).includes(a)) { ua.friends = ua.friends.filter(x => x !== f); if (!d.requests.some(r => r.from === a && r.to === f)) d.requests.push({ from: a, to: f, at: new Date().toISOString() }); } }
+    if (p === "export") return { exported: new Date().toISOString(), account: { login: u.login, created: u.created, favs: u.favs, visits: u.visits, moods: u.moods, friends: u.friends || [] }, reviews: (d.reviews || []).filter(r => r.user === k), messages: (d.messages || []).filter(m => m.from === k || m.to === k) };
+    if (p === "delete_account") {
+      delete d.users[k];
+      Object.values(d.users).forEach(x => { x.friends = (x.friends || []).filter(f => f !== k); if (x.read) delete x.read[k]; });
+      d.requests = d.requests.filter(r => r.from !== k && r.to !== k); d.reviews = (d.reviews || []).filter(r => r.user !== k); d.messages = (d.messages || []).filter(m => m.from !== k && m.to !== k);
+      this.store(d); LS.removeItem(this.S); return { ok: true };
+    }
     if (p === "ratings") { const m = {}; (d.reviews || []).forEach(r => { const x = m[r.key] || (m[r.key] = { s: 0, n: 0 }); x.s += r.rating; x.n++; }); Object.values(m).forEach(x => x.avg = x.s / x.n); return m; }
     if (p === "reviews") { if (!ok(b.key, 150)) throw new Error("Некорректные данные"); return (d.reviews || []).filter(r => r.key === b.key).sort((a, c) => c.at.localeCompare(a.at)).map(r => ({ ...r, avatar: (d.users[r.user] || {}).avatar || null })); }
     if (p === "review") {
@@ -261,7 +285,8 @@ const DB = {
     if (p === "mood") {
       const { mood, energy, cats } = b;
       if (!ok(mood, 100) || !Number.isFinite(energy) || !Array.isArray(cats) || cats.length !== 2) throw new Error("Некорректные данные теста");
-      u.moods = [...u.moods, { mood, energy, cats, sad: b.sad === true, at: new Date().toISOString() }].slice(-100);
+      const why = Array.isArray(b.why) ? b.why.slice(0, 2).map(a => Array.isArray(a) ? a.filter(x => typeof x === "string").slice(0, 5).map(x => x.slice(0, 80)) : []) : [];
+      u.moods = [...u.moods, { mood, energy, cats, why, sad: b.sad === true, at: new Date().toISOString() }].slice(-100);
     } else if (p === "visit") {
       if (!ok(b.place, 100) || !ok(b.cat, 50)) throw new Error("Некорректные данные");
       u.visits = [...u.visits, { place: b.place, cat: b.cat, at: new Date().toISOString() }].slice(-500);
@@ -273,79 +298,110 @@ const DB = {
   },
 };</script>
 <script>
+// ===== КАТАЛОГ =====
+// Формат места: ["Название","Описание","Адрес/район",1]. Последний элемент 1 = «формат места» (общий тип, а не конкретное заведение).
+// Одно место — в одной категории. После правок данных обновите CATALOG.updated.
+const CATALOG={updated:"октябрь 2026"};
 const D=[
 ["🌿","Уединение",[
-["Ботанический сад","Тихие аллеи, оранжереи и пруды — спокойное место, чтобы побыть наедине.","Район Ишима, ул. Достык"],
-["Национальный музей РК","Просторные залы, где мало людей в будни; можно провести полдня.","Пл. Независимости"],
-["Парк «Жастар»","Зелёный парк с прудом и скамейками вдали от шума проспектов.","Левый берег"],
-["Дворец Мира и Согласия","Пирамида с зимним садом внутри: тишина, свет и зелень.","Левый берег"],
-["Набережная Ишима на рассвете","Утром здесь почти пусто, идеально для тихих мыслей.","Центр"]]],
+  ["Ботанический сад","Тихие аллеи, оранжереи и пруды — спокойное место, чтобы побыть наедине.","Район Ишима, ул. Достык"],
+  ["Национальный музей РК","Просторные залы, где мало людей в будни; можно провести полдня.","Пл. Независимости"],
+  ["Парк «Жастар»","Зелёный парк с прудом и скамейками вдали от шума проспектов.","Левый берег"],
+  ["Дворец Мира и Согласия","Пирамида с зимним садом внутри: тишина, свет и зелень.","Левый берег"],
+  ["Хазрет Султан","Одна из крупнейших мечетей: тихий двор и покой.",""],
+  ["Национальная библиотека","Читальные залы и панорамный вид на город.",""],
+  ["Астана Опера","Спокойный вечер классической музыки.",""],
+  ["Музей Первого Президента","Тихие залы и много пространства.",""],
+  ["SPA в отелях левого берега","Массаж и тишина для перезагрузки.","",1]]],
 ["🎉","Вечеринки",[
-["Oasis Beach Club","Пляжный клуб с бассейном, диджеями и летними вечеринками.","пр. Туран, 8/1а"],
-["Teplo","База отдыха с бассейнами, баром и «пенными вечеринками».","шоссе Каркаралы, 11"],
-["Лаунж-бар Ritz-Carlton","Коктейли и панорама города для стильного вечера.","Левый берег"],
-["Rixos President — бары","Отельные бары и рестораны для встреч с друзьями.","Левый берег"],
-["Караоке-залы в ТРЦ","Приватные комнаты для дней рождения и корпоративов.","Разные ТРЦ"]]],
+  ["Лаунж-бар Ritz-Carlton","Коктейли и панорама города для стильного вечера.","Левый берег"],
+  ["Rixos President — бары","Отельные бары и рестораны для встреч с друзьями.","Левый берег"],
+  ["Караоке-залы в ТРЦ","Приватные комнаты для дней рождения и корпоративов.","Разные ТРЦ",1],
+  ["Кальянные с DJ-сетами","Музыка и общение до поздней ночи.","",1],
+  ["Рестораны с живой музыкой","Выступления артистов по выходным.","",1],
+  ["Крышные бары города","Коктейли с видом на огни Астаны.","",1],
+  ["Стендап-клубы","Вечер юмора с друзьями.","",1],
+  ["Клубы левого берега","Танцы и ночные вечеринки по выходным.","",1]]],
 ["🚶","Прогулки",[
-["Набережная Ишима","Главный променад города с видом на Байтерек и мосты.","Центр"],
-["Центральный парк","Аллеи, фонтаны, пруд и лодки; удобно гулять всей семьёй.","Левый берег"],
-["Президентский парк","Просторный парк рядом с Акордой, ровные дорожки.","Левый берег"],
-["Парк «Жібек Жолы»","Зелёная зона для неспешных прогулок и пробежек.","Правый берег"],
-["Территория EXPO / Нур-Алем","Футуристичная архитектура и открытые площадки.","Левый берег"]]],
+  ["Набережная Ишима","Главный променад города с видом на Байтерек и мосты.","Центр"],
+  ["Центральный парк","Аллеи, фонтаны, пруд и лодки; удобно гулять всей семьёй.","Левый берег"],
+  ["Президентский парк","Просторный парк рядом с Акордой, ровные дорожки.","Левый берег"],
+  ["Парк «Жібек Жолы»","Зелёная зона для неспешных прогулок и пробежек.","Правый берег"],
+  ["Бульвар Нұржол","Главная пешеходная аллея к Байтереку.",""],
+  ["Парк Влюблённых","Романтичные дорожки и пруд.",""],
+  ["Парк Победы","Просторные аллеи для неспешной прогулки.",""],
+  ["Мост «Слияние»","Красивые виды на Ишим и закат.",""],
+  ["Аллея у Астана Арены","Ровные дорожки для прогулки и бега.",""]]],
 ["🛍️","Шопинг и ТЦ",[
-["Хан Шатыр","Шатёр-ТРЦ Нормана Фостера: магазины, кино, зоны отдыха.","пр. Тауелсиздик, 15"],
-["Mega Silk Way","Один из крупнейших центров с брендами и рестораном.","пр. Кабанбай батыра, 62"],
-["Dostyk Plaza","Модные магазины, кофейни и детские зоны.","ул. Достык, 24"],
-["Keruen","Центр с большим выбором магазинов и общепита.","пр. Тауелсиздик"],
-["Asia Park","Удобный семейный ТРЦ с развлечениями.","пр. Кабанбай батыра"]]],
+  ["Хан Шатыр","Шатёр-ТРЦ Нормана Фостера: магазины, кино, зоны отдыха.","пр. Тауелсиздик, 15"],
+  ["Mega Silk Way","Один из крупнейших центров с брендами и рестораном.","пр. Кабанбай батыра, 62"],
+  ["Dostyk Plaza","Модные магазины, кофейни и детские зоны.","ул. Достык, 24"],
+  ["Keruen","Центр с большим выбором магазинов и общепита.","пр. Тауелсиздик"],
+  ["Asia Park","Удобный семейный ТРЦ с развлечениями.","пр. Кабанбай батыра"],
+  ["Sary-Arka Mall","Магазины, кафе и кинотеатр.",""],
+  ["Рынок «Артём»","Продукты, одежда и местный колорит.",""],
+  ["Улица Кунаева","Бутики и магазины в центре.",""],
+  ["Аутлеты города","Бренды со скидками.","",1]]],
 ["🏊","Бассейны",[
-["Oasis Beach Club","Открытый бассейн у Центрального парка (от 10 000 ₸ взрослым).","пр. Туран, 8/1а"],
-["Sky Beach Club (Хан Шатыр)","Тропический пляж под куполом круглый год.","Хан Шатыр"],
-["Teplo","Два бассейна, хамам и анимация в цене билета.","шоссе Каркаралы, 11"],
-["Nomad Spa","Бассейны и SPA-зона на природе.","Пригород"],
-["BalQaragai","Загородный комплекс: бассейн и прогулки на природе.","Пригород"]]],
+  ["Oasis Beach Club","Открытый бассейн у Центрального парка; летом — диджеи и вечеринки.","пр. Туран, 8/1а"],
+  ["Sky Beach Club (Хан Шатыр)","Тропический пляж под куполом круглый год.","Хан Шатыр"],
+  ["Teplo","Бассейны, хамам, бар и анимация; бывают «пенные вечеринки».","шоссе Каркаралы, 11"],
+  ["Дворец водных видов спорта","Большой бассейн для плавания.",""],
+  ["World Class","Бассейн в фитнес-клубе.",""],
+  ["Бассейн отеля Rixos","Комфорт и спокойный отдых у воды.",""],
+  ["Бассейн отеля Hilton","Плавание в уютной обстановке.",""],
+  ["Детские бассейны","Безопасные бассейны для малышей.","",1]]],
 ["🧖","Сауны и бани",[
-["Bath Village","Русская баня, фурако и зона настольных игр.","Астана"],
-["Банный комплекс «888»","Популярный комплекс для компаний и семей.","Астана"],
-["«Люкс»","Кедровая баня на дровах без ограничения по времени.","Астана"],
-["Nomad Spa","Сакская, берёзовая и травяная бани, тёплый чан.","Пригород"],
-["Хамам в Teplo","Хамам и парная включены в билет.","шоссе Каркаралы, 11"]]],
+  ["Bath Village","Русская баня, фурако и зона настольных игр.","Астана"],
+  ["Банный комплекс «888»","Популярный комплекс для компаний и семей.","Астана"],
+  ["«Люкс»","Кедровая баня на дровах без ограничения по времени.","Астана"],
+  ["Nomad Spa","Сакская, берёзовая и травяная бани, бассейны и SPA, катамараны и рыбалка на берегу.","Пригород"],
+  ["Хаммам в SPA-центрах","Пар, скрабы и полное расслабление.","",1],
+  ["Русские бани по часам","Аренда бани для своей компании.","",1],
+  ["Сауны с бассейном","Финская сауна и купель для компании.","",1],
+  ["SPA-салоны с массажем","Массаж и уход после парной.","",1],
+  ["Финская сауна в отелях","Сухой пар и комфорт.","",1]]],
 ["🌲","Вдали от суеты",[
-["Бурабай","Сосновые леса и озёра, около 3–4 часов на машине.","Акмолинская обл."],
-["Коргальжинский заповедник","Озёра и фламинго, отличное место для тишины.","~130 км от города"],
-["BalQaragai","Загородный отдых у природы недалеко от Астаны.","Пригород"],
-["Nomad Spa","Катамараны, рыбалка и бани на берегу.","Пригород"],
-["Базы и глэмпинги Акмолинской обл.","Домики в лесу и у озёр на выходные.","Окрестности"]]],
+  ["Бурабай","Сосновые леса и озёра, около 3–4 часов на машине.","Акмолинская обл."],
+  ["Коргальжинский заповедник","Озёра и фламинго, отличное место для тишины.","~130 км от города"],
+  ["BalQaragai","Загородный отдых у природы недалеко от Астаны.","Пригород"],
+  ["Базы и глэмпинги Акмолинской обл.","Домики в лесу и у озёр на выходные.","Окрестности",1],
+  ["Озеро Зеренда","Тихие берега и природа Акмолинской области.",""],
+  ["Ерейментау","Степные просторы и ветряные поля.",""],
+  ["Кокшетау и озёра","Озёра и леса в окрестностях города.","",1],
+  ["Национальный парк Кокшетау","Сосновые леса и скалы для уединения.",""],
+  ["Озеро Шортанды","Спокойный отдых у воды рядом с городом.",""]]],
 ["🍽️","Кафе и рестораны",[
-["Line Brew","Популярная кофейня и завтраки.","Астана"],
-["Rumi","Ресторан узбекской кухни с уютной атмосферой.","Астана"],
-["Hazara","Восточная кухня и большие компании.","Астана"],
-["Del Papa","Итальянская кухня: паста и пицца.","Астана"],
-["Coffee Boom","Недорогой кофе и десерты.","Астана"]]],
+  ["Line Brew","Популярная кофейня и завтраки.","Астана"],
+  ["Rumi","Ресторан узбекской кухни с уютной атмосферой.","Астана"],
+  ["Hazara","Восточная кухня и большие компании.","Астана"],
+  ["Del Papa","Итальянская кухня: паста и пицца.","Астана"],
+  ["Coffee Boom","Недорогой кофе и десерты.","Астана"],
+  ["Starbucks","Кофе и десерты, удобно для встречи.",""],
+  ["Bochka","Уютное место для ужина в компании.",""],
+  ["Ауыл","Национальная кухня в тёплой атмосфере.",""],
+  ["Sushi Master","Роллы и суши для любителей японской кухни.",""],
+  ["Пекарни и кофейни центра","Свежая выпечка и кофе.","",1]]],
 ["🎮","Игровые клубы",[
-["Боулинг в Mega Silk Way","Дорожки и игровая зона для компаний.","Mega Silk Way"],
-["Timezone в Dostyk Plaza","Аркадные автоматы и игры для всех возрастов.","Dostyk Plaza"],
-["Игровые зоны Asia Park","Автоматы и детские игры внутри ТРЦ.","Asia Park"],
-["Keruen — развлечения","Игровые зоны и кинотеатр в одном месте.","Keruen"],
-["Квест-комнаты","Командные квесты и настольные клубы по всему городу.","Разные адреса"]]],
+  ["Боулинг в Mega Silk Way","Дорожки и игровая зона для компаний.","Mega Silk Way"],
+  ["Timezone в Dostyk Plaza","Аркадные автоматы и игры для всех возрастов.","Dostyk Plaza"],
+  ["Квест-комнаты","Командные квесты и настольные клубы по всему городу.","Разные адреса",1],
+  ["PlayStation-клубы","Приставки и турниры с друзьями.","",1],
+  ["Киберклубы","Компьютерные игры и турниры.","",1],
+  ["Лазертаг","Командные бои для компаний.","",1],
+  ["Бильярдные клубы","Бильярд и настольные игры.","",1],
+  ["Батутные парки","Прыжки и активные игры.","",1]]],
 ["🎡","Аттракционы",[
-["Байтерек","Смотровая площадка на 97 м — символ Астаны.","Левый берег"],
-["Парк аттракционов Центрального парка","Колесо обозрения и карусели.","Центральный парк"],
-["Астанинский зоопарк","Животные со всего мира; хорошо для детей.","Астана"],
-["Хан Шатыр — развлечения","Кинотеатр, аквапарк и детские зоны.","Хан Шатыр"],
-["Нур-Алем (сфера)","Самое большое сферическое здание, музей будущего.","EXPO"]]]
+  ["Байтерек","Смотровая площадка на 97 м — символ Астаны.","Левый берег"],
+  ["Парк аттракционов Центрального парка","Колесо обозрения и карусели.","Центральный парк"],
+  ["Астанинский зоопарк","Животные со всего мира; хорошо для детей.","Астана"],
+  ["Нур-Алем (сфера)","Самое большое сферическое здание, музей будущего.","EXPO"],
+  ["Аквапарк Хан Шатыра","Горки и бассейны под куполом.",""],
+  ["Экскурсия по Астана Арене","Стадион с раздвижной крышей.",""],
+  ["Лодки в Центральном парке","Катание по пруду.",""],
+  ["Каток зимой","Открытые катки в центре города.","",1],
+  ["Смотровые площадки","Панорамы города с высоты.","",1]]]
 ];
-const E=[
-[["Хазрет Султан","Одна из крупнейших мечетей: тихий двор и покой."],["Национальная библиотека","Читальные залы и панорамный вид на город."],["Астана Опера","Спокойный вечер классической музыки."],["Музей Первого Президента","Тихие залы и много пространства."],["SPA в отелях левого берега","Массаж и тишина для перезагрузки."]],
-[["Кальянные с DJ-сетами","Музыка и общение до поздней ночи."],["Рестораны с живой музыкой","Выступления артистов по выходным."],["Крышные бары города","Коктейли с видом на огни Астаны."],["Стендап-клубы","Вечер юмора с друзьями."],["Клубы левого берега","Танцы и ночные вечеринки по выходным."]],
-[["Бульвар Нұржол","Главная пешеходная аллея к Байтереку."],["Парк Влюблённых","Романтичные дорожки и пруд."],["Парк Победы","Просторные аллеи для неспешной прогулки."],["Мост «Слияние»","Красивые виды на Ишим и закат."],["Аллея у Астана Арены","Ровные дорожки для прогулки и бега."]],
-[["Sary-Arka Mall","Магазины, кафе и кинотеатр."],["Рынок «Артём»","Продукты, одежда и местный колорит."],["Улица Кунаева","Бутики и магазины в центре."],["Аутлеты города","Бренды со скидками."],["Торговые галереи Хан Шатыра","Много бутиков под одной крышей."]],
-[["Дворец водных видов спорта","Большой бассейн для плавания."],["World Class","Бассейн в фитнес-клубе."],["Бассейн отеля Rixos","Комфорт и спокойный отдых у воды."],["Бассейн отеля Hilton","Плавание в уютной обстановке."],["Детские бассейны","Безопасные бассейны для малышей."]],
-[["Хаммам в SPA-центрах","Пар, скрабы и полное расслабление."],["Русские бани по часам","Аренда бани для своей компании."],["Сауны с бассейном","Финская сауна и купель для компании."],["SPA-салоны с массажем","Массаж и уход после парной."],["Финская сауна в отелях","Сухой пар и комфорт."]],
-[["Озеро Зеренда","Тихие берега и природа Акмолинской области."],["Ерейментау","Степные просторы и ветряные поля."],["Кокшетау и озёра","Озёра и леса в окрестностях города."],["Национальный парк Кокшетау","Сосновые леса и скалы для уединения."],["Озеро Шортанды","Спокойный отдых у воды рядом с городом."]],
-[["Starbucks","Кофе и десерты, удобно для встречи."],["Bochka","Уютное место для ужина в компании."],["Ауыл","Национальная кухня в тёплой атмосфере."],["Sushi Master","Роллы и суши для любителей японской кухни."],["Пекарни и кофейни центра","Свежая выпечка и кофе."]],
-[["PlayStation-клубы","Приставки и турниры с друзьями."],["Киберклубы","Компьютерные игры и турниры."],["Лазертаг","Командные бои для компаний."],["Бильярдные клубы","Бильярд и настольные игры."],["Батутные парки","Прыжки и активные игры."]],
-[["Аквапарк Хан Шатыра","Горки и бассейны под куполом."],["Экскурсия по Астана Арене","Стадион с раздвижной крышей."],["Лодки в Центральном парке","Катание по пруду."],["Каток зимой","Открытые катки в центре города."],["Смотровые площадки","Панорамы города с высоты."]]];E.forEach((e,i)=>D[i][2].push(...e));
 const QS=[["Сколько у вас сейчас энергии?",[["Много, хочется движения","1:2,8:1,9:2,4:1"],["Средне","2:2,3:1,7:1"],["Мало, хочется отдохнуть","0:2,5:2,6:1"]]],
 ["С кем хочется провести время?",[["Одному","0:2,6:2,5:1"],["С близким человеком","7:2,2:1,0:1,6:1"],["С друзьями","1:2,8:2,5:1"],["С семьёй","9:2,3:1,4:1,2:1"]]],
 ["Что сейчас важнее всего?",[["Тишина и покой","0:2,6:2"],["Азарт и движение","8:2,9:2,1:1"],["Комфорт и релакс","5:2,4:1,7:1"],["Новые впечатления","9:2,2:1,3:1"]]],
@@ -355,32 +411,59 @@ const MOOD=["Хочется тишины и покоя","Хочется весе
 
 const $=i=>document.getElementById(i),esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fd=t=>new Date(t).toLocaleString("ru-RU",{dateStyle:"medium",timeStyle:"short"});
-async function api(p,b){return DB.call(p,b)}
-let RT={},AN=1,U=null,cat=-1,q="",rec=[],qi=0,sc=Array(10).fill(0),en=0,mode="login";
+const GUEST=new URLSearchParams(location.search).has("guest"),GK="moonmix_guest";
+async function api(p,b={}){return U&&U.guest?guestApi(p,b):DB.call(p,b)}
+// Гость: только тест, подборка, избранное и «Был здесь» — локально, без аккаунта
+async function guestApi(p,b){const ok=(v,n)=>typeof v==="string"&&v.length>0&&v.length<=n;
+switch(p){case"me":return U;case"ratings":return{};case"reviews":case"friends":case"chats":case"suggest":return[];case"unread":return 0;case"requests":return{in:[],out:[]};
+case"logout":try{LS.removeItem(GK)}catch(e){}return{ok:true};
+case"mood":if(!ok(b.mood,100)||!Number.isFinite(b.energy)||!Array.isArray(b.cats)||b.cats.length!==2)throw new Error("Некорректные данные теста");
+U.moods=[...U.moods,{mood:b.mood,energy:b.energy,cats:b.cats,why:b.why||[],sad:b.sad===true,at:new Date().toISOString()}].slice(-20);U.last=U.moods[U.moods.length-1];break;
+case"visit":U.visits=[...U.visits,{place:b.place,cat:b.cat,at:new Date().toISOString()}].slice(-100);break;
+case"unvisit":U.visits=U.visits.filter(v=>v.place!==b.place);break;
+case"fav":U.favs=U.favs.includes(b.key)?U.favs.filter(x=>x!==b.key):[...U.favs,b.key];break;
+default:throw new Error("Это доступно после регистрации")}
+try{LS.setItem(GK,JSON.stringify(U))}catch(e){}return U}
+function startGuest(){let g=null;try{g=JSON.parse(LS.getItem(GK))}catch(e){}
+U=g&&g.guest?g:{guest:true,login:"Гость",created:new Date().toISOString(),avatar:null,friends:[],favs:[],visits:[],moods:[],last:null};U.guest=true;
+$("fnd").hidden=$("fr").hidden=$("cht").hidden=true;$("reg").hidden=false;enter()}
+function openGuest(){$("pfc").innerHTML=`<h2 style="margin:0 0 4px">👋 Гостевой режим</h2><p class="m">Подборка, избранное и отметки хранятся только в этом браузере. Отзывы, друзья и чаты доступны после регистрации.</p><button class="btn c" id="gr">✨ Создать аккаунт</button><button class="btn" id="rq">Пройти тест заново</button><button class="btn" id="lo">Выйти из гостевого режима</button><button class="btn" id="cl">Закрыть</button>`;
+$("pf").hidden=false;$("gr").onclick=()=>location.href="index.html?reg#auth";$("rq").onclick=()=>{closePf();startQ()};$("lo").onclick=async()=>{await api("logout");location.replace("index.html")};$("cl").onclick=closePf}
+const POLICY=`<h2 style="margin:0 0 4px">🔒 Конфиденциальность и условия</h2>
+<p class="m" style="margin:0">MoonMix — демонстрационная версия. Текст обновлён: октябрь 2026.</p>
+<h3>Что сохраняется</h3><ul><li>логин и защищённый хеш пароля;</li><li>результаты теста и история настроения;</li><li>избранное, отметки «Был здесь», оценки и отзывы;</li><li>друзья, запросы, сообщения и приглашения на прогулку;</li><li>аватарка, если вы её загрузили.</li></ul>
+<h3>Где хранится</h3><p>Только в localStorage вашего браузера на этом устройстве. Данные не отправляются на сервер, не видны другим людям и не переносятся между устройствами; друзья и чаты работают лишь между аккаунтами в одном браузере. Шрифты загружаются с Google Fonts, поэтому Google получает технические данные запроса (IP-адрес, браузер).</p>
+<h3>Пароли</h3><p>В демо-версии нет серверной авторизации. Не используйте здесь пароли от важных сервисов.</p>
+<h3>Как удалить данные</h3><p>Профиль → «Удалить аккаунт и данные» (удаляются профиль, отзывы, запросы и переписка), либо очистите данные сайта в настройках браузера. Перед удалением можно скачать копию: «Скачать мои данные».</p>
+<h3>Условия</h3><ul><li>Сервис информационный: адреса, часы работы и цены могут устареть — проверяйте перед визитом.</li><li>Пишите уважительно; за публикуемое вы отвечаете сами.</li><li>Рейтинги и профили на главной странице — примеры интерфейса, а не реальные данные.</li></ul>
+<h3>Контакты</h3><p>Вопросы по данным: Telegram @rradm1rrkaa.</p>`;
+function openPolicy(back){$("pfc").innerHTML=POLICY+`<button class="btn" id="pbk">← Назад</button><button class="btn" id="rcl">Закрыть</button>`;$("pbk").onclick=back||closePf;$("rcl").onclick=closePf;$("pf").hidden=false}
+let RT={},AN=1,U=null,cat=-1,q="",rec=[],qi=0,sc=Array(10).fill(0),WY=Array.from({length:10},()=>[]),en=0,mode="login";
 function view(v){["quiz","app"].forEach(x=>$(x).hidden=x!==v);document.body.style.overflow=v==="app"?"":"hidden"}
 function toast(t){const e=$("toast");e.textContent=t;e.className="on";setTimeout(()=>e.className="",2200)}
 function setAv(){$("av").innerHTML=U.avatar?`<img src="${esc(U.avatar)}" alt="">`:esc(U.login[0].toUpperCase())}
 function enter(){setAv();badge();syncSad(0);if(U.last){rec=U.last.cats;cat=-3;view("app");draw()}else startQ()}
 let sadF=0;
 function syncSad(a){window.moonSad=!!(U.last&&U.last.sad);if(!window.MoonTheme)return;if(a&&window.moonSad)MoonTheme.set("sad");else if(MoonTheme.get()==="sad"&&!window.moonSad)MoonTheme.set("dark");else MoonTheme.refresh()}
-function startQ(){qi=0;sc.fill(0);en=0;sadF=0;view("quiz");Q()}
+function startQ(){qi=0;sc.fill(0);WY.forEach(a=>a.length=0);en=0;sadF=0;view("quiz");Q()}
 function Q(){const el=$("quiz");if(qi>=QS.length)return fin();const t=QS[qi];
 el.innerHTML=`${qi?"":"<h1 style='margin:0 0 6px'>Ваше настроение</h1><p class='m'>Ответьте на 5 вопросов — мы подберём места под ваше настроение.</p>"}<p class="qn">Вопрос ${qi+1} из 5</p><h2>${t[0]}</h2>`;
-t[1].forEach((o,j)=>{const b=document.createElement("button");b.className="btn";b.textContent=o[0];b.onclick=()=>{o[1].split(",").forEach(x=>{const[c,w]=x.split(":");sc[c]+=+w});if(qi==0)en+=2-j;if(qi==4){en+=[0,2,1,1,0][j];sadF=j==4}qi++;Q()};el.appendChild(b)})}
+t[1].forEach((o,j)=>{const b=document.createElement("button");b.className="btn";b.textContent=o[0];b.onclick=()=>{o[1].split(",").forEach(x=>{const[c,w]=x.split(":");sc[c]+=+w;if(+w>=2&&!WY[c].includes(o[0]))WY[c].push(o[0])});if(qi==0)en+=2-j;if(qi==4){en+=[0,2,1,1,0][j];sadF=j==4}qi++;Q()};el.appendChild(b)})}
 async function fin(){const o=sc.map((v,i)=>[v,i]).sort((a,b)=>b[0]-a[0]);rec=[o[0][1],o[1][1]];const pc=Math.round(en/4*100);
-try{U=await api("mood",{mood:MOOD[rec[0]],energy:pc,cats:rec,sad:!!sadF})}catch(e){toast(e.message)}
+try{U=await api("mood",{mood:MOOD[rec[0]],energy:pc,cats:rec,why:[WY[rec[0]],WY[rec[1]]],sad:!!sadF})}catch(e){toast(e.message)}
 syncSad(1);
 $("quiz").innerHTML=`<h2>Ваше настроение: ${MOOD[rec[0]]}</h2><div class="meter"><i style="width:${pc}%"></i></div><p>Уровень энергии: ${pc}%. Мы подобрали для вас: «${D[rec[0]][1]}» и «${D[rec[1]][1]}».</p>${sadF?"<p class='m'>🌌 Для вас включена тема «Грусть». Переключать темы можно кнопкой справа вверху.</p>":""}<button class="btn c" id="go">Показать подборку →</button><button class="btn" id="rs">Пройти тест заново</button>`;
 $("go").onclick=()=>{cat=-3;view("app");draw();scrollTo(0,0)};$("rs").onclick=startQ}
-function draw(){AN=1;$("ban").innerHTML=U.last?`<div class="card" style="margin-bottom:8px">Последнее настроение: <b>${esc(U.last.mood)}</b> · ${fd(U.last.at)}</div>`:"";tabsR();R()}
+function draw(){AN=1;$("ban").innerHTML=(U.guest?'<div class="card" style="margin-bottom:8px;cursor:default">👋 Гостевой режим: подборка, избранное и отметки сохраняются только в этом браузере. <a href="index.html?reg#auth" style="color:var(--a);font-weight:700">Создайте аккаунт</a> — чтобы писать отзывы, находить друзей и общаться.</div>':"")+(U.last?`<div class="card" style="margin-bottom:8px;cursor:default">Последнее настроение: <b>${esc(U.last.mood)}</b> · ${fd(U.last.at)}</div>`:"");tabsR();R()}
 function tabsR(){const t=$("tabs");t.innerHTML="";[["Все",-1],...(rec.length?[["✨ Для вас",-3]]:[]),["❤ Избранное",-2],...D.map((d,i)=>[d[0]+" "+d[1],i])].forEach(([n,i])=>{const b=document.createElement("button");b.textContent=n;if(cat===i)b.className="on";b.onclick=()=>{cat=i;tabsR();AN=1;R()};t.appendChild(b)})}
 function R(){const out=$("out");out.innerHTML="";out.className=AN?"an":"";AN=0;let n=0;const vm={};U.visits.forEach(v=>vm[v.place]=v.at);
 D.forEach((d,ci)=>{if(cat>=0&&cat!==ci)return;if(cat===-3&&!rec.includes(ci))return;
 const items=d[2].filter(p=>(cat!==-2||U.favs.includes(ci+"|"+p[0]))&&(p[0]+p[1]+(p[2]||"")).toLowerCase().includes(q));if(!items.length)return;
-const h=document.createElement("h2");h.textContent=d[0]+" "+d[1];out.appendChild(h);const g=document.createElement("div");g.className="g";
+const h=document.createElement("h2");h.textContent=d[0]+" "+d[1];out.appendChild(h);
+const wi=rec.indexOf(ci),wy=U.last&&U.last.why&&U.last.why[wi];if(wi>=0&&wy&&wy.length){const w=document.createElement("p");w.className="m why";w.textContent="💡 Почему в подборке: вы выбрали «"+wy.join("», «")+"»";out.appendChild(w)}const g=document.createElement("div");g.className="g";
 items.forEach(p=>{const k=ci+"|"+p[0],c=document.createElement("div");c.className="card";c.style.setProperty("--i",n++);const r=RT[k];c.onclick=e=>{if(!e.target.closest("button,a"))openPlace(ci,p)};
-c.innerHTML=`<h3>${esc(p[0])}</h3><p>${esc(p[1])}</p>${p[2]?`<small>📍 ${esc(p[2])}</small>`:""}<div class="rt">${r?`<b>★ ${r.avg.toFixed(1)}</b> <span class="m">(${r.n})</span>`:`<span class="m">Пока нет оценок</span>`}</div><div class="act"></div>`;
-const ac=c.querySelector(".act");
+c.innerHTML=`<h3><button type="button" class="ttl">${esc(p[0])}</button></h3><p>${esc(p[1])}</p>${p[3]?`<small class="fmt">🔎 Формат места — конкретное ищите в 2ГИС</small>`:""}${p[2]?`<small>📍 ${esc(p[2])}</small>`:""}<div class="rt">${r?`<b>★ ${r.avg.toFixed(1)}</b> <span class="m">(${r.n})</span>`:`<span class="m">Пока нет оценок</span>`}</div><div class="act"></div>`;
+c.querySelector(".ttl").onclick=()=>openPlace(ci,p);const ac=c.querySelector(".act");
 if(vm[p[0]]){const s=document.createElement("small");s.className="vis";s.textContent="Были: "+fd(vm[p[0]]);ac.appendChild(s)}
 const row=document.createElement("div");row.className="row";
 const vb=document.createElement("button");vb.className="vb"+(vm[p[0]]?" done":"");vb.textContent=vm[p[0]]?VD:"✔ Был здесь";vb.onclick=async()=>{try{if(vb.classList.contains("done")){U=await api("unvisit",{place:p[0]});vb.classList.remove("done");vb.textContent="✔ Был здесь";const t0=ac.querySelector(".vis");if(t0)t0.remove();toast("Отметка «Был здесь» снята");return}
@@ -404,14 +487,14 @@ mk("✔ Был здесь",async()=>{try{if(vm){U=await api("unvisit",{place:p[0
 if(vm){pr.firstChild.className="vb done";pr.firstChild.textContent=VD}
 mk("💬 Отзывы",()=>openRev(ci,p));
 mk("🚶 Предложить прогулку",()=>openWalk(ci,p));
-mk("🗺 Открыть в 2ГИС",()=>window.open("https://2gis.kz/astana/search/"+encodeURIComponent(p[0]),"_blank","noopener"));
+mk(p[3]?"🗺 Искать в 2ГИС":"🗺 Открыть в 2ГИС",()=>window.open("https://2gis.kz/astana/search/"+encodeURIComponent(p[0]),"_blank","noopener"));
 $("rcl").onclick=closePf;$("pf").hidden=false;
 }
 async function openRev(ci,p){const key=ci+"|"+p[0],me=U.login.toLowerCase();let list;try{list=await api("reviews",{key})}catch(e){return toast(e.message)}
 const mine=list.find(r=>r.user===me);let rt=mine?mine.rating:0;const avg=list.length?(list.reduce((s,r)=>s+r.rating,0)/list.length).toFixed(1):null;
 $("pfc").innerHTML=`<h2 style="margin:0 0 4px">${esc(p[0])}</h2><p class="m" style="margin:0">${avg?`★ ${avg} · отзывов: ${list.length}`:"Отзывов пока нет — будьте первым!"}</p>
 <h3>${mine?"Ваш отзыв":"Оставить отзыв"}</h3><div class="stp" id="stp">${[1,2,3,4,5].map(i=>`<button type="button" data-v="${i}" aria-label="${i} из 5">★</button>`).join("")}</div>
-<textarea id="rtx" maxlength="1000" placeholder="Поделитесь впечатлениями…">${esc(mine?mine.text:"")}</textarea>
+<label class="lbl" for="rtx">Ваш отзыв</label><textarea id="rtx" maxlength="1000" placeholder="Поделитесь впечатлениями…">${esc(mine?mine.text:"")}</textarea>
 <button class="btn c" id="rsb">${mine?"Обновить отзыв":"Опубликовать"}</button>
 <h3>Отзывы посетителей (${list.length})</h3><div id="rl"></div><button class="btn" id="rcl">Закрыть</button>`;
 const sp=$("stp"),paint=v=>[...sp.children].forEach((b,i)=>b.classList.toggle("on",i<v));paint(rt);
@@ -462,7 +545,7 @@ $("mfb").onclick=openFind;$("rcl").onclick=closePf;$("pf").hidden=false}
 let CT=null;
 const mt=a=>new Date(a).toLocaleTimeString("ru-RU",{hour:"2-digit",minute:"2-digit"}),WS={pending:"⏳ Ждёт ответа",accepted:"✔ Согласие получено",declined:"✖ Отказ"};
 async function openChat(login,back){const lk=login.toLowerCase();let d;try{d=await api("chat",{login})}catch(e){return toast(e.message)}
-$("pfc").innerHTML=`<div style="display:flex;gap:10px;align-items:center">${avt(d.user.login,"sm",d.user.avatar)}<h2 style="margin:0;font-size:1.2rem">${esc(d.user.login)}</h2></div><div class="cm" id="cm"></div>${d.friend?'<div class="cin"><input id="ctx" maxlength="1000" placeholder="Сообщение…" autocomplete="off"><button class="vb" id="csn">Отправить</button></div>':"<p class='m'>Вы больше не друзья — писать нельзя.</p>"}<button class="btn" id="cbk">← Назад</button><button class="btn" id="rcl">Закрыть</button>`;
+$("pfc").innerHTML=`<div style="display:flex;gap:10px;align-items:center">${avt(d.user.login,"sm",d.user.avatar)}<h2 style="margin:0;font-size:1.2rem">${esc(d.user.login)}</h2></div><div class="cm" id="cm"></div>${d.friend?'<div class="cin"><label class="vh" for="ctx">Сообщение</label><input id="ctx" maxlength="1000" placeholder="Сообщение…" autocomplete="off"><button class="vb" id="csn">Отправить</button></div>':"<p class='m'>Вы больше не друзья — писать нельзя.</p>"}<button class="btn" id="cbk">← Назад</button><button class="btn" id="rcl">Закрыть</button>`;
 let sig="";
 function paint(ms){const s=JSON.stringify(ms.map(m=>[m.id,m.status]));if(s===sig)return;sig=s;const box=$("cm");if(!box)return;const near=box.scrollHeight-box.scrollTop-box.clientHeight<60||!box.children.length;box.innerHTML="";
 if(!ms.length)box.innerHTML="<p class='m'>Напишите первое сообщение 👋</p>";
@@ -481,22 +564,25 @@ ch.forEach(t=>{const l=t.lastMsg,pv=l?(l.type=="walk"?"🚶 Прогулка: "+
 r.innerHTML=`<div class="rh">${avt(t.login,"sm",t.avatar)}<div style="min-width:0"><b>${esc(t.login)}</b>${t.unread?`<span class="bd">${t.unread}</span>`:""}<br><small class="m">${esc(pv.slice(0,60))}</small></div></div>`;r.onclick=()=>openChat(t.login);E.appendChild(r)});
 $("rcl").onclick=closePf;$("pf").hidden=false}
 async function openWalk(ci,p){let fl;try{fl=await api("friends")}catch(e){return toast(e.message)}
-$("pfc").innerHTML=`<h2 style="margin:0 0 4px">🚶 Предложить прогулку</h2><p class="m" style="margin:0">${esc(p[0])}${p[2]?` · 📍 ${esc(p[2])}`:""}</p><input id="wn" maxlength="300" placeholder="Когда и во сколько? (необязательно)"><h3>Кому предложить</h3><div id="wl"></div><button class="btn" id="rcl">Закрыть</button>`;const E=$("wl");
+$("pfc").innerHTML=`<h2 style="margin:0 0 4px">🚶 Предложить прогулку</h2><p class="m" style="margin:0">${esc(p[0])}${p[2]?` · 📍 ${esc(p[2])}`:""}</p><label class="lbl" for="wn">Когда и во сколько? (необязательно)</label><input id="wn" maxlength="300" placeholder="Например: в субботу в 18:00"><h3>Кому предложить</h3><div id="wl"></div><button class="btn" id="rcl">Закрыть</button>`;const E=$("wl");
 if(!fl.length){E.innerHTML="<p class='m'>У вас пока нет друзей, которых можно позвать на прогулку.</p>";E.appendChild(fBtn("🔍 Найти друзей",openFind))}
 fl.forEach(t=>{const r=rowU(t),box=document.createElement("div");r.appendChild(box);box.appendChild(fBtn("🚶 Предложить",async()=>{try{await api("send",{login:t.login,place:p[0],text:$("wn").value.trim()});toast("Приглашение отправлено в чат ✔");openChat(t.login,()=>openWalk(ci,p))}catch(e){toast(e.message)}}));E.appendChild(r)});
 $("rcl").onclick=closePf;$("pf").hidden=false}
-function openMe(){const l=U.last,vs=U.visits.slice().reverse().slice(0,50),ms=U.moods.slice().reverse().slice(0,10);
+function openMe(){if(U.guest)return openGuest();const l=U.last,vs=U.visits.slice().reverse().slice(0,50),ms=U.moods.slice().reverse().slice(0,10);
 $("pfc").innerHTML=`<div style="display:flex;gap:12px;align-items:center">${avt(U.login,"lg",U.avatar)}<div><h2 style="margin:0">${esc(U.login)}</h2><small class="m">С нами с ${fd(U.created)}</small></div></div>
 <div style="margin-top:6px"><button class="vb" id="avu">📷 ${U.avatar?"Сменить фото":"Загрузить фото"}</button>${U.avatar?'<button class="vb" id="avd">🗑 Удалить фото</button>':""}<input type="file" id="avf" accept="image/*" hidden></div>
 <h3>Последнее настроение</h3>${l?`<p><b>${esc(l.mood)}</b><br>Энергия: ${l.energy}% · ${fd(l.at)}</p>`:"<p class='m'>Тест ещё не пройден</p>"}
 <h3>Где вы были (${U.visits.length})</h3>${vs.length?"<ul>"+vs.map(v=>`<li>${esc(v.place)} <span class="m">· ${esc(v.cat)} · ${fd(v.at)}</span></li>`).join("")+"</ul>":"<p class='m'>Отмечайте места кнопкой «✔ Был здесь»</p>"}
 <h3>История настроения</h3>${ms.length?"<ul>"+ms.map(m=>`<li>${esc(m.mood)} <span class="m">· ${m.energy}% · ${fd(m.at)}</span></li>`).join("")+"</ul>":"<p class='m'>Пока пусто</p>"}
-<button class="btn" id="mf">❤️ Мои друзья (${(U.friends||[]).length})</button><button class="btn" id="mf2">🔍 Найти друзей</button><button class="btn" id="rq">Пройти тест заново</button><button class="btn" id="lo">Выйти</button><button class="btn" id="cl">Закрыть</button>`;
+<button class="btn" id="mf">❤️ Мои друзья (${(U.friends||[]).length})</button><button class="btn" id="mf2">🔍 Найти друзей</button><button class="btn" id="rq">Пройти тест заново</button><button class="btn" id="exp">⬇ Скачать мои данные</button><button class="btn" id="pol">🔒 Конфиденциальность и условия</button><button class="btn" id="lo">Выйти</button><button class="btn" id="del">🗑 Удалить аккаунт и данные</button><button class="btn" id="cl">Закрыть</button>`;
 $("pf").hidden=false;$("cl").onclick=()=>$("pf").hidden=true;
 $("avu").onclick=()=>$("avf").click();
 $("avf").onchange=async e=>{const f=e.target.files[0];if(!f)return;try{U=await api("avatar",{data:await resizeImg(f)});setAv();toast("Аватарка обновлена ✔");openMe()}catch(er){toast(er.message)}};
 if($("avd"))$("avd").onclick=async()=>{try{U=await api("avatar",{data:null});setAv();toast("Фото удалено");openMe()}catch(er){toast(er.message)}};$("mf").onclick=openMy;$("mf2").onclick=openFind;$("rq").onclick=()=>{$("pf").hidden=true;startQ()};
-$("lo").onclick=async()=>{await api("logout");location.replace("index.html")}}
+$("lo").onclick=async()=>{await api("logout");location.replace("index.html")};
+$("pol").onclick=()=>openPolicy(openMe);
+$("exp").onclick=async()=>{try{const d=await api("export"),a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(d,null,2)],{type:"application/json"}));a.download="moonmix-data.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}catch(e){toast(e.message)}};
+$("del").onclick=async()=>{if(!confirm("Удалить аккаунт, отзывы, сообщения и все данные из этого браузера? Это нельзя отменить."))return;try{await api("delete_account");location.replace("index.html")}catch(e){toast(e.message)}}}
 $("av").onclick=openMe;$("fr").onclick=openMy;$("fnd").onclick=openFind;$("cht").onclick=openChats;setInterval(badge,6000);addEventListener("storage",e=>{if(e.key=="astana_db")badge()});
 // квадратная обрезка по центру до 256×256, JPEG — чтобы не раздувать хранилище
 function resizeImg(f){return new Promise(async(res,rej)=>{if(f.type&&!/^image\//.test(f.type))return rej(new Error("Выберите файл-изображение"));if(f.size>15e6)return rej(new Error("Файл слишком большой (до 15 МБ)"));
@@ -504,8 +590,9 @@ const bad=()=>rej(new Error("Не удалось прочитать изобра
 const draw=(src,w,h)=>{try{const S=256,s=Math.min(w,h),c=document.createElement("canvas");c.width=c.height=S;const x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,S,S);x.drawImage(src,(w-s)/2,(h-s)/2,s,s,0,0,S,S);res(c.toDataURL("image/jpeg",.85))}catch(e){bad()}};
 if(window.createImageBitmap){try{const b=await createImageBitmap(f);return draw(b,b.width,b.height)}catch(e){}}
 const fr=new FileReader();fr.onerror=bad;fr.onload=()=>{const im=new Image();im.onload=()=>draw(im,im.naturalWidth,im.naturalHeight);im.onerror=bad;im.src=fr.result};fr.readAsDataURL(f)})}
-$("pf").onclick=e=>{if(e.target.id=="pf")$("pf").hidden=true};
-(async()=>{try{U=await api("me");await loadRT();enter()}catch{location.replace("index.html")}})();
+$("pf").onclick=e=>{if(e.target.id=="pf")closePf()};addEventListener("keydown",e=>{if(e.key=="Escape"&&!$("pf").hidden){clearInterval(CT);closePf()}});
+$("cdt").textContent=CATALOG.updated;$("plk").onclick=e=>{e.preventDefault();openPolicy(closePf)};$("reg").onclick=()=>location.href="index.html?reg#auth";
+(async()=>{try{U=await api("me");await loadRT();enter()}catch{if(GUEST)startGuest();else location.replace("index.html")}})();
 
 </script><script>(function(){const k=document.getElementById("sky");k.insertAdjacentHTML("afterbegin","<div id=\"neb\"></div>");k.insertAdjacentHTML("beforeend","<b id=\"shoot\"></b><div id=\"cosmos\"><svg id=\"cosmosSvg\" viewBox=\"0 0 600 600\" aria-hidden=\"true\">"+'<defs><radialGradient id="pg" cx="38%" cy="34%" r="75%"><stop offset="0" stop-color="#f3dfbd"/><stop offset=".55" stop-color="#d2a878"/><stop offset="1" stop-color="#7f6a8e"/></radialGradient><radialGradient id="ps" cx="30%" cy="26%" r="85%"><stop offset=".45" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#0a0828" stop-opacity=".75"/></radialGradient><radialGradient id="fg"><stop offset="0" stop-color="#a9b8ff" stop-opacity=".4"/><stop offset="1" stop-color="#a9b8ff" stop-opacity="0"/></radialGradient><clipPath id="pc"><circle cx="300" cy="300" r="82"/></clipPath><filter id="wob" x="-15%" y="-15%" width="130%" height="130%"><feTurbulence type="fractalNoise" baseFrequency=".03" numOctaves="2" seed="4" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="3"/></filter></defs><g transform="rotate(-20 300 300)"><g opacity="1"><animate attributeName="opacity" values="1;0;0" keyTimes="0;.5;1" calcMode="discrete" dur="26s" repeatCount="indefinite"/><g><animateMotion dur="26s" repeatCount="indefinite" path="M85,300A215,78 0 0 0 515,300A215,78 0 0 0 85,300"/><g><animateTransform attributeName="transform" type="scale" values="1;1.22;1;.8;1" keyTimes="0;.25;.5;.75;1" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1;.45 0 .55 1;.45 0 .55 1" dur="26s" repeatCount="indefinite"/><g transform="rotate(20) scale(1.55)"><g class="rk"><circle r="34" fill="url(#fg)"/><g filter="url(#wob)" stroke="#1a1f55" stroke-opacity=".6" stroke-width="1.3" stroke-linejoin="round" stroke-linecap="round"><path d="M-4,-17C22,-26 33,3 14,17" fill="none" stroke="#7d8be0" stroke-width="11"/><ellipse cx="4" cy="-1" rx="18" ry="14" transform="rotate(-20 4 -1)" fill="#7d8be0"/><ellipse cx="-8" cy="12" rx="12" ry="8" transform="rotate(20 -8 12)" fill="#6572cf"/><ellipse cx="9" cy="19" rx="7" ry="4" fill="#3b4290"/><path d="M2,-8C-12,-5 -20,5 -12,12" fill="none" stroke="#9aa6ee" stroke-width="6"/><circle cx="-18" cy="-4" r="10" fill="#f0cdbd"/><path d="M-28,-5C-28,-17 -9,-18 -8,-6C-13,-11 -21,-12 -28,-5Z" fill="#2b2f6b"/><path d="M-23,-3q3,2 6,0M-20,4q3,-2 6,0M-24,-8L-16.5,-10.5" fill="none" stroke="#3a3a6a" stroke-width="1.2"/></g><path class="tear" d="M-23,0q-2.4,4 0,5.4q2.4,-1.4 0,-5.4z" fill="#9fd4ff"/></g></g></g></g></g></g><g transform="rotate(-20 300 300)" filter="url(#wob)"><path d="M125,300A175,48 0 0 1 475,300" fill="none" stroke="#d9b98d" stroke-width="9" stroke-opacity="0.75" stroke-linecap="round"/><path d="M150,300A150,41 0 0 1 450,300" fill="none" stroke="#b99770" stroke-width="7" stroke-opacity="0.75" stroke-linecap="round"/><path d="M172,300A128,35 0 0 1 428,300" fill="none" stroke="#e6cfa6" stroke-width="5" stroke-opacity="0.75" stroke-linecap="round"/></g><g clip-path="url(#pc)"><g transform="rotate(-20 300 300)"><circle cx="300" cy="300" r="90" fill="url(#pg)"/><g class="bands"><rect x="170" y="238" width="260" height="9" rx="4.5" fill="#b78d63" opacity="0.45"/><rect x="170" y="256" width="260" height="6" rx="3.0" fill="#f1dcb8" opacity="0.5"/><rect x="170" y="272" width="260" height="12" rx="6.0" fill="#a9805a" opacity="0.42"/><rect x="170" y="294" width="260" height="7" rx="3.5" fill="#f1dcb8" opacity="0.45"/><rect x="170" y="310" width="260" height="13" rx="6.5" fill="#9a7456" opacity="0.4"/><rect x="170" y="334" width="260" height="8" rx="4.0" fill="#e6cfa6" opacity="0.4"/><rect x="170" y="350" width="260" height="10" rx="5.0" fill="#8c6b57" opacity="0.35"/></g></g></g><circle cx="300" cy="300" r="82" fill="url(#ps)"/><circle cx="300" cy="300" r="82" fill="none" stroke="#3b2f55" stroke-opacity=".5" stroke-width="1.6" filter="url(#wob)"/><g transform="rotate(-20 300 300)" filter="url(#wob)"><path d="M125,300A175,48 0 0 0 475,300" fill="none" stroke="#d9b98d" stroke-width="9" stroke-opacity="0.9" stroke-linecap="round"/><path d="M150,300A150,41 0 0 0 450,300" fill="none" stroke="#b99770" stroke-width="7" stroke-opacity="0.9" stroke-linecap="round"/><path d="M172,300A128,35 0 0 0 428,300" fill="none" stroke="#e6cfa6" stroke-width="5" stroke-opacity="0.9" stroke-linecap="round"/></g><g transform="rotate(-20 300 300)"><g opacity="0"><animate attributeName="opacity" values="0;1;1" keyTimes="0;.5;1" calcMode="discrete" dur="26s" repeatCount="indefinite"/><g><animateMotion dur="26s" repeatCount="indefinite" path="M85,300A215,78 0 0 0 515,300A215,78 0 0 0 85,300"/><g><animateTransform attributeName="transform" type="scale" values="1;1.22;1;.8;1" keyTimes="0;.25;.5;.75;1" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1;.45 0 .55 1;.45 0 .55 1" dur="26s" repeatCount="indefinite"/><g transform="rotate(20) scale(1.55)"><g class="rk"><circle r="34" fill="url(#fg)"/><g filter="url(#wob)" stroke="#1a1f55" stroke-opacity=".6" stroke-width="1.3" stroke-linejoin="round" stroke-linecap="round"><path d="M-4,-17C22,-26 33,3 14,17" fill="none" stroke="#7d8be0" stroke-width="11"/><ellipse cx="4" cy="-1" rx="18" ry="14" transform="rotate(-20 4 -1)" fill="#7d8be0"/><ellipse cx="-8" cy="12" rx="12" ry="8" transform="rotate(20 -8 12)" fill="#6572cf"/><ellipse cx="9" cy="19" rx="7" ry="4" fill="#3b4290"/><path d="M2,-8C-12,-5 -20,5 -12,12" fill="none" stroke="#9aa6ee" stroke-width="6"/><circle cx="-18" cy="-4" r="10" fill="#f0cdbd"/><path d="M-28,-5C-28,-17 -9,-18 -8,-6C-13,-11 -21,-12 -28,-5Z" fill="#2b2f6b"/><path d="M-23,-3q3,2 6,0M-20,4q3,-2 6,0M-24,-8L-16.5,-10.5" fill="none" stroke="#3a3a6a" stroke-width="1.2"/></g><path class="tear" d="M-23,0q-2.4,4 0,5.4q2.4,-1.4 0,-5.4z" fill="#9fd4ff"/></g></g></g></g></g></g>'+"</svg></div>")})()</script>
 <script>(function(){

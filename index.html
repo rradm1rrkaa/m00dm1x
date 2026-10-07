@@ -86,7 +86,7 @@ footer{text-align:center;color:var(--m);font-size:.85rem}
 .steps,.feat,.th3{display:grid;gap:16px}.steps{grid-template-columns:repeat(auto-fit,minmax(270px,1fr))}.feat{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}.th3{grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
 .step .n{width:40px;height:40px;border-radius:50%;background:var(--ag);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;margin-bottom:10px;box-shadow:0 6px 18px rgba(255,93,122,.4)}
 .rvl{opacity:0;transform:translateY(36px) scale(.97);transition:opacity .85s var(--ease),transform .85s var(--ease),border-color .4s,box-shadow .4s;transition-delay:var(--d,0ms)}
-.rvl.rl{transform:translateX(-50px)}.rvl.rr{transform:translateX(50px)}
+.rvl.rl{transform:translateX(-24px)}.rvl.rr{transform:translateX(24px)}
 .rvl.in{opacity:1;transform:none}.win.rvl.in:hover{transform:translateY(-5px);border-color:var(--a)}
 .mk{margin-top:14px;padding:12px;border-radius:14px;background:rgba(128,128,128,.12);border:1px solid var(--b);font-size:.9rem;text-align:left}
 .mk .q{color:var(--a);font-size:.8rem;font-weight:700;margin:0}.mk b{display:block;margin:2px 0 4px}
@@ -106,7 +106,8 @@ footer{text-align:center;color:var(--m);font-size:.85rem}
 .sat u{position:absolute;left:-6px;top:-6px;width:12px;height:12px;animation:oy 3.5s ease-in-out infinite alternate -1.75s}
 .sat u::after{content:"";position:absolute;inset:0;border-radius:50%;background:#aab6ff;box-shadow:0 0 12px #aab6ff;animation:ox 3.5s ease-in-out infinite alternate}
 @keyframes ox{from{transform:translateX(-76px)}to{transform:translateX(76px)}}@keyframes oy{from{transform:translateY(-26px)}to{transform:translateY(26px)}}
-.ldf{text-align:center;color:var(--m);font-size:.85rem;padding:0 0 28px}
+.ldf{text-align:center;color:var(--m);font-size:.85rem;padding:24px 16px 28px}.ld{overflow-x:clip}
+.mk::before{content:"Пример интерфейса";display:block;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--m);margin-bottom:6px}
 
 /* небо */
 #sky{position:fixed;inset:0;z-index:-1;overflow:hidden}
@@ -137,11 +138,21 @@ textarea:focus{border-color:var(--a);box-shadow:0 0 0 4px rgba(255,140,70,.22)}
 .av2.sm{width:34px;height:34px;font-size:.95rem}
 .pc *{text-shadow:none!important}
 .pc .btn,.pc input,.pc textarea{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(128,128,128,.14)}.pc .btn.c{background:var(--ag)}
+
+/* ===== правки по аудиту: переполнение, подписи, фокус, демо-плашки ===== */
+html{overflow-x:hidden}body{overflow-x:clip;max-width:100%}
+:focus-visible{outline:3px solid var(--a);outline-offset:2px}
+.lbl{display:block;margin:14px 0 -4px;font-size:.88rem;font-weight:700;color:var(--t);text-align:left}
+.vh{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.demo{max-width:560px;margin:14px auto 0;padding:10px 14px;box-sizing:border-box;border-radius:14px;border:1px solid var(--b);background:var(--c);color:var(--t);font-size:.88rem;line-height:1.45;text-align:left;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+footer a{color:var(--a);font-weight:600}
+.pc ul{padding-left:18px}
 </style></head><body><div id="sky"><div id="stars"></div><div id="sun"></div><div id="moon"></div><div id="clouds"><b></b><b></b><b></b></div><svg id="hill" viewBox="0 0 100 34" preserveAspectRatio="none"><path id="hf" d="M0 14Q14 5 30 10T58 6T82 11T100 8L100 34L0 34Z"/><path id="hp" d="M0 18Q12 11 26 16T52 14T76 17T100 13L100 34L0 34Z"/></svg></div><button id="th" class="tbtn thf"></button>
 <div class="ld">
 <section class="hero"><span class="logo">🌙</span><h1>MoonMix</h1><p class="tag">Места Астаны под ваше настроение</p>
-<p class="m">Ответьте на 5 вопросов — и получите подборку из 100 мест города: парки, кафе, бани, бассейны, ТЦ, аттракционы. Отмечайте, где побывали, находите друзей с похожим настроением и зовите их гулять.</p>
-<div class="cta"><a class="p" href="#auth" data-tab="register">Начать →</a><a href="#auth" data-tab="login">Войти</a></div><div class="hint">Листайте вниз — расскажем, как всё устроено ↓</div></section>
+<p class="m">Ответьте на 5 вопросов — и получите подборку из 88 мест и идей для отдыха в Астане: парки, кафе, бани, бассейны, ТЦ, аттракционы. Отмечайте, где побывали, находите друзей с похожим настроением и зовите их гулять.</p>
+<div class="cta"><a class="p" href="#auth" data-tab="register">Начать →</a><a href="#auth" data-tab="login">Войти</a><a href="app.html?guest=1">Попробовать без регистрации</a></div>
+<div class="demo" role="note">⚠️ Демо-версия: аккаунты, отзывы, друзья и чаты хранятся только в вашем браузере и не синхронизируются между устройствами. Не используйте реальные пароли.</div><div class="hint">Листайте вниз — расскажем, как всё устроено ↓</div></section>
 
 <section class="sec"><h2 class="rvl">Как это работает</h2><p class="m rvl">Три шага от «не знаю, куда пойти» до отметки «я здесь был».</p>
 <div class="steps" data-stag>
@@ -155,7 +166,7 @@ textarea:focus{border-color:var(--a);box-shadow:0 0 0 4px rgba(255,140,70,.22)}
 
 <section class="sec"><h2 class="rvl">Что здесь можно делать</h2><p class="m rvl">Не только выбирать места — но и ходить туда вместе.</p>
 <div class="feat" data-stag>
-<div class="win rvl rl"><span class="ic">🎯</span><h3>Подборка по настроению</h3><p>100 мест в 10 категориях, поиск и фильтры. Вкладка «Для вас» собирается по результатам теста.</p></div>
+<div class="win rvl rl"><span class="ic">🎯</span><h3>Подборка по настроению</h3><p>88 мест и идей в 10 категориях, поиск и объяснение, почему место попало в подборку. Вкладка «Для вас» собирается по результатам теста.</p></div>
 <div class="win rvl rr"><span class="ic">♥</span><h3>Избранное и «Был здесь»</h3><p>Сохраняйте понравившееся и отмечайте посещённое. Отметку можно снять — история в профиле всегда актуальна.</p></div>
 <div class="win rvl rl"><span class="ic">⭐</span><h3>Оценки и отзывы</h3><p>Ставьте оценки, читайте отзывы других и заглядывайте в профили авторов.</p></div>
 <div class="win rvl rr"><span class="ic">🗺</span><h3>Открыть в 2ГИС</h3><p>Одна кнопка — и место откроется в 2ГИС: на сайте или в приложении, если оно у вас есть.</p></div>
@@ -175,8 +186,12 @@ textarea:focus{border-color:var(--a);box-shadow:0 0 0 4px rgba(255,140,70,.22)}
 <div id="auth"><div class="ac rvl"><h1>🌙 MoonMix</h1>
 <p class="m">Войдите или создайте аккаунт — это займёт меньше минуты. Затем вас ждёт тест настроения и подборка мест.</p>
 <div class="tb"><button id="tl" class="on">Войти</button><button id="tr">Регистрация</button></div>
-<input id="lg" placeholder="Логин" autocomplete="username"><input id="pw" type="password" placeholder="Пароль (от 6 символов)" autocomplete="current-password">
-<button class="btn c" id="sub">Войти</button><p id="err" class="er"></p></div></div>
+<div class="demo" role="note">Демо-версия: данные хранятся только в этом браузере. Не используйте реальные пароли.</div>
+<label class="lbl" for="lg">Логин</label><input id="lg" maxlength="32" autocomplete="username" autocapitalize="off" spellcheck="false">
+<label class="lbl" for="pw">Пароль (от 6 символов)</label><input id="pw" type="password" maxlength="100" autocomplete="current-password">
+<button class="btn c" id="sub">Войти</button><p id="err" class="er" role="alert"></p><a class="btn" href="app.html?guest=1" style="text-decoration:none;text-align:center;box-sizing:border-box">Продолжить как гость</a></div></div>
+<footer class="ldf">© MoonMix · демо-версия · <a href="#" id="plk">Конфиденциальность и условия</a> · <a href="#" id="plk2">Как удалить данные</a></footer>
+<div id="pf" hidden><div class="pc" id="pfc" role="dialog" aria-modal="true" aria-label="Конфиденциальность и условия"></div></div>
 <script>// «Бэкенд» в браузере: все данные хранятся в LS. Используется обеими страницами.
 const LS=(()=>{try{const t="__t";localStorage.setItem(t,"1");localStorage.removeItem(t);return localStorage}catch(e){
   const g=()=>{try{return JSON.parse(window.name)||{}}catch{return {}}};
@@ -190,12 +205,19 @@ const DB = {
   cyrb(s) { let a = 0xdeadbeef, b = 0x41c6ce57; for (let i = 0; i < s.length; i++) { const c = s.charCodeAt(i); a = Math.imul(a ^ c, 2654435761); b = Math.imul(b ^ c, 1597334677); }
     a = Math.imul(a ^ (a >>> 16), 2246822507) ^ Math.imul(b ^ (b >>> 13), 3266489909); b = Math.imul(b ^ (b >>> 16), 2246822507) ^ Math.imul(a ^ (a >>> 13), 3266489909);
     return (4294967296 * (2097151 & b) + (a >>> 0)).toString(16); },
+  // Пароли: PBKDF2-SHA256 (600 000 итераций) — "p:". Старые хеши ("s:", "c:") принимаются и переписываются при входе.
   async hash(pw, salt, alg) {
-    const s = salt + pw, sub = globalThis.crypto && crypto.subtle;
-    alg = alg || (sub ? "s:" : "c:");
-    if (alg === "s:" && sub) { const h = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s)); return "s:" + [...new Uint8Array(h)].map(x => x.toString(16).padStart(2, "0")).join(""); }
-    return "c:" + this.cyrb(s);
+    const sub = globalThis.crypto && crypto.subtle, hex = b => [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, "0")).join("");
+    alg = alg || (sub ? "p:" : "c:");
+    const enc = new TextEncoder();
+    if (alg === "p:" && sub) {
+      const key = await sub.importKey("raw", enc.encode(pw), "PBKDF2", false, ["deriveBits"]);
+      return "p:" + hex(await sub.deriveBits({ name: "PBKDF2", hash: "SHA-256", salt: enc.encode(salt), iterations: 600000 }, key, 256));
+    }
+    if (alg === "s:" && sub) return "s:" + hex(await sub.digest("SHA-256", enc.encode(salt + pw)));
+    return "c:" + this.cyrb(salt + pw);
   },
+  salt() { const a = new Uint8Array(16); (globalThis.crypto || {}).getRandomValues ? crypto.getRandomValues(a) : a.forEach((_, i) => a[i] = Math.random() * 256); return [...a].map(x => x.toString(16).padStart(2, "0")).join(""); },
   async call(p, b = {}) {
     const d = this.load();
     if (p === "register") {
@@ -204,13 +226,14 @@ const DB = {
       if (typeof password !== "string" || password.length < 6 || password.length > 100) throw new Error("Пароль: от 6 символов");
       const k = login.toLowerCase();
       if (d.users[k]) throw new Error("Такой логин уже занят");
-      const salt = Math.random().toString(36).slice(2) + Date.now().toString(36);
+      const salt = this.salt();
       d.users[k] = { login, salt, hash: await this.hash(password, salt), created: new Date().toISOString(), favs: [], visits: [], moods: [] };
       this.store(d); LS.setItem(this.S, k); return this.pub(d.users[k]);
     }
     if (p === "login") {
-      const u = d.users[String(b.login || "").toLowerCase()];
-      if (!u || u.hash !== await this.hash(String(b.password || ""), u.salt, u.hash.slice(0, 2))) throw new Error("Неверный логин или пароль");
+      const u = d.users[String(b.login || "").toLowerCase()], pw = String(b.password || ""), al = u && u.hash.slice(0, 2);
+      if (!u || u.hash !== await this.hash(pw, u.salt, al)) throw new Error("Неверный логин или пароль");
+      if (al !== "p:" && globalThis.crypto && crypto.subtle) { u.hash = await this.hash(pw, u.salt, "p:"); this.store(d); }
       LS.setItem(this.S, u.login.toLowerCase()); return this.pub(u);
     }
     if (p === "logout") { LS.removeItem(this.S); return { ok: true }; }
@@ -219,6 +242,13 @@ const DB = {
     const ok = (v, n) => typeof v === "string" && v.length > 0 && v.length <= n;
     d.requests = d.requests || [];
     for (const [a, ua] of Object.entries(d.users)) for (const f of (ua.friends || [])) { const fu = d.users[f]; if (fu && !(fu.friends || []).includes(a)) { ua.friends = ua.friends.filter(x => x !== f); if (!d.requests.some(r => r.from === a && r.to === f)) d.requests.push({ from: a, to: f, at: new Date().toISOString() }); } }
+    if (p === "export") return { exported: new Date().toISOString(), account: { login: u.login, created: u.created, favs: u.favs, visits: u.visits, moods: u.moods, friends: u.friends || [] }, reviews: (d.reviews || []).filter(r => r.user === k), messages: (d.messages || []).filter(m => m.from === k || m.to === k) };
+    if (p === "delete_account") {
+      delete d.users[k];
+      Object.values(d.users).forEach(x => { x.friends = (x.friends || []).filter(f => f !== k); if (x.read) delete x.read[k]; });
+      d.requests = d.requests.filter(r => r.from !== k && r.to !== k); d.reviews = (d.reviews || []).filter(r => r.user !== k); d.messages = (d.messages || []).filter(m => m.from !== k && m.to !== k);
+      this.store(d); LS.removeItem(this.S); return { ok: true };
+    }
     if (p === "ratings") { const m = {}; (d.reviews || []).forEach(r => { const x = m[r.key] || (m[r.key] = { s: 0, n: 0 }); x.s += r.rating; x.n++; }); Object.values(m).forEach(x => x.avg = x.s / x.n); return m; }
     if (p === "reviews") { if (!ok(b.key, 150)) throw new Error("Некорректные данные"); return (d.reviews || []).filter(r => r.key === b.key).sort((a, c) => c.at.localeCompare(a.at)).map(r => ({ ...r, avatar: (d.users[r.user] || {}).avatar || null })); }
     if (p === "review") {
@@ -303,7 +333,8 @@ const DB = {
     if (p === "mood") {
       const { mood, energy, cats } = b;
       if (!ok(mood, 100) || !Number.isFinite(energy) || !Array.isArray(cats) || cats.length !== 2) throw new Error("Некорректные данные теста");
-      u.moods = [...u.moods, { mood, energy, cats, sad: b.sad === true, at: new Date().toISOString() }].slice(-100);
+      const why = Array.isArray(b.why) ? b.why.slice(0, 2).map(a => Array.isArray(a) ? a.filter(x => typeof x === "string").slice(0, 5).map(x => x.slice(0, 80)) : []) : [];
+      u.moods = [...u.moods, { mood, energy, cats, why, sad: b.sad === true, at: new Date().toISOString() }].slice(-100);
     } else if (p === "visit") {
       if (!ok(b.place, 100) || !ok(b.cat, 50)) throw new Error("Некорректные данные");
       u.visits = [...u.visits, { place: b.place, cat: b.cat, at: new Date().toISOString() }].slice(-500);
@@ -320,6 +351,19 @@ function setMode(m){mode=m;$("tl").className=m=="login"?"on":"";$("tr").classNam
 $("tl").onclick=()=>setMode("login");$("tr").onclick=()=>setMode("register");
 async function submit(){try{await DB.call(mode,{login:$("lg").value.trim(),password:$("pw").value});location.replace("app.html")}catch(e){$("err").textContent=e.message}}
 $("sub").onclick=submit;$("pw").onkeydown=e=>{if(e.key=="Enter")submit()};
+const POLICY=`<h2 style="margin:0 0 4px">🔒 Конфиденциальность и условия</h2>
+<p class="m" style="margin:0">MoonMix — демонстрационная версия. Текст обновлён: октябрь 2026.</p>
+<h3>Что сохраняется</h3><ul><li>логин и защищённый хеш пароля;</li><li>результаты теста и история настроения;</li><li>избранное, отметки «Был здесь», оценки и отзывы;</li><li>друзья, запросы, сообщения и приглашения на прогулку;</li><li>аватарка, если вы её загрузили.</li></ul>
+<h3>Где хранится</h3><p>Только в localStorage вашего браузера на этом устройстве. Данные не отправляются на сервер, не видны другим людям и не переносятся между устройствами; друзья и чаты работают лишь между аккаунтами в одном браузере. Шрифты загружаются с Google Fonts, поэтому Google получает технические данные запроса (IP-адрес, браузер).</p>
+<h3>Пароли</h3><p>В демо-версии нет серверной авторизации. Не используйте здесь пароли от важных сервисов.</p>
+<h3>Как удалить данные</h3><p>Профиль → «Удалить аккаунт и данные» (удаляются профиль, отзывы, запросы и переписка), либо очистите данные сайта в настройках браузера. Перед удалением можно скачать копию: «Скачать мои данные».</p>
+<h3>Условия</h3><ul><li>Сервис информационный: адреса, часы работы и цены могут устареть — проверяйте перед визитом.</li><li>Пишите уважительно; за публикуемое вы отвечаете сами.</li><li>Рейтинги и профили на главной странице — примеры интерфейса, а не реальные данные.</li></ul>
+<h3>Контакты</h3><p>Вопросы по данным: Telegram @rradm1rrkaa.</p>`;
+function closePf(){$("pf").hidden=true}
+function openPolicy(){$("pfc").innerHTML=POLICY+'<button class="btn" id="rcl">Закрыть</button>';$("pf").hidden=false;$("rcl").onclick=closePf;$("rcl").focus()}
+["plk","plk2"].forEach(i=>$(i).onclick=e=>{e.preventDefault();openPolicy()});
+$("pf").onclick=e=>{if(e.target.id=="pf")closePf()};addEventListener("keydown",e=>{if(e.key=="Escape")closePf()});
+if(/[?&]reg\b/.test(location.search))setMode("register");
 (async()=>{try{await DB.call("me");location.replace("app.html")}catch{}})();
 (function(){const els=[...document.querySelectorAll(".rvl")];
 document.querySelectorAll("[data-stag]").forEach(g=>[...g.children].forEach((e,i)=>e.style.setProperty("--d",i*110+"ms")));
