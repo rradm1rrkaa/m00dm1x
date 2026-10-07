@@ -3,7 +3,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>MoonMix — отдых в Астане</title>
 <script>try{document.documentElement.dataset.theme=localStorage.getItem("moonmix_theme")||"dark"}catch(e){document.documentElement.dataset.theme="dark"}</script>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet"><style>/* MoonMix — «Восход» (light) и «Закат» (dark) */
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Manrope:wght@400;600;700&family=Bad+Script&family=Marck+Script&display=swap" rel="stylesheet"><style>/* MoonMix — «Восход» (light) и «Закат» (dark) */
 :root{--t:#10233a;--m:#3d5470;--a:#c2410c;--ag:linear-gradient(135deg,#ff9a3c,#ff5d7a);--c:rgba(255,255,255,.28);--b:rgba(255,255,255,.55);--bg:#cfe6fb;--pn:rgba(255,255,255,.2);--ts:rgba(255,255,255,.55);--sh:0 10px 34px rgba(30,70,120,.16);--ease:cubic-bezier(.22,.8,.24,1);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 :root[data-theme="dark"]{--t:#f6f0fd;--m:#cdc1e3;--a:#ffb27a;--c:rgba(26,16,54,.3);--b:rgba(255,255,255,.16);--bg:#140f2c;--pn:rgba(14,10,34,.22);--ts:rgba(0,0,0,.5);--sh:0 10px 34px rgba(0,0,0,.38)}
 html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
@@ -17,7 +17,7 @@ button{-webkit-tap-highlight-color:transparent}button:active{transform:scale(.96
 @keyframes up{from{opacity:0;transform:translateY(22px) scale(.97)}to{opacity:1;transform:none}}
 @keyframes fade{from{opacity:0}to{opacity:1}}
 @keyframes spin{to{transform:rotate(360deg)}}
-@keyframes drift{from{transform:translateX(-340px)}to{transform:translateX(110vw)}}
+@keyframes drift{from{transform:translateX(-480px)}to{transform:translateX(110vw)}}
 @keyframes bob{50%{transform:translateY(-6px)}}
 input{width:100%;box-sizing:border-box;padding:13px 16px;border:1px solid var(--b);border-radius:14px;background:var(--c);color:var(--t);font:inherit;margin:12px 0;outline:0}
 input::placeholder{color:var(--m)}input:focus{border-color:var(--a);box-shadow:0 0 0 4px rgba(255,140,70,.22),var(--sh);transform:translateY(-1px)}
@@ -96,7 +96,7 @@ footer{text-align:center;color:var(--m);font-size:.85rem}
 .vb2{display:inline-block;padding:5px 10px;border:1px solid var(--a);border-radius:9px;color:var(--a);font-weight:600;font-size:.82rem;margin:8px 6px 0 0}.vb2.dn{background:var(--ag);color:#fff;border-color:transparent}
 .mk .row2{display:flex;gap:10px;align-items:center}.mk .av0{width:34px;height:34px;border-radius:50%;background:var(--ag);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none}
 .mk .heart{float:right;color:#ff3d78;font-size:1.2rem}
-.tile{position:relative;height:210px;border-radius:22px;overflow:hidden;border:1px solid var(--b);box-shadow:var(--sh)}
+.tile{position:relative;height:160px;border-radius:22px;overflow:hidden;border:1px solid var(--b);box-shadow:var(--sh)}
 .tile .lb{position:absolute;left:0;right:0;bottom:0;padding:34px 16px 14px;color:#fff;background:linear-gradient(transparent,rgba(5,5,30,.72));text-shadow:none}.tile .lb b{display:block;font-family:Fraunces,Georgia,serif;font-size:1.2rem}.tile .lb span{font-size:.88rem;opacity:.9}
 .tile .em{position:absolute;left:50%;top:38%;transform:translate(-50%,-50%);font-size:3.2rem;animation:bob 5s ease-in-out infinite}
 .t1{background:linear-gradient(180deg,#2a1b5e 0%,#c0456f 62%,#ff9a5a 100%)}.t2{background:linear-gradient(180deg,#8fc8ff 0%,#cfe9ff 55%,#ffe3b0 100%)}.t3{background:radial-gradient(ellipse at 50% 40%,#1b2052,#0c1034 55%,#04061a)}
@@ -115,15 +115,11 @@ footer{text-align:center;color:var(--m);font-size:.85rem}
 @keyframes tw{50%{transform:scale(.4);opacity:.3}}
 #sun,#moon{position:absolute;border-radius:50%;will-change:top,left}
 #sun{left:72%;width:150px;height:150px;margin:-75px 0 0 -75px}
-#sun::before{content:"";position:absolute;inset:-70%;border-radius:50%;background:repeating-conic-gradient(rgba(255,255,255,.2) 0 5deg,transparent 5deg 15deg);-webkit-mask:radial-gradient(circle,#000 22%,transparent 68%);mask:radial-gradient(circle,#000 22%,transparent 68%);animation:spin 80s linear infinite}
 #moon{left:24%;width:80px;height:80px;margin:-40px 0 0 -40px;background:#eef1ff;box-shadow:inset -14px -5px 0 rgba(120,130,180,.45),0 0 50px 10px rgba(200,210,255,.35)}
 #clouds{position:absolute;inset:0;will-change:transform}
-#clouds b{position:absolute;left:0;height:56px;border-radius:56px;background:var(--cl,rgba(255,255,255,.3));animation:drift linear infinite}
-#clouds b::before,#clouds b::after{content:"";position:absolute;border-radius:50%;background:inherit}
-#clouds b::before{width:70px;height:70px;left:30px;top:-32px}#clouds b::after{width:90px;height:90px;right:34px;top:-44px}
-#clouds b:nth-child(1){top:16%;width:210px;animation-duration:110s;animation-delay:-30s}
-#clouds b:nth-child(2){top:32%;width:290px;animation-duration:160s;animation-delay:-90s}
-#clouds b:nth-child(3){top:48%;width:180px;animation-duration:130s;animation-delay:-10s}
+#clouds b{position:absolute;left:0;opacity:calc(var(--ca,.5)*var(--o,1));filter:blur(var(--bl,0px));animation:drift linear infinite;will-change:transform}
+#clouds b svg{display:block;width:100%;height:auto;overflow:visible}
+.cp{fill:var(--cl)}
 #hill{position:absolute;left:0;bottom:0;width:100%;height:36vh}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
 
@@ -147,12 +143,35 @@ html{overflow-x:hidden}body{overflow-x:clip;max-width:100%}
 .demo{max-width:560px;margin:14px auto 0;padding:10px 14px;box-sizing:border-box;border-radius:14px;border:1px solid var(--b);background:var(--c);color:var(--t);font-size:.88rem;line-height:1.45;text-align:left;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
 footer a{color:var(--a);font-weight:600}
 .pc ul{padding-left:18px}
-</style></head><body><div id="sky"><div id="stars"></div><div id="sun"></div><div id="moon"></div><div id="clouds"><b></b><b></b><b></b></div><svg id="hill" viewBox="0 0 100 34" preserveAspectRatio="none"><path id="hf" d="M0 14Q14 5 30 10T58 6T82 11T100 8L100 34L0 34Z"/><path id="hp" d="M0 18Q12 11 26 16T52 14T76 17T100 13L100 34L0 34Z"/></svg></div><button id="th" class="tbtn thf"></button>
+
+/* «Восход»: пока небо тёмное (ночь вверху страницы) — светлый текст */
+:root.nightsky[data-theme="light"]{--t:#f6f0fd;--m:#cdc1e3;--a:#ffb27a;--c:rgba(26,16,54,.3);--b:rgba(255,255,255,.16);--pn:rgba(14,10,34,.22);--ts:rgba(0,0,0,.5);--sh:0 10px 34px rgba(0,0,0,.38)}
+:root.nightsky[data-theme="light"] .pc{background:#1c1438}
+
+/* ===== заголовок «прописью» и footer ===== */
+.hero>h1#wt{animation:none;font-family:"Bad Script","Marck Script","Segoe Script","Brush Script MT",cursive;font-weight:400;font-size:clamp(2.5rem,8.5vw,5.4rem);line-height:1.2;letter-spacing:0;margin:0 0 14px}
+#wt .w{display:inline-block;white-space:nowrap}
+#wt .lt{display:inline-block;animation:wr .5s ease-out both}
+@keyframes wr{from{clip-path:inset(-25% 100% -35% -5%);opacity:.2}to{clip-path:inset(-25% -12% -35% -5%);opacity:1}}
+.hero>p.tag{animation-delay:2.3s}.hero>p.m{animation-delay:2.7s}.hero>.demo{animation-delay:3.1s}
+.hero>.hint{opacity:0;animation:fade .8s ease 3.5s forwards,bob 2.6s ease-in-out 3.5s infinite!important}
+@media(prefers-reduced-motion:reduce){.hero>.hint{opacity:1}}
+.fw{max-width:1040px;margin:0 auto;padding:30px 16px calc(28px + env(safe-area-inset-bottom,0px))}
+.ft{position:relative;padding:30px 28px 22px;border-radius:26px;border:1px solid var(--b);background:var(--pn);box-shadow:var(--sh);-webkit-backdrop-filter:blur(16px) saturate(1.4);backdrop-filter:blur(16px) saturate(1.4);overflow:hidden}
+.ft::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:var(--ag)}
+.fn{font-family:Fraunces,Georgia,serif;font-weight:700;font-size:1.7rem;background:var(--ag);-webkit-background-clip:text;background-clip:text;color:transparent;display:inline-block}
+.fb p{margin:4px 0 0;color:var(--m);max-width:520px}.fb .fm b{color:var(--t)}
+.fg{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:22px 0 18px}
+.fc{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--b);border-radius:16px;background:var(--c);color:var(--t);text-decoration:none;min-width:0}
+.fc:hover{transform:translateY(-3px);border-color:var(--a);box-shadow:var(--sh)}
+.fc b{display:block;font-size:.95rem}.fc small{display:block;color:var(--m);font-size:.85rem;overflow-wrap:anywhere}
+.fi{flex:none;width:42px;height:42px;border-radius:50%;background:var(--ag);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(255,93,122,.35)}.fi svg{width:21px;height:21px}
+.fl{padding-top:14px;border-top:1px solid var(--b);color:var(--m);font-size:.85rem;text-align:center}.fl a{color:var(--a);font-weight:600}
+</style></head><body><div id="sky"><div id="stars"></div><div id="sun"></div><div id="moon"></div><div id="clouds"></div><svg id="hill" viewBox="0 0 100 34" preserveAspectRatio="none"><path id="hf" d="M0 14Q14 5 30 10T58 6T82 11T100 8L100 34L0 34Z"/><path id="hp" d="M0 18Q12 11 26 16T52 14T76 17T100 13L100 34L0 34Z"/></svg></div><button id="th" class="tbtn thf"></button>
 <div class="ld">
-<section class="hero"><span class="logo">🌙</span><h1>MoonMix</h1><p class="tag">Места Астаны под ваше настроение</p>
+<section class="hero"><h1 id="wt">Добро пожаловать в MoonMix</h1><p class="tag">Места Астаны под ваше настроение</p>
 <p class="m">Ответьте на 5 вопросов — и получите подборку из 88 мест и идей для отдыха в Астане: парки, кафе, бани, бассейны, ТЦ, аттракционы. Отмечайте, где побывали, находите друзей с похожим настроением и зовите их гулять.</p>
-<div class="cta"><a class="p" href="#auth" data-tab="register">Начать →</a><a href="#auth" data-tab="login">Войти</a><a href="app.html?guest=1">Попробовать без регистрации</a></div>
-<div class="demo" role="note">⚠️ Демо-версия: аккаунты, отзывы, друзья и чаты хранятся только в вашем браузере и не синхронизируются между устройствами. Не используйте реальные пароли.</div><div class="hint">Листайте вниз — расскажем, как всё устроено ↓</div></section>
+<div class="hint">Листайте вниз — расскажем, как всё устроено ↓</div></section>
 
 <section class="sec"><h2 class="rvl">Как это работает</h2><p class="m rvl">Три шага от «не знаю, куда пойти» до отметки «я здесь был».</p>
 <div class="steps" data-stag>
@@ -178,19 +197,29 @@ footer a{color:var(--a);font-weight:600}
 
 <section class="sec"><h2 class="rvl">Три темы — под ваше настроение</h2><p class="m rvl">Небо над сайтом плавно меняется, пока вы листаете страницу.</p>
 <div class="th3" data-stag>
-<div class="tile t1 rvl rl"><div class="em">🌇</div><div class="lb"><b>Закат</b><span>Тёплые сумерки и первые звёзды</span></div></div>
-<div class="tile t2 rvl"><div class="em">☀️</div><div class="lb"><b>Восход</b><span>Светлое утреннее небо и облака</span></div></div>
-<div class="tile t3 rvl rr"><div class="sat"><i></i><b></b><u></u></div><div class="lb"><b>Грусть</b><span>Космос, Сатурн и грустный человечек. Появляется, если выбрать «Грустно» в тесте</span></div></div>
+<div class="tile t1 rvl rl"><div class="lb"><b>Закат</b><span>Тёплые сумерки и первые звёзды</span></div></div>
+<div class="tile t2 rvl"><div class="lb"><b>Восход</b><span>Светлое утреннее небо и облака</span></div></div>
+<div class="tile t3 rvl rr"><div class="lb"><b>Грусть</b><span>Космос, Сатурн и грустный человечек. Появляется, если выбрать «Грустно» в тесте</span></div></div>
 </div></section>
 </div>
-<div id="auth"><div class="ac rvl"><h1>🌙 MoonMix</h1>
+<div class="ld"><section class="sec" id="try"><h2 class="rvl">Готовы попробовать?</h2><p class="m rvl">Создайте аккаунт или загляните как гость — тест и подборка работают сразу.</p>
+</section></div>
+<div id="auth"><div class="ac rvl"><h1>MoonMix</h1>
 <p class="m">Войдите или создайте аккаунт — это займёт меньше минуты. Затем вас ждёт тест настроения и подборка мест.</p>
 <div class="tb"><button id="tl" class="on">Войти</button><button id="tr">Регистрация</button></div>
-<div class="demo" role="note">Демо-версия: данные хранятся только в этом браузере. Не используйте реальные пароли.</div>
 <label class="lbl" for="lg">Логин</label><input id="lg" maxlength="32" autocomplete="username" autocapitalize="off" spellcheck="false">
 <label class="lbl" for="pw">Пароль (от 6 символов)</label><input id="pw" type="password" maxlength="100" autocomplete="current-password">
 <button class="btn c" id="sub">Войти</button><p id="err" class="er" role="alert"></p><a class="btn" href="app.html?guest=1" style="text-decoration:none;text-align:center;box-sizing:border-box">Продолжить как гость</a></div></div>
-<footer class="ldf">© MoonMix · демо-версия · <a href="#" id="plk">Конфиденциальность и условия</a> · <a href="#" id="plk2">Как удалить данные</a></footer>
+<footer class="fw"><div class="ft">
+<div class="fb"><div class="fn">MoonMix</div><p>Места Астаны под ваше настроение — от рассвета до глубокой ночи.</p><p class="fm">Создатель проекта: <b>rradm1rrkaa</b></p></div>
+<nav class="fg" aria-label="Контакты создателя">
+<a class="fc" href="https://t.me/rradm1rrkaa" target="_blank" rel="noopener noreferrer"><span class="fi"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M9.04 15.3l-.38 5.3c.54 0 .78-.23 1.06-.5l2.55-2.44 5.28 3.87c.97.54 1.66.26 1.92-.9l3.48-16.3c.31-1.43-.52-2-1.46-1.65L1.1 10.5c-1.4.54-1.38 1.32-.24 1.67l5.24 1.63L18.3 6.1c.58-.35 1.1-.16.67.22z"/></svg></span><span><b>Telegram</b><small>@rradm1rrkaa</small></span></a>
+<a class="fc" href="https://github.com/rradm1rrkaa" target="_blank" rel="noopener noreferrer"><span class="fi"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.1.79-.25.79-.56v-2c-3.2.7-3.87-1.54-3.87-1.54-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.76 2.69 1.25 3.35.96.1-.74.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.62 1.59.23 2.76.11 3.05.74.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.25 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg></span><span><b>GitHub</b><small>github.com/rradm1rrkaa</small></span></a>
+<a class="fc" href="https://www.instagram.com/rradm1rrkaa/" target="_blank" rel="noopener noreferrer"><span class="fi"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1.3" fill="currentColor"/></svg></span><span><b>Instagram</b><small>@rradm1rrkaa</small></span></a>
+<a class="fc" href="https://wa.me/+77781013899" target="_blank" rel="noopener noreferrer"><span class="fi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.6-1.2A9 9 0 1 0 12 3z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path fill="currentColor" d="M9 8.5c0 3.5 3 6.5 6.5 6.5l1-1.6-2-1-.9.8c-.9-.3-2-1.4-2.3-2.3l.8-.9-1-2z"/></svg></span><span><b>WhatsApp</b><small>Написать в чат</small></span></a>
+<a class="fc" href="tel:+77781013899"><span class="fi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></span><span><b>Телефон</b><small>+7 778 101 38 99</small></span></a>
+</nav>
+<div class="fl">© MoonMix · <a href="#" id="plk">Конфиденциальность и условия</a> · <a href="#" id="plk2">Как удалить данные</a></div></div></footer>
 <div id="pf" hidden><div class="pc" id="pfc" role="dialog" aria-modal="true" aria-label="Конфиденциальность и условия"></div></div>
 <script>// «Бэкенд» в браузере: все данные хранятся в LS. Используется обеими страницами.
 const LS=(()=>{try{const t="__t";localStorage.setItem(t,"1");localStorage.removeItem(t);return localStorage}catch(e){
@@ -364,6 +393,8 @@ function openPolicy(){$("pfc").innerHTML=POLICY+'<button class="btn" id="rcl">З
 ["plk","plk2"].forEach(i=>$(i).onclick=e=>{e.preventDefault();openPolicy()});
 $("pf").onclick=e=>{if(e.target.id=="pf")closePf()};addEventListener("keydown",e=>{if(e.key=="Escape")closePf()});
 if(/[?&]reg\b/.test(location.search))setMode("register");
+(function(){const h=document.getElementById("wt"),t="Добро пожаловать в MoonMix";h.setAttribute("aria-label",t);h.textContent="";let n=0;
+t.split(" ").forEach((wd,k,a)=>{const w=document.createElement("span");w.className="w";w.setAttribute("aria-hidden","true");[...wd].forEach(ch=>{const s=document.createElement("span");s.className="lt";s.textContent=ch;s.style.animationDelay=(.3+n++*.075)+"s";w.appendChild(s)});h.appendChild(w);if(k<a.length-1)h.appendChild(document.createTextNode(" "))})})();
 (async()=>{try{await DB.call("me");location.replace("app.html")}catch{}})();
 (function(){const els=[...document.querySelectorAll(".rvl")];
 document.querySelectorAll("[data-stag]").forEach(g=>[...g.children].forEach((e,i)=>e.style.setProperty("--d",i*110+"ms")));
@@ -374,24 +405,36 @@ document.querySelectorAll("[data-tab]").forEach(a=>a.addEventListener("click",()
 </script><script>(function(){
 const g=i=>document.getElementById(i),sky=g("sky"),sun=g("sun"),moon=g("moon"),stars=g("stars"),hp=g("hp"),hf=g("hf"),cl=g("clouds"),th=g("th");
 for(let i=0;i<90;i++){const s=document.createElement("i"),z=1+Math.random()*2;s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;width:${z}px;height:${z}px;opacity:${.4+Math.random()*.6};animation-delay:-${Math.random()*3}s`;stars.appendChild(s)}
+// облака: три слоя глубины (далёкие — мельче, медленнее, с лёгким размытием)
+(function(){const R=(a,b)=>a+Math.random()*(b-a),NS="http://www.w3.org/2000/svg",box=cl;box.innerHTML="";
+// [top %, ширина px, период s, прозрачность слоя, размытие px]
+[[12,140,190,.55,1.4],[24,170,210,.55,1.4],[40,130,230,.5,1.6],[18,230,140,.8,.7],[34,260,160,.8,.7],[52,210,150,.75,.8],[28,340,100,1,0],[46,380,120,1,0],[8,300,110,.95,0]].forEach(([top,w,dur,o,bl])=>{
+const n=5+Math.floor(Math.random()*3),P=[];for(let i=0;i<n;i++){const t=i/(n-1),x=44+t*212+R(-8,8),r=R(20,28)+(1-Math.abs(t-.5)*2)*R(14,24);P.push([x,96-r*.72,r])}
+const shapes=(dy)=>`<rect x="20" y="${82+dy}" width="260" height="26" rx="13"/>`+P.map(([x,y,r])=>`<circle cx="${x.toFixed(1)}" cy="${(y+dy).toFixed(1)}" r="${r.toFixed(1)}"/>`).join("");
+const hl=P.map(([x,y,r])=>`<circle cx="${(x-r*.22).toFixed(1)}" cy="${(y-r*.28).toFixed(1)}" r="${(r*.68).toFixed(1)}"/>`).join("");
+const b=document.createElement("b");b.style.cssText=`top:${top}%;width:${w}px;--o:${o};--bl:${bl}px;transform:translateX(${R(5,90).toFixed(0)}vw);animation-duration:${dur}s;animation-delay:-${(Math.random()*dur).toFixed(0)}s`;
+b.innerHTML=`<svg viewBox="0 0 300 120" aria-hidden="true"><g fill="#5b4fa0" fill-opacity=".2">${shapes(7)}</g><g class="cp">${shapes(0)}</g><g fill="#fff" fill-opacity=".28">${hl}</g><rect x="20" y="94" width="260" height="14" rx="7" fill="#5b4fa0" fill-opacity=".14"/></svg>`;box.appendChild(b)})})();
 // кадр: [верх неба rgb],[низ неба rgb],высота солнца,[цвет солнца],звёзды,[земля],высота луны (доля экрана, горизонт ≈ 0.68)
 const K=(a,b,c,d,e,f,h)=>[...a,...b,c,...d,e,...f,h];
 const NIGHT=K([7,11,31],[28,30,74],1.08,[255,120,60],1,[10,10,24],.22);
 const KF={
 dark:[K([72,60,152],[255,152,72],.42,[255,214,110],0,[46,26,66],1.1),K([54,40,112],[216,82,102],.62,[255,146,84],.2,[32,18,50],.85),K([20,22,60],[96,54,114],.84,[255,110,70],.7,[20,12,36],.5),NIGHT],
 light:[NIGHT,K([88,72,160],[255,168,100],.72,[255,176,90],.35,[40,28,54],.6),K([92,172,246],[255,226,190],.42,[255,236,160],0,[52,104,64],1.1),K([62,148,240],[204,234,255],.2,[255,248,205],0,[58,116,72],1.1)]};
-let mode=document.documentElement.dataset.theme==="light"?"light":"dark",p=0,S=null,run=false;
+let mode=document.documentElement.dataset.theme==="light"?"light":"dark",p=0,S=null,run=false,sy=null,sx=0;
 const rm=matchMedia("(prefers-reduced-motion: reduce)").matches;
 function samp(k,p){const n=k.length-1,x=Math.min(p*n,n-1e-9),i=Math.floor(x),t=x-i,a=k[i],b=k[i+1];return a.map((v,j)=>v+(b[j]-v)*t)}
 const c3=(a,o)=>a.slice(o,o+3).map(v=>v|0).join(","),mix=(a,b,t)=>a.map((v,i)=>(v+(b[i]-v)*t)|0).join(",");
 function frame(){const T=samp(KF[mode],p);if(!S||rm)S=T.slice();let d=0;
 for(let i=0;i<T.length;i++){const df=T[i]-S[i];S[i]+=df*.07;d+=Math.abs(df)}
+const lum=c=>(.2126*c[0]+.7152*c[1]+.0722*c[2])/255,L=.6*lum(S.slice(0,3))+.4*lum(S.slice(3,6)),de=document.documentElement;
+if(mode==="light"){if(L<.5)de.classList.add("nightsky");else if(L>.58)de.classList.remove("nightsky")}else de.classList.remove("nightsky");
 sky.style.background=`linear-gradient(rgb(${c3(S,0)}) 0%,rgb(${c3(S,3)}) 70%)`;
-sun.style.top=S[6]*100+"%";sun.style.left=(76-p*10)+"%";sun.style.background=`radial-gradient(circle,#fff 0%,rgb(${c3(S,7)}) 55%)`;
+const ty=S[6]*100,tx=76-p*10;if(sy===null||rm){sy=ty;sx=tx}const dy=ty-sy,dx=tx-sx;sy+=Math.max(-.3,Math.min(.3,dy*.03));sx+=Math.max(-.15,Math.min(.15,dx*.03));d+=Math.abs(dy)+Math.abs(dx);
+sun.style.top=sy+"%";sun.style.left=sx+"%";sun.style.background=`radial-gradient(circle,#fff 0%,rgb(${c3(S,7)}) 55%)`;
 sun.style.boxShadow=`0 0 90px 50px rgba(${c3(S,7)},.55),0 0 220px 110px rgba(${c3(S,7)},.25)`;
 stars.style.opacity=Math.max(0,Math.min(1,S[10]));moon.style.top=S[14]*100+"%";
 hp.style.fill=`rgb(${c3(S,11)})`;hf.style.fill=`rgb(${mix(S.slice(11,14),S.slice(3,6),.4)})`;
-cl.style.transform=`translateY(${-p*90}px)`;cl.style.setProperty("--cl",`rgba(${mix(S.slice(3,6),[255,255,255],.55)},${(.12+.36*(1-Math.min(1,S[10]))).toFixed(2)})`);
+cl.style.transform=`translateY(${-p*90}px)`;cl.style.setProperty("--cl",`rgb(${mix(S.slice(3,6),[255,255,255],.55)})`);cl.style.setProperty("--ca",Math.min(.85,(.12+.36*(1-Math.min(1,S[10])))*1.5).toFixed(2));
 if(d>.02)requestAnimationFrame(frame);else run=false}
 function kick(){if(!run){run=true;requestAnimationFrame(frame)}}
 function onS(){const h=document.documentElement.scrollHeight-innerHeight;p=h>0?Math.min(1,Math.max(0,scrollY/h)):0;kick()}

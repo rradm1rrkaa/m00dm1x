@@ -17,7 +17,7 @@ button{-webkit-tap-highlight-color:transparent}button:active{transform:scale(.96
 @keyframes up{from{opacity:0;transform:translateY(22px) scale(.97)}to{opacity:1;transform:none}}
 @keyframes fade{from{opacity:0}to{opacity:1}}
 @keyframes spin{to{transform:rotate(360deg)}}
-@keyframes drift{from{transform:translateX(-340px)}to{transform:translateX(110vw)}}
+@keyframes drift{from{transform:translateX(-480px)}to{transform:translateX(110vw)}}
 @keyframes bob{50%{transform:translateY(-6px)}}
 input{width:100%;box-sizing:border-box;padding:13px 16px;border:1px solid var(--b);border-radius:14px;background:var(--c);color:var(--t);font:inherit;margin:12px 0;outline:0}
 input::placeholder{color:var(--m)}input:focus{border-color:var(--a);box-shadow:0 0 0 4px rgba(255,140,70,.22),var(--sh);transform:translateY(-1px)}
@@ -92,15 +92,11 @@ footer{text-align:center;color:var(--m);font-size:.85rem}
 @keyframes tw{50%{transform:scale(.4);opacity:.3}}
 #sun,#moon{position:absolute;border-radius:50%;will-change:top,left}
 #sun{left:72%;width:150px;height:150px;margin:-75px 0 0 -75px}
-#sun::before{content:"";position:absolute;inset:-70%;border-radius:50%;background:repeating-conic-gradient(rgba(255,255,255,.2) 0 5deg,transparent 5deg 15deg);-webkit-mask:radial-gradient(circle,#000 22%,transparent 68%);mask:radial-gradient(circle,#000 22%,transparent 68%);animation:spin 80s linear infinite}
 #moon{left:24%;width:80px;height:80px;margin:-40px 0 0 -40px;background:#eef1ff;box-shadow:inset -14px -5px 0 rgba(120,130,180,.45),0 0 50px 10px rgba(200,210,255,.35)}
 #clouds{position:absolute;inset:0;will-change:transform}
-#clouds b{position:absolute;left:0;height:56px;border-radius:56px;background:var(--cl,rgba(255,255,255,.3));animation:drift linear infinite}
-#clouds b::before,#clouds b::after{content:"";position:absolute;border-radius:50%;background:inherit}
-#clouds b::before{width:70px;height:70px;left:30px;top:-32px}#clouds b::after{width:90px;height:90px;right:34px;top:-44px}
-#clouds b:nth-child(1){top:16%;width:210px;animation-duration:110s;animation-delay:-30s}
-#clouds b:nth-child(2){top:32%;width:290px;animation-duration:160s;animation-delay:-90s}
-#clouds b:nth-child(3){top:48%;width:180px;animation-duration:130s;animation-delay:-10s}
+#clouds b{position:absolute;left:0;opacity:calc(var(--ca,.5)*var(--o,1));filter:blur(var(--bl,0px));animation:drift linear infinite;will-change:transform}
+#clouds b svg{display:block;width:100%;height:auto;overflow:visible}
+.cp{fill:var(--cl)}
 #hill{position:absolute;left:0;bottom:0;width:100%;height:36vh}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
 
@@ -136,9 +132,25 @@ html{overflow-x:hidden}body{overflow-x:clip;max-width:100%}
 .vh{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 .demo{max-width:560px;margin:14px auto 0;padding:10px 14px;box-sizing:border-box;border-radius:14px;border:1px solid var(--b);background:var(--c);color:var(--t);font-size:.88rem;line-height:1.45;text-align:left;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
 footer a{color:var(--a);font-weight:600}
+/* ===== профиль: крупное окно, блокировка прокрутки страницы под ним ===== */
+html.lock,html.lock body{overflow:hidden}
+#pf{overscroll-behavior:contain}.pc{overscroll-behavior:contain}
+.pc:has(.prof){max-width:1040px;width:100%;height:min(92vh,880px);max-height:92vh;padding:30px 34px}
+.ph2{display:flex;gap:22px;align-items:center;flex-wrap:wrap}.ph2 h2{margin:0;font-size:1.9rem}
+.av2.xl{width:120px;height:120px;font-size:3rem}.pi{flex:1;min-width:220px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 4px}.chip{padding:6px 13px;border:1px solid var(--b);border-radius:20px;background:rgba(128,128,128,.14);font-size:.9rem}
+.pg{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;margin-top:10px}
+.pb{padding:4px 18px 14px;border:1px solid var(--b);border-radius:18px;background:rgba(128,128,128,.08);min-width:0}
+.pa{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:0 12px;margin-top:20px}
+@media(max-width:600px){.pc:has(.prof){height:94vh;max-height:94vh;padding:20px 16px}.av2.xl{width:84px;height:84px;font-size:2.2rem}}
+
 .pc ul{padding-left:18px}
+
+/* «Восход»: пока небо тёмное (ночь вверху страницы) — светлый текст */
+:root.nightsky[data-theme="light"]{--t:#f6f0fd;--m:#cdc1e3;--a:#ffb27a;--c:rgba(26,16,54,.3);--b:rgba(255,255,255,.16);--pn:rgba(14,10,34,.22);--ts:rgba(0,0,0,.5);--sh:0 10px 34px rgba(0,0,0,.38)}
+:root.nightsky[data-theme="light"] .pc{background:#1c1438}
 </style></head><body>
-<div id="sky"><div id="stars"></div><div id="sun"></div><div id="moon"></div><div id="clouds"><b></b><b></b><b></b></div><svg id="hill" viewBox="0 0 100 34" preserveAspectRatio="none"><path id="hf" d="M0 14Q14 5 30 10T58 6T82 11T100 8L100 34L0 34Z"/><path id="hp" d="M0 18Q12 11 26 16T52 14T76 17T100 13L100 34L0 34Z"/></svg></div>
+<div id="sky"><div id="stars"></div><div id="sun"></div><div id="moon"></div><div id="clouds"></div><svg id="hill" viewBox="0 0 100 34" preserveAspectRatio="none"><path id="hf" d="M0 14Q14 5 30 10T58 6T82 11T100 8L100 34L0 34Z"/><path id="hp" d="M0 18Q12 11 26 16T52 14T76 17T100 13L100 34L0 34Z"/></svg></div>
 <div id="quiz" class="gate" hidden></div>
 <div id="app" hidden><header><h1>🌙 MoonMix</h1><div class="hr"><button id="fnd" class="tbtn" aria-label="Найти друзей">🔍<span class="fl"> Найти друзей</span></button><button id="fr" class="tbtn" aria-label="Мои друзья">❤️<span class="fl"> Мои друзья</span><span class="bd" id="frb" hidden></span></button><button id="cht" class="tbtn" aria-label="Чаты">💬<span class="fl"> Чаты</span><span class="bd" id="chb" hidden></span></button><button id="reg" class="tbtn" hidden>✨ Создать аккаунт</button><button id="th" class="tbtn"></button><button id="av" aria-label="Профиль"></button></div></header>
 <div class="bar"><div id="ban"></div><label class="lbl" for="q">Поиск по местам</label><input id="q" placeholder="Например: парк, баня, кофе" autocomplete="off"><div class="tabs" id="tabs"></div></div><main id="out"></main>
@@ -569,12 +581,16 @@ if(!fl.length){E.innerHTML="<p class='m'>У вас пока нет друзей,
 fl.forEach(t=>{const r=rowU(t),box=document.createElement("div");r.appendChild(box);box.appendChild(fBtn("🚶 Предложить",async()=>{try{await api("send",{login:t.login,place:p[0],text:$("wn").value.trim()});toast("Приглашение отправлено в чат ✔");openChat(t.login,()=>openWalk(ci,p))}catch(e){toast(e.message)}}));E.appendChild(r)});
 $("rcl").onclick=closePf;$("pf").hidden=false}
 function openMe(){if(U.guest)return openGuest();const l=U.last,vs=U.visits.slice().reverse().slice(0,50),ms=U.moods.slice().reverse().slice(0,10);
-$("pfc").innerHTML=`<div style="display:flex;gap:12px;align-items:center">${avt(U.login,"lg",U.avatar)}<div><h2 style="margin:0">${esc(U.login)}</h2><small class="m">С нами с ${fd(U.created)}</small></div></div>
-<div style="margin-top:6px"><button class="vb" id="avu">📷 ${U.avatar?"Сменить фото":"Загрузить фото"}</button>${U.avatar?'<button class="vb" id="avd">🗑 Удалить фото</button>':""}<input type="file" id="avf" accept="image/*" hidden></div>
-<h3>Последнее настроение</h3>${l?`<p><b>${esc(l.mood)}</b><br>Энергия: ${l.energy}% · ${fd(l.at)}</p>`:"<p class='m'>Тест ещё не пройден</p>"}
-<h3>Где вы были (${U.visits.length})</h3>${vs.length?"<ul>"+vs.map(v=>`<li>${esc(v.place)} <span class="m">· ${esc(v.cat)} · ${fd(v.at)}</span></li>`).join("")+"</ul>":"<p class='m'>Отмечайте места кнопкой «✔ Был здесь»</p>"}
-<h3>История настроения</h3>${ms.length?"<ul>"+ms.map(m=>`<li>${esc(m.mood)} <span class="m">· ${m.energy}% · ${fd(m.at)}</span></li>`).join("")+"</ul>":"<p class='m'>Пока пусто</p>"}
-<button class="btn" id="mf">❤️ Мои друзья (${(U.friends||[]).length})</button><button class="btn" id="mf2">🔍 Найти друзей</button><button class="btn" id="rq">Пройти тест заново</button><button class="btn" id="exp">⬇ Скачать мои данные</button><button class="btn" id="pol">🔒 Конфиденциальность и условия</button><button class="btn" id="lo">Выйти</button><button class="btn" id="del">🗑 Удалить аккаунт и данные</button><button class="btn" id="cl">Закрыть</button>`;
+$("pfc").innerHTML=`<div class="prof">
+<div class="ph2">${avt(U.login,"xl",U.avatar)}<div class="pi"><h2>${esc(U.login)}</h2><small class="m">С нами с ${fd(U.created)}</small>
+<div class="chips"><span class="chip"><b>${U.visits.length}</b> мест</span><span class="chip"><b>${U.favs.length}</b> в избранном</span><span class="chip"><b>${(U.friends||[]).length}</b> друзей</span></div>
+<div><button class="vb" id="avu">📷 ${U.avatar?"Сменить фото":"Загрузить фото"}</button>${U.avatar?'<button class="vb" id="avd">🗑 Удалить фото</button>':""}<input type="file" id="avf" accept="image/*" hidden></div></div></div>
+<div class="pg">
+<section class="pb"><h3>Последнее настроение</h3>${l?`<p><b>${esc(l.mood)}</b><br>Энергия: ${l.energy}% · ${fd(l.at)}</p>`:"<p class='m'>Тест ещё не пройден</p>"}
+<h3>История настроения</h3>${ms.length?"<ul>"+ms.map(m=>`<li>${esc(m.mood)} <span class="m">· ${m.energy}% · ${fd(m.at)}</span></li>`).join("")+"</ul>":"<p class='m'>Пока пусто</p>"}</section>
+<section class="pb"><h3>Где вы были (${U.visits.length})</h3>${vs.length?"<ul>"+vs.map(v=>`<li>${esc(v.place)} <span class="m">· ${esc(v.cat)} · ${fd(v.at)}</span></li>`).join("")+"</ul>":"<p class='m'>Отмечайте места кнопкой «✔ Был здесь»</p>"}</section>
+</div>
+<div class="pa"><button class="btn" id="mf">❤️ Мои друзья (${(U.friends||[]).length})</button><button class="btn" id="mf2">🔍 Найти друзей</button><button class="btn" id="rq">Пройти тест заново</button><button class="btn" id="exp">⬇ Скачать мои данные</button><button class="btn" id="pol">🔒 Конфиденциальность и условия</button><button class="btn" id="lo">Выйти</button><button class="btn" id="del">🗑 Удалить аккаунт и данные</button><button class="btn" id="cl">Закрыть</button></div></div>`;
 $("pf").hidden=false;$("cl").onclick=()=>$("pf").hidden=true;
 $("avu").onclick=()=>$("avf").click();
 $("avf").onchange=async e=>{const f=e.target.files[0];if(!f)return;try{U=await api("avatar",{data:await resizeImg(f)});setAv();toast("Аватарка обновлена ✔");openMe()}catch(er){toast(er.message)}};
@@ -591,6 +607,7 @@ const draw=(src,w,h)=>{try{const S=256,s=Math.min(w,h),c=document.createElement(
 if(window.createImageBitmap){try{const b=await createImageBitmap(f);return draw(b,b.width,b.height)}catch(e){}}
 const fr=new FileReader();fr.onerror=bad;fr.onload=()=>{const im=new Image();im.onload=()=>draw(im,im.naturalWidth,im.naturalHeight);im.onerror=bad;im.src=fr.result};fr.readAsDataURL(f)})}
 $("pf").onclick=e=>{if(e.target.id=="pf")closePf()};addEventListener("keydown",e=>{if(e.key=="Escape"&&!$("pf").hidden){clearInterval(CT);closePf()}});
+new MutationObserver(()=>document.documentElement.classList.toggle("lock",!$("pf").hidden)).observe($("pf"),{attributes:true,attributeFilter:["hidden"]});
 $("cdt").textContent=CATALOG.updated;$("plk").onclick=e=>{e.preventDefault();openPolicy(closePf)};$("reg").onclick=()=>location.href="index.html?reg#auth";
 (async()=>{try{U=await api("me");await loadRT();enter()}catch{if(GUEST)startGuest();else location.replace("index.html")}})();
 
@@ -598,24 +615,36 @@ $("cdt").textContent=CATALOG.updated;$("plk").onclick=e=>{e.preventDefault();ope
 <script>(function(){
 const g=i=>document.getElementById(i),sky=g("sky"),sun=g("sun"),moon=g("moon"),stars=g("stars"),hp=g("hp"),hf=g("hf"),cl=g("clouds"),th=g("th"),cs=g("cosmos");
 for(let i=0;i<90;i++){const s=document.createElement("i"),z=1+Math.random()*2;s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;width:${z}px;height:${z}px;opacity:${.4+Math.random()*.6};animation-delay:-${Math.random()*3}s`;stars.appendChild(s)}
+// облака: три слоя глубины (далёкие — мельче, медленнее, с лёгким размытием)
+(function(){const R=(a,b)=>a+Math.random()*(b-a),NS="http://www.w3.org/2000/svg",box=cl;box.innerHTML="";
+// [top %, ширина px, период s, прозрачность слоя, размытие px]
+[[12,140,190,.55,1.4],[24,170,210,.55,1.4],[40,130,230,.5,1.6],[18,230,140,.8,.7],[34,260,160,.8,.7],[52,210,150,.75,.8],[28,340,100,1,0],[46,380,120,1,0],[8,300,110,.95,0]].forEach(([top,w,dur,o,bl])=>{
+const n=5+Math.floor(Math.random()*3),P=[];for(let i=0;i<n;i++){const t=i/(n-1),x=44+t*212+R(-8,8),r=R(20,28)+(1-Math.abs(t-.5)*2)*R(14,24);P.push([x,96-r*.72,r])}
+const shapes=(dy)=>`<rect x="20" y="${82+dy}" width="260" height="26" rx="13"/>`+P.map(([x,y,r])=>`<circle cx="${x.toFixed(1)}" cy="${(y+dy).toFixed(1)}" r="${r.toFixed(1)}"/>`).join("");
+const hl=P.map(([x,y,r])=>`<circle cx="${(x-r*.22).toFixed(1)}" cy="${(y-r*.28).toFixed(1)}" r="${(r*.68).toFixed(1)}"/>`).join("");
+const b=document.createElement("b");b.style.cssText=`top:${top}%;width:${w}px;--o:${o};--bl:${bl}px;transform:translateX(${R(5,90).toFixed(0)}vw);animation-duration:${dur}s;animation-delay:-${(Math.random()*dur).toFixed(0)}s`;
+b.innerHTML=`<svg viewBox="0 0 300 120" aria-hidden="true"><g fill="#5b4fa0" fill-opacity=".2">${shapes(7)}</g><g class="cp">${shapes(0)}</g><g fill="#fff" fill-opacity=".28">${hl}</g><rect x="20" y="94" width="260" height="14" rx="7" fill="#5b4fa0" fill-opacity=".14"/></svg>`;box.appendChild(b)})})();
 // кадр: [верх неба rgb],[низ неба rgb],высота солнца,[цвет солнца],звёзды,[земля],высота луны (доля экрана, горизонт ≈ 0.68)
 const K=(a,b,c,d,e,f,h)=>[...a,...b,c,...d,e,...f,h];
 const NIGHT=K([7,11,31],[28,30,74],1.08,[255,120,60],1,[10,10,24],.22);
 const KF={
 dark:[K([72,60,152],[255,152,72],.42,[255,214,110],0,[46,26,66],1.1),K([54,40,112],[216,82,102],.62,[255,146,84],.2,[32,18,50],.85),K([20,22,60],[96,54,114],.84,[255,110,70],.7,[20,12,36],.5),NIGHT],
 light:[NIGHT,K([88,72,160],[255,168,100],.72,[255,176,90],.35,[40,28,54],.6),K([92,172,246],[255,226,190],.42,[255,236,160],0,[52,104,64],1.1),K([62,148,240],[204,234,255],.2,[255,248,205],0,[58,116,72],1.1)]};
-let mode=["light","sad"].includes(document.documentElement.dataset.theme)?document.documentElement.dataset.theme:"dark",p=0,S=null,run=false;
+let mode=["light","sad"].includes(document.documentElement.dataset.theme)?document.documentElement.dataset.theme:"dark",p=0,S=null,run=false,sy=null,sx=0;
 const rm=matchMedia("(prefers-reduced-motion: reduce)").matches;
 function samp(k,p){const n=k.length-1,x=Math.min(p*n,n-1e-9),i=Math.floor(x),t=x-i,a=k[i],b=k[i+1];return a.map((v,j)=>v+(b[j]-v)*t)}
 const c3=(a,o)=>a.slice(o,o+3).map(v=>v|0).join(","),mix=(a,b,t)=>a.map((v,i)=>(v+(b[i]-v)*t)|0).join(",");
 function frame(){if(mode==="sad"){run=false;return}const T=samp(KF[mode],p);if(!S||rm)S=T.slice();let d=0;
 for(let i=0;i<T.length;i++){const df=T[i]-S[i];S[i]+=df*.07;d+=Math.abs(df)}
+const lum=c=>(.2126*c[0]+.7152*c[1]+.0722*c[2])/255,L=.6*lum(S.slice(0,3))+.4*lum(S.slice(3,6)),de=document.documentElement;
+if(mode==="light"){if(L<.5)de.classList.add("nightsky");else if(L>.58)de.classList.remove("nightsky")}else de.classList.remove("nightsky");
 sky.style.background=`linear-gradient(rgb(${c3(S,0)}) 0%,rgb(${c3(S,3)}) 70%)`;
-sun.style.top=S[6]*100+"%";sun.style.left=(76-p*10)+"%";sun.style.background=`radial-gradient(circle,#fff 0%,rgb(${c3(S,7)}) 55%)`;
+const ty=S[6]*100,tx=76-p*10;if(sy===null||rm){sy=ty;sx=tx}const dy=ty-sy,dx=tx-sx;sy+=Math.max(-.3,Math.min(.3,dy*.03));sx+=Math.max(-.15,Math.min(.15,dx*.03));d+=Math.abs(dy)+Math.abs(dx);
+sun.style.top=sy+"%";sun.style.left=sx+"%";sun.style.background=`radial-gradient(circle,#fff 0%,rgb(${c3(S,7)}) 55%)`;
 sun.style.boxShadow=`0 0 90px 50px rgba(${c3(S,7)},.55),0 0 220px 110px rgba(${c3(S,7)},.25)`;
 stars.style.opacity=Math.max(0,Math.min(1,S[10]));moon.style.top=S[14]*100+"%";
 hp.style.fill=`rgb(${c3(S,11)})`;hf.style.fill=`rgb(${mix(S.slice(11,14),S.slice(3,6),.4)})`;
-cl.style.transform=`translateY(${-p*90}px)`;cl.style.setProperty("--cl",`rgba(${mix(S.slice(3,6),[255,255,255],.55)},${(.12+.36*(1-Math.min(1,S[10]))).toFixed(2)})`);
+cl.style.transform=`translateY(${-p*90}px)`;cl.style.setProperty("--cl",`rgb(${mix(S.slice(3,6),[255,255,255],.55)})`);cl.style.setProperty("--ca",Math.min(.85,(.12+.36*(1-Math.min(1,S[10])))*1.5).toFixed(2));
 if(d>.02)requestAnimationFrame(frame);else run=false}
 function kick(){if(!run){run=true;requestAnimationFrame(frame)}}
 function onS(){const h=document.documentElement.scrollHeight-innerHeight;p=h>0?Math.min(1,Math.max(0,scrollY/h)):0;if(cs)cs.style.setProperty("--py",(-p*80)+"px");kick()}
