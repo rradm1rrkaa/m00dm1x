@@ -770,6 +770,9 @@ setTheme(mode,1);onS();
 .g .card>*{grid-column:2}.g .card>.th{grid-column:1;grid-row:1/span 30;width:100%;height:100%;min-height:178px;object-fit:cover;border-radius:14px;align-self:stretch}
 .g .card .act{align-self:end}.g .card h3{font-size:1.25rem}
 @media(max-width:560px){.g{grid-template-columns:1fr}.g .card{grid-template-columns:1fr}.g .card>*,.g .card>.th{grid-column:1;grid-row:auto}.g .card>.th{height:160px}}
+/* без картинок: карточки текстовые, окно места в одну колонку */
+.g .card{grid-template-columns:1fr;min-height:180px}.g .card>*{grid-column:1}
+.pc:has(.pl){max-width:760px}.pl{grid-template-columns:1fr;height:auto;max-height:90vh;overflow:auto}.pll{display:none}.plr{overflow:visible;padding:28px}
 /* окно места: слева фото, справа информация */
 .pc:has(.pl){max-width:1120px;width:94vw;padding:0;overflow:hidden;max-height:90vh}
 .pl{display:grid;grid-template-columns:1fr 1fr;height:min(90vh,720px)}.pll{position:relative;background:#000;min-height:0}
@@ -797,7 +800,7 @@ ch.forEach(e=>{if(e.tagName==="H2"){ci=D.findIndex(d=>d[0]+" "+d[1]===e.textCont
 [...e.children].forEach(c=>{const nm=c.querySelector(".ttl").textContent,p=D[ci][2].find(x=>x[0]===nm),k=ci+"|"+nm,st=status(ci,p,F.t),r=RT[k];
 if(F.o&&!st.open||F.pr==="f"&&!free(ci,p)||F.pr==="p"&&free(ci,p)||F.rt==="n"&&r||F.rt==="a"&&!r||(F.rt==="3"||F.rt==="4")&&!(r&&r.avg>=+F.rt))return c.remove();
 c.querySelector(".rt").insertAdjacentHTML("beforebegin",`<small class="st ${st.open?"o":"x"}">${st.open?"Открыто":"Закрыто"} · ${st.txt}</small><small class="pr">${free(ci,p)?"🆓 Бесплатно":"💳 Платно"}</small>`);
-c.insertAdjacentHTML("afterbegin",`<img class="th" src="${svg(ci,p,0)}" alt="">`);const rc=recTxt(k);if(rc)c.querySelector(".act").insertAdjacentHTML("beforebegin",`<small class="rcl">📣 ${esc(rc)}</small>`);
+const rc=recTxt(k);if(rc)c.querySelector(".act").insertAdjacentHTML("beforebegin",`<small class="rcl">📣 ${esc(rc)}</small>`);
 const b=document.createElement("button");b.className="vb";b.textContent="✏️";b.title="Написать отзыв";b.setAttribute("aria-label","Написать отзыв");b.onclick=()=>openRev(ci,p);c.querySelector(".row").appendChild(b)});
 if(!e.children.length){let x=e.previousElementSibling;e.remove();while(x&&x.classList.contains("why")){const y=x.previousElementSibling;x.remove();x=y}if(x&&x.tagName==="H2")x.remove()}});
 if(!out.children.length)out.innerHTML="<p class='m'>Ничего не найдено.</p>"}
