@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="ru"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>MoonMix — отдых в Казахстане</title>
-<script>try{var t=localStorage.getItem("moonmix_theme");document.documentElement.dataset.theme=t==="light"?"light":"dark"}catch(e){document.documentElement.dataset.theme="dark"}</script>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet"><style>/* MoonMix — «Восход» (light) и «Закат» (dark) */
+<title>MoodMix — отдых в Казахстане</title>
+<script>try{var t=localStorage.getItem("moodmix_theme");document.documentElement.dataset.theme=t==="light"?"light":"dark"}catch(e){document.documentElement.dataset.theme="dark"}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet"><style>/* MoodMix — «Восход» (light) и «Закат» (dark) */
 :root{--pad:clamp(20px,5vw,112px);--t:#10233a;--m:#3d5470;--a:#c2410c;--ag:linear-gradient(135deg,#ff9a3c,#ff5d7a);--c:rgba(255,255,255,.28);--b:rgba(255,255,255,.55);--bg:#cfe6fb;--pn:rgba(255,255,255,.2);--ts:rgba(255,255,255,.55);--sh:0 10px 34px rgba(30,70,120,.16);--ease:cubic-bezier(.22,.8,.24,1);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 :root[data-theme="dark"]{--t:#f6f0fd;--m:#cdc1e3;--a:#ffb27a;--c:rgba(26,16,54,.3);--b:rgba(255,255,255,.16);--bg:#140f2c;--pn:rgba(14,10,34,.22);--ts:rgba(0,0,0,.5);--sh:0 10px 34px rgba(0,0,0,.38)}
 html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
@@ -169,7 +169,7 @@ html.lock,html.lock body{overflow:hidden}
 </style></head><body>
 <div id="sky"><div id="stars"></div><div id="sun"></div><div id="moon"></div><div id="clouds"></div><svg id="hill" viewBox="0 0 100 34" preserveAspectRatio="none"><path id="hf" d="M0 14Q14 5 30 10T58 6T82 11T100 8L100 34L0 34Z"/><path id="hp" d="M0 18Q12 11 26 16T52 14T76 17T100 13L100 34L0 34Z"/></svg></div>
 <div id="quiz" class="gate" hidden></div>
-<div id="app" hidden><header><h1>🌙 MoonMix</h1><div class="hr"><button id="fnd" class="tbtn" aria-label="Найти друзей">🔍<span class="fl"> Найти друзей</span></button><button id="fr" class="tbtn" aria-label="Мои друзья">❤️<span class="fl"> Мои друзья</span><span class="bd" id="frb" hidden></span></button><button id="cht" class="tbtn" aria-label="Чаты">💬<span class="fl"> Чаты</span><span class="bd" id="chb" hidden></span></button><button id="reg" class="tbtn" hidden>✨ Создать аккаунт</button><button id="th" class="tbtn"></button><button id="av" aria-label="Профиль"></button></div></header>
+<div id="app" hidden><header><h1>MoodMix</h1><div class="hr"><button id="fnd" class="tbtn" aria-label="Найти друзей">🔍<span class="fl"> Найти друзей</span></button><button id="fr" class="tbtn" aria-label="Мои друзья">❤️<span class="fl"> Мои друзья</span><span class="bd" id="frb" hidden></span></button><button id="cht" class="tbtn" aria-label="Чаты">💬<span class="fl"> Чаты</span><span class="bd" id="chb" hidden></span></button><button id="reg" class="tbtn" hidden>✨ Создать аккаунт</button><button id="th" class="tbtn"></button><button id="av" aria-label="Профиль"></button></div></header>
 <div class="bar"><div id="ban"></div><label class="lbl" for="q">Поиск по местам</label><input id="q" placeholder="Например: парк, баня, кофе" autocomplete="off"><div class="tabs" id="tabs"></div></div><main id="out"></main>
 <footer>Каталог составлен вручную, обновлён: <span id="cdt"></span>. Адреса, часы работы и цены меняются — уточняйте перед визитом.<br>Демо-версия: аккаунты и данные хранятся только в вашем браузере.</footer></div>
 <div id="pf" hidden><div class="pc" id="pfc" role="dialog" aria-modal="true"></div></div><div id="toast"></div>
@@ -477,7 +477,7 @@ const MOOD=["Хочется тишины и покоя","Хочется весе
 
 const $=i=>document.getElementById(i),esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fd=t=>new Date(t).toLocaleString("ru-RU",{dateStyle:"medium",timeStyle:"short"});
-const GUEST=new URLSearchParams(location.search).has("guest"),GK="moonmix_guest";
+const GUEST=new URLSearchParams(location.search).has("guest"),GK="moodmix_guest";
 async function api(p,b={}){return U&&U.guest?guestApi(p,b):DB.call(p,b)}
 // Гость: только тест, подборка, избранное и «Был здесь» — локально, без аккаунта
 async function guestApi(p,b){const ok=(v,n)=>typeof v==="string"&&v.length>0&&v.length<=n;
@@ -496,7 +496,7 @@ $("fnd").hidden=$("fr").hidden=$("cht").hidden=true;$("reg").hidden=false;enter(
 function openGuest(){$("pfc").innerHTML=`<h2 style="margin:0 0 4px">👋 Гостевой режим</h2><p class="m">Подборка, избранное и отметки хранятся только в этом браузере. Отзывы, друзья и чаты доступны после регистрации.</p><button class="btn c" id="gr">✨ Создать аккаунт</button><button class="btn" id="rq">Пройти тест заново</button><button class="btn" id="lo">Выйти из гостевого режима</button><button class="btn" id="cl">Закрыть</button>`;
 $("pf").hidden=false;$("gr").onclick=()=>location.href="index.html?reg#auth";$("rq").onclick=()=>{closePf();startQ()};$("lo").onclick=async()=>{await api("logout");location.replace("index.html")};$("cl").onclick=closePf}
 const POLICY=`<h2 style="margin:0 0 4px">🔒 Конфиденциальность и условия</h2>
-<p class="m" style="margin:0">MoonMix — демонстрационная версия. Текст обновлён: октябрь 2026.</p>
+<p class="m" style="margin:0">MoodMix — демонстрационная версия. Текст обновлён: октябрь 2026.</p>
 <h3>Что сохраняется</h3><ul><li>логин и защищённый хеш пароля;</li><li>результаты теста и история настроения;</li><li>избранное, отметки «Был здесь», оценки и отзывы;</li><li>друзья, запросы, сообщения и приглашения на прогулку;</li><li>аватарка, если вы её загрузили.</li></ul>
 <h3>Где хранится</h3><p>Только в localStorage вашего браузера на этом устройстве. Данные не отправляются на сервер, не видны другим людям и не переносятся между устройствами; друзья и чаты работают лишь между аккаунтами в одном браузере. Шрифты загружаются с Google Fonts, поэтому Google получает технические данные запроса (IP-адрес, браузер).</p>
 <h3>Пароли</h3><p>В демо-версии нет серверной авторизации. Не используйте здесь пароли от важных сервисов.</p>
@@ -513,14 +513,14 @@ let sadF=0;
 // «Подавленное» состояние: низкое настроение, либо умеренно низкое + мало сил + высокое напряжение
 function isSad(d){return d.V<=40||(d.V<=50&&d.E<=35)||(d.V<=45&&d.T>=60)}
 // Тема «Грусть» включается автоматически — по ответам; вручную её не выбирают
-function syncSad(a){const L=U.last;window.moonSad=!!(L&&L.sad);window.moonSadAt=L?L.at:"";if(!window.MoonTheme)return;
-let off="";try{off=localStorage.getItem("moonmix_sad_off")||""}catch(e){}
-if(a&&window.moonSad){try{localStorage.removeItem("moonmix_sad_off")}catch(e){}MoonTheme.set("sad",1)}
-else if(!a&&window.moonSad&&off!==window.moonSadAt)MoonTheme.set("sad",1);
-else if(MoonTheme.get()==="sad")MoonTheme.set(MoonTheme.pref(),1);else MoonTheme.refresh()}
+function syncSad(a){const L=U.last;window.moodSad=!!(L&&L.sad);window.moodSadAt=L?L.at:"";if(!window.MoodTheme)return;
+let off="";try{off=localStorage.getItem("moodmix_sad_off")||""}catch(e){}
+if(a&&window.moodSad){try{localStorage.removeItem("moodmix_sad_off")}catch(e){}MoodTheme.set("sad",1)}
+else if(!a&&window.moodSad&&off!==window.moodSadAt)MoodTheme.set("sad",1);
+else if(MoodTheme.get()==="sad")MoodTheme.set(MoodTheme.pref(),1);else MoodTheme.refresh()}
 // во время теста: если по уже данным ответам видно, что человеку тяжело — тема меняется сразу
-function liveSad(){if(!window.MoonTheme)return;const s=ANS.length>=3&&calc().sad;
-if(s&&MoonTheme.get()!=="sad")MoonTheme.set("sad",1);else if(!s&&MoonTheme.get()==="sad")MoonTheme.set(MoonTheme.pref(),1)}
+function liveSad(){if(!window.MoodTheme)return;const s=ANS.length>=3&&calc().sad;
+if(s&&MoodTheme.get()!=="sad")MoodTheme.set("sad",1);else if(!s&&MoodTheme.get()==="sad")MoodTheme.set(MoodTheme.pref(),1)}
 const DK=["E","V","S","N","T","P"],DN={E:"Энергия",V:"Настроение",S:"Общительность",N:"Тяга к новому",T:"Напряжение",P:"Тяга к природе"};
 // «Идеальный профиль» состояния для каждой категории: E V S N T P (0–100)
 const CP=[[20,45,10,25,65,40],[90,80,95,60,30,10],[55,60,40,40,45,85],[60,65,55,60,35,10],[65,65,50,45,50,40],[25,50,45,30,75,20],[40,50,25,65,80,100],[40,65,60,40,35,15],[80,75,80,65,40,10],[80,80,65,90,30,50]];
@@ -695,7 +695,7 @@ $("avf").onchange=async e=>{const f=e.target.files[0];if(!f)return;try{U=await a
 if($("avd"))$("avd").onclick=async()=>{try{U=await api("avatar",{data:null});setAv();toast("Фото удалено");openMe()}catch(er){toast(er.message)}};$("mf").onclick=openMy;$("mf2").onclick=openFind;$("rq").onclick=()=>{$("pf").hidden=true;startQ()};
 $("lo").onclick=async()=>{await api("logout");location.replace("index.html")};
 $("pol").onclick=()=>openPolicy(openMe);
-$("exp").onclick=async()=>{try{const d=await api("export"),a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(d,null,2)],{type:"application/json"}));a.download="moonmix-data.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}catch(e){toast(e.message)}};
+$("exp").onclick=async()=>{try{const d=await api("export"),a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(d,null,2)],{type:"application/json"}));a.download="moodmix-data.json";a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}catch(e){toast(e.message)}};
 $("del").onclick=async()=>{if(!confirm("Удалить аккаунт, отзывы, сообщения и все данные из этого браузера? Это нельзя отменить."))return;try{await api("delete_account");location.replace("index.html")}catch(e){toast(e.message)}}}
 $("av").onclick=openMe;$("fr").onclick=openMy;$("fnd").onclick=openFind;$("cht").onclick=openChats;setInterval(badge,6000);addEventListener("storage",e=>{if(e.key=="astana_db")badge()});
 // квадратная обрезка по центру до 256×256, JPEG — чтобы не раздувать хранилище
@@ -748,12 +748,12 @@ function kick(){if(!run){run=true;requestAnimationFrame(frame)}}
 function onS(){const h=document.documentElement.scrollHeight-innerHeight;p=h>0?Math.min(1,Math.max(0,scrollY/h)):0;if(cs)cs.style.setProperty("--py",(-p*80)+"px");kick()}
 addEventListener("scroll",onS,{passive:true});addEventListener("resize",onS);
 if(window.ResizeObserver)new ResizeObserver(onS).observe(document.body);
-const NM={dark:"🌇 Закат",light:"☀️ Восход",sad:"🌌 Грусть"},CU={dark:"закат",light:"восход",sad:"грусть"},pref=()=>{try{return localStorage.getItem("moonmix_theme")==="light"?"light":"dark"}catch(e){return"dark"}},nxt=()=>mode==="sad"?pref():mode==="dark"?"light":"dark";
-function setTheme(t,np){mode=t;document.documentElement.dataset.theme=t;if(!np&&t!=="sad")try{localStorage.setItem("moonmix_theme",t)}catch(e){}
+const NM={dark:"🌇 Закат",light:"☀️ Восход",sad:"🌌 Грусть"},CU={dark:"закат",light:"восход",sad:"грусть"},pref=()=>{try{return localStorage.getItem("moodmix_theme")==="light"?"light":"dark"}catch(e){return"dark"}},nxt=()=>mode==="sad"?pref():mode==="dark"?"light":"dark";
+function setTheme(t,np){mode=t;document.documentElement.dataset.theme=t;if(!np&&t!=="sad")try{localStorage.setItem("moodmix_theme",t)}catch(e){}
 if(t==="sad"){sky.style.background="";stars.style.opacity=1}
 if(th){const n=nxt();th.textContent=NM[n];th.title="Сейчас "+CU[mode]+". Переключить на "+CU[n]}onS()}
-if(th)th.onclick=()=>{if(mode==="sad")try{localStorage.setItem("moonmix_sad_off",window.moonSadAt||"")}catch(e){}setTheme(nxt())};
-window.MoonTheme={set:(t,np)=>setTheme(t,np),refresh:()=>setTheme(mode,1),get:()=>mode,pref};
+if(th)th.onclick=()=>{if(mode==="sad")try{localStorage.setItem("moodmix_sad_off",window.moodSadAt||"")}catch(e){}setTheme(nxt())};
+window.MoodTheme={set:(t,np)=>setTheme(t,np),refresh:()=>setTheme(mode,1),get:()=>mode,pref};
 if(rm){const sv=g("cosmosSvg");if(sv&&sv.pauseAnimations)sv.pauseAnimations()}
 setTheme(mode,1);onS();
 })();
@@ -788,7 +788,7 @@ const hrs=(ci,p)=>/рын(ок|ки)/i.test(p[0])?[8,18]:/парк|сад|алл
 const pad=n=>String(n%24).padStart(2,"0")+":00",free=(ci,p)=>ci===2||/парк|сад|аллея|набережн|площадь|сквер/i.test(p[0]);
 function status(ci,p,t){const[o,c]=hrs(ci,p),d=new Date(),m=t?(+t.slice(0,2))*60+(+t.slice(3,5)):d.getHours()*60+d.getMinutes();
 const all=o===0&&c===24,open=all||(c<=o?(m>=o*60||m<c*60):(m>=o*60&&m<c*60));return{open,txt:all?"круглосуточно":open?"до "+pad(c):"откроется в "+pad(o),h:all?"Круглосуточно":pad(o)+"–"+pad(c)}}
-const PX=()=>{try{return Object.assign({likes:{},recs:{},go:{},rv:{}},JSON.parse(localStorage.getItem("moonmix_px")||"{}"))}catch(e){return{likes:{},recs:{},go:{},rv:{}}}},SV=x=>{try{localStorage.setItem("moonmix_px",JSON.stringify(x))}catch(e){}};
+const PX=()=>{try{return Object.assign({likes:{},recs:{},go:{},rv:{}},JSON.parse(localStorage.getItem("moodmix_px")||"{}"))}catch(e){return{likes:{},recs:{},go:{},rv:{}}}},SV=x=>{try{localStorage.setItem("moodmix_px",JSON.stringify(x))}catch(e){}};
 function tg(f,k){const x=PX(),a=x[f][k]||[],i=a.indexOf(me());i<0?a.push(me()):a.splice(i,1);x[f][k]=a;SV(x)}
 function vote(rk,side){const x=PX(),v=x.rv[rk]||{up:[],dn:[]},o=side==="up"?"dn":"up",a=v[side],i=a.indexOf(me());v[o]=v[o].filter(u=>u!==me());i<0?a.push(me()):a.splice(i,1);x.rv[rk]=v;SV(x)}
 function rvBar(key,r,redo){const v=PX().rv[key+"#"+r.user]||{up:[],dn:[]},m=me(),d=document.createElement("div");d.className="rvb";
