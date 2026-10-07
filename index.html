@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>MoonMix — отдых в Астане</title>
+<title>MoonMix — отдых в Казахстане</title>
 <script>try{var t=localStorage.getItem("moonmix_theme");document.documentElement.dataset.theme=t==="light"?"light":"dark"}catch(e){document.documentElement.dataset.theme="dark"}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Manrope:wght@400;600;700&family=Bad+Script&family=Marck+Script&display=swap" rel="stylesheet"><style>/* MoonMix — «Восход» (light) и «Закат» (dark) */
 :root{--pad:clamp(20px,5vw,112px);--t:#10233a;--m:#3d5470;--a:#c2410c;--ag:linear-gradient(135deg,#ff9a3c,#ff5d7a);--c:rgba(255,255,255,.28);--b:rgba(255,255,255,.55);--bg:#cfe6fb;--pn:rgba(255,255,255,.2);--ts:rgba(255,255,255,.55);--sh:0 10px 34px rgba(30,70,120,.16);--ease:cubic-bezier(.22,.8,.24,1);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -169,8 +169,8 @@ footer a{color:var(--a);font-weight:600}
 @media(min-width:1600px){body{font-size:18px}}
 </style></head><body><div id="sky"><div id="stars"></div><div id="sun"></div><div id="moon"></div><div id="clouds"></div><svg id="hill" viewBox="0 0 100 34" preserveAspectRatio="none"><path id="hf" d="M0 14Q14 5 30 10T58 6T82 11T100 8L100 34L0 34Z"/><path id="hp" d="M0 18Q12 11 26 16T52 14T76 17T100 13L100 34L0 34Z"/></svg></div><button id="th" class="tbtn thf"></button>
 <div class="ld">
-<section class="hero"><h1 id="wt">Добро пожаловать в MoonMix</h1><p class="tag">Места Астаны под ваше настроение</p>
-<p class="m">Ответьте на 25 вопросов — и получите подборку из 188 мест и идей для отдыха в Астане: парки, кафе, бани, бассейны, ТЦ, аттракционы. Отмечайте, где побывали, находите друзей с похожим настроением и зовите их гулять.</p>
+<section class="hero"><h1 id="wt">Добро пожаловать в MoonMix</h1><p class="tag">Места Казахстана под ваше настроение</p>
+<p class="m">Ответьте на 25 вопросов — и получите подборку из 188 мест и идей для отдыха в Казахстане: парки, кафе, бани, бассейны, ТЦ, аттракционы. Отмечайте, где побывали, находите друзей с похожим настроением и зовите их гулять.</p>
 <div class="hint">Листайте вниз — расскажем, как всё устроено ↓</div></section>
 
 <section class="sec"><h2 class="rvl">Как это работает</h2><p class="m rvl">Три шага от «не знаю, куда пойти» до отметки «я здесь был».</p>
@@ -210,7 +210,7 @@ footer a{color:var(--a);font-weight:600}
 <label class="lbl" for="lg">Логин</label><input id="lg" maxlength="32" autocomplete="username" autocapitalize="off" spellcheck="false">
 <label class="lbl" for="pw">Пароль (от 6 символов)</label><input id="pw" type="password" maxlength="100" autocomplete="current-password">
 <button class="btn c" id="sub">Войти</button><p id="err" class="er" role="alert"></p><a class="btn" href="app.html?guest=1" style="text-decoration:none;text-align:center;box-sizing:border-box">Продолжить как гость</a></div></div>
-<footer class="fw"><div class="ft"><div class="fb"><div class="fn">MoonMix</div><p>Места Астаны под ваше настроение.</p></div><nav class="fg" aria-label="Контакты создателя"><a href="https://t.me/rradm1rrkaa" target="_blank" rel="noopener noreferrer">Telegram</a><a href="https://github.com/rradm1rrkaa" target="_blank" rel="noopener noreferrer">GitHub</a><a href="https://www.instagram.com/rradm1rrkaa/" target="_blank" rel="noopener noreferrer">Instagram</a><a href="https://wa.me/+77781013899" target="_blank" rel="noopener noreferrer">WhatsApp</a><a href="tel:+77781013899">Телефон</a></nav></div></footer>
+<footer class="fw"><div class="ft"><div class="fb"><div class="fn">MoonMix</div><p>Места Казахстана под ваше настроение.</p></div><nav class="fg" aria-label="Контакты создателя"><a href="https://t.me/rradm1rrkaa" target="_blank" rel="noopener noreferrer">Telegram</a><a href="https://github.com/rradm1rrkaa" target="_blank" rel="noopener noreferrer">GitHub</a><a href="https://www.instagram.com/rradm1rrkaa/" target="_blank" rel="noopener noreferrer">Instagram</a><a href="https://wa.me/+77781013899" target="_blank" rel="noopener noreferrer">WhatsApp</a><a href="tel:+77781013899">Телефон</a></nav></div></footer>
 
 <script>// «Бэкенд» в браузере: все данные хранятся в LS. Используется обеими страницами.
 const LS=(()=>{try{const t="__t";localStorage.setItem(t,"1");localStorage.removeItem(t);return localStorage}catch(e){
@@ -252,7 +252,8 @@ const DB = {
     }
     if (p === "login") {
       const u = d.users[String(b.login || "").toLowerCase()], pw = String(b.password || ""), al = u && u.hash.slice(0, 2);
-      if (!u || u.hash !== await this.hash(pw, u.salt, al)) throw new Error("Неверный логин или пароль");
+      if (!u) throw new Error("Аккаунт с таким логином не существует");
+      if (u.hash !== await this.hash(pw, u.salt, al)) throw new Error("Неверный пароль");
       if (al !== "p:" && globalThis.crypto && crypto.subtle) { u.hash = await this.hash(pw, u.salt, "p:"); this.store(d); }
       LS.setItem(this.S, u.login.toLowerCase()); return this.pub(u);
     }
