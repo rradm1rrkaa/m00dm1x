@@ -167,6 +167,23 @@ footer a{color:var(--a);font-weight:600}
 .fg a{color:var(--t);font-weight:700;text-decoration:none;padding:4px 0;border-bottom:2px solid transparent}
 .fg a:hover,.fg a:focus-visible{color:var(--a);border-color:var(--a)}
 @media(min-width:1600px){body{font-size:18px}}
+
+/* ===== мобильная вёрстка ===== */
+html{-webkit-text-size-adjust:100%}button,a,input,select,textarea{touch-action:manipulation}
+@media(hover:none){.tabs button:hover,.tbtn:hover,.btn:hover,#av:hover,.card:hover{transform:none}}
+@media(max-width:600px){
+body{padding-left:max(12px,env(safe-area-inset-left));padding-right:max(12px,env(safe-area-inset-right));padding-bottom:env(safe-area-inset-bottom)}
+input,select,textarea{font-size:16px!important;min-height:44px;max-width:100%;box-sizing:border-box}textarea{min-height:90px}
+.btn,.vb,.tabs button,.tbtn{min-height:44px;box-sizing:border-box}.vb{padding-left:12px;padding-right:12px}
+header{flex-wrap:wrap;gap:8px}header h1{font-size:1.5rem}
+.hr{flex:1 1 100%;width:100%;gap:6px;justify-content:space-between}.hr .tbtn{flex:1 1 0;min-width:0;padding:8px 6px;font-size:.85rem;text-align:center}.hr #th{flex:2 1 0}.hr #av{flex:none;width:44px;height:44px}
+.bar select,.bar input[type=time]{width:100%}
+.tabs{gap:6px}.tabs button{padding:8px 12px;font-size:.88rem}
+.card{padding:16px}.card h3{font-size:1.15rem}
+#pf{padding:8px}.pc{max-height:92vh;padding:16px;border-radius:20px}.pc:has(.pl){width:100%;max-height:92vh}
+.pc .act .row,.pc .rvb{flex-wrap:wrap}
+.toast,#toast{max-width:92vw}
+}
 </style></head><body><div id="sky"><div id="stars"></div><div id="sun"></div><div id="moon"></div><div id="clouds"></div><svg id="hill" viewBox="0 0 100 34" preserveAspectRatio="none"><path id="hf" d="M0 14Q14 5 30 10T58 6T82 11T100 8L100 34L0 34Z"/><path id="hp" d="M0 18Q12 11 26 16T52 14T76 17T100 13L100 34L0 34Z"/></svg></div><button id="th" class="tbtn thf"></button>
 <div class="ld">
 <section class="hero"><h1 id="wt">Welcome to MoodMix</h1><p class="tag">Места Казахстана под ваше настроение</p>
