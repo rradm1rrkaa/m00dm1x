@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="ru"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MoonMix — отдых в Астане</title>
+<script>try{document.documentElement.dataset.theme=localStorage.getItem("moonmix_theme")||"dark"}catch(e){document.documentElement.dataset.theme="dark"}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet"><style>/* MoonMix — «Восход» (light) и «Закат» (dark) */
+:root{--t:#10233a;--m:#3d5470;--a:#c2410c;--ag:linear-gradient(135deg,#ff9a3c,#ff5d7a);--c:rgba(255,255,255,.28);--b:rgba(255,255,255,.55);--bg:#cfe6fb;--pn:rgba(255,255,255,.2);--ts:rgba(255,255,255,.55);--sh:0 10px 34px rgba(30,70,120,.16);--ease:cubic-bezier(.22,.8,.24,1);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root[data-theme="dark"]{--t:#f6f0fd;--m:#cdc1e3;--a:#ffb27a;--c:rgba(26,16,54,.3);--b:rgba(255,255,255,.16);--bg:#140f2c;--pn:rgba(14,10,34,.22);--ts:rgba(0,0,0,.5);--sh:0 10px 34px rgba(0,0,0,.38)}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--t);font:16px/1.55 Manrope,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;transition:color .6s,background-color .6s}
+h1,h2,h3{font-family:Fraunces,Georgia,"Times New Roman",serif;letter-spacing:-.01em}
+h1,h2,.m,#quiz.gate p{text-shadow:0 1px 12px var(--ts)}
+h1{margin:0 0 6px;font-size:1.9rem}h2{margin:30px 0 12px;font-size:1.4rem}
+button,input,a,.card,.meter i{transition:transform .35s var(--ease),background-color .4s,border-color .4s,box-shadow .4s,color .4s,opacity .4s,width .8s var(--ease)}
+button{-webkit-tap-highlight-color:transparent}button:active{transform:scale(.96)!important}
+.glass,.card,.btn,.tabs button,.tbtn,input,.tb button,#toast{-webkit-backdrop-filter:blur(14px) saturate(1.4);backdrop-filter:blur(14px) saturate(1.4)}
+@keyframes up{from{opacity:0;transform:translateY(22px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes drift{from{transform:translateX(-340px)}to{transform:translateX(110vw)}}
+@keyframes bob{50%{transform:translateY(-6px)}}
+input{width:100%;box-sizing:border-box;padding:13px 16px;border:1px solid var(--b);border-radius:14px;background:var(--c);color:var(--t);font:inherit;margin:12px 0;outline:0}
+input::placeholder{color:var(--m)}input:focus{border-color:var(--a);box-shadow:0 0 0 4px rgba(255,140,70,.22),var(--sh);transform:translateY(-1px)}
+.bar{max-width:1000px;margin:0 auto;padding:0 16px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.tabs button{border:1px solid var(--b);background:var(--c);color:var(--t);padding:8px 14px;border-radius:22px;cursor:pointer;font:inherit;font-size:.9rem}
+.tabs button:hover{transform:translateY(-2px);box-shadow:var(--sh);border-color:var(--a)}
+.tabs button.on,.btn.c,.tb button.on{background:var(--ag);color:#fff;border-color:transparent;text-shadow:none;box-shadow:0 6px 20px rgba(255,93,122,.35)}
+main{max-width:1000px;margin:0 auto;padding:0 16px 40px}
+.g{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
+.card{background:var(--c);border:1px solid var(--b);border-radius:18px;padding:16px;position:relative;box-shadow:var(--sh)}
+.card:hover{transform:translateY(-5px);box-shadow:0 18px 44px rgba(20,20,60,.25);border-color:var(--a)}
+.card h3{margin:0 40px 6px 0;font-size:1.08rem}.card p{margin:0 0 8px;color:var(--m);font-size:.93rem}.card small{color:var(--a);font-weight:600}
+#out.an .card,#out.an h2{animation:up .7s var(--ease) backwards;animation-delay:min(calc(var(--i,0)*55ms),800ms)}
+.fav{position:absolute;top:10px;right:12px;border:0;background:none;font-size:1.45rem;cursor:pointer;color:var(--m)}
+.fav:hover{transform:scale(1.25)}.fav.on{color:#ff3d78;text-shadow:0 0 14px rgba(255,61,120,.55)}
+#quiz{max-width:968px;margin:8px auto 12px;padding:18px;background:var(--c);border:1px solid var(--b);border-radius:20px}#quiz h2{margin:4px 0 12px}.qn{margin:0;color:var(--a);font-size:.85rem;font-weight:700}
+#quiz>*{animation:up .6s var(--ease) backwards}#quiz>*:nth-child(2){animation-delay:.06s}#quiz>*:nth-child(3){animation-delay:.12s}#quiz>*:nth-child(4){animation-delay:.18s}#quiz>*:nth-child(5){animation-delay:.24s}#quiz>*:nth-child(6){animation-delay:.3s}
+.btn{display:block;width:100%;text-align:left;margin:9px 0;padding:13px 16px;border:1px solid var(--b);border-radius:14px;background:var(--c);color:var(--t);font:inherit;cursor:pointer}
+.btn:hover{transform:translateX(5px) scale(1.01);border-color:var(--a);box-shadow:var(--sh)}.btn.c:hover{transform:translateY(-2px) scale(1.01)}
+.meter{height:12px;background:var(--c);border:1px solid var(--b);border-radius:8px;overflow:hidden}.meter i{display:block;height:100%;background:var(--ag);animation:grow 1.2s var(--ease) backwards}
+@keyframes grow{from{width:0!important}}
+#quiz.gate{position:fixed;inset:0;z-index:100;max-width:none;margin:0;border-radius:0;border:0;background:none;-webkit-backdrop-filter:none;backdrop-filter:none;display:flex;flex-direction:column;align-items:center;overflow:auto;padding:calc(24px + env(safe-area-inset-top,0px)) 16px calc(24px + env(safe-area-inset-bottom,0px))}
+#quiz.gate::before,#quiz.gate::after{content:"";flex:1}#quiz.gate>*{width:100%;max-width:560px;box-sizing:border-box}
+.ph{display:inline-block;margin:2px 0 0;color:var(--a);font-size:.9rem;text-decoration:none;font-weight:600}.ph:hover{transform:translateX(4px)}
+footer{text-align:center;color:var(--m);font-size:.85rem}
+[hidden]{display:none!important}
+.m{color:var(--m)}.er{color:#ff3d78;min-height:1.3em;margin:6px 0 0}
+#auth{display:flex;min-height:100vh;min-height:100svh;box-sizing:border-box;padding:calc(20px + env(safe-area-inset-top,0px)) 16px calc(20px + env(safe-area-inset-bottom,0px))}
+.ac{width:100%;max-width:440px;margin:auto;padding:26px;border-radius:24px;background:var(--pn);border:1px solid var(--b);box-shadow:var(--sh);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);box-sizing:border-box}.ac h1{margin:0 0 8px}
+.tb{display:flex;gap:8px;margin:18px 0 0}.tb button{flex:1;padding:11px;border:1px solid var(--b);border-radius:14px;background:var(--c);color:var(--t);font:inherit;cursor:pointer}.tb button:hover{transform:translateY(-2px)}
+.btn.c{text-align:center;color:#fff;background:var(--ag);border-color:transparent}
+#app{padding:0 8px;animation:fade .8s}
+#app header{display:flex;justify-content:space-between;align-items:center;max-width:1000px;margin:12px auto 10px;padding:12px 18px;text-align:left;position:sticky;top:calc(8px + env(safe-area-inset-top,0px));z-index:20;border-radius:22px;background:var(--pn);border:1px solid var(--b);box-shadow:var(--sh);-webkit-backdrop-filter:blur(16px) saturate(1.4);backdrop-filter:blur(16px) saturate(1.4)}
+#app header h1{font-size:1.45rem;margin:0}
+#av,.av2{width:44px;height:44px;flex:none;border-radius:50%;border:0;background:var(--ag);color:#fff;font:700 1.1rem system-ui,sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(255,93,122,.4)}
+#av:hover{transform:scale(1.1) rotate(-6deg)}
+#pf{position:fixed;inset:0;z-index:200;background:rgba(10,8,30,.45);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:16px}
+#pf:not([hidden]){animation:fade .35s}#pf:not([hidden]) .pc{animation:up .5s var(--ease)}
+.pc{background:#f5f8fd;color:var(--t);border:1px solid var(--b);box-shadow:var(--sh);border-radius:24px;max-width:520px;width:100%;max-height:85vh;overflow:auto;padding:22px;box-sizing:border-box}
+:root:not([data-theme="dark"]) .pc{background:#f5f8fd}:root[data-theme="dark"] .pc{background:#1c1438}
+.pc h3{margin:18px 0 6px}.pc ul{padding-left:18px;margin:0}.pc li{margin:4px 0}
+.vb{display:inline-block;margin:6px 8px 0 0;padding:7px 12px;border:1px solid var(--a);border-radius:10px;background:none;color:var(--a);font:inherit;font-size:.88rem;font-weight:600;cursor:pointer}
+.vb:hover{background:var(--ag);color:#fff;border-color:transparent;transform:translateY(-2px)}
+#toast{position:fixed;bottom:calc(20px + env(safe-area-inset-bottom,0px));left:50%;transform:translate(-50%,20px);background:var(--t);color:var(--bg);padding:11px 18px;border-radius:22px;opacity:0;transition:.5s var(--ease);pointer-events:none;z-index:300}#toast.on{opacity:1;transform:translate(-50%,0)}
+.hr{display:flex;gap:10px;align-items:center}
+.tbtn{padding:9px 14px;border:1px solid var(--b);border-radius:22px;background:var(--c);color:var(--t);font:inherit;font-size:.9rem;cursor:pointer;white-space:nowrap}.tbtn:hover{transform:translateY(-2px);box-shadow:var(--sh)}
+.thf{position:fixed;top:calc(14px + env(safe-area-inset-top,0px));right:14px;z-index:5}
+#app footer{max-width:1000px;margin:0 auto 24px;padding:14px 16px;border-radius:18px;background:var(--pn);border:1px solid var(--b);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+
+/* ===== обзор сайта ===== */
+.ld{max-width:1040px;margin:0 auto;padding:0 16px}
+.hero{min-height:100vh;min-height:100svh;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:90px 0 60px}
+.hero>*{animation:up .9s var(--ease) backwards}.hero>*:nth-child(2){animation-delay:.1s}.hero>*:nth-child(3){animation-delay:.2s}.hero>*:nth-child(4){animation-delay:.3s}.hero>*:nth-child(5){animation-delay:.4s}.hero>*:nth-child(6){animation-delay:.6s}
+.hero .logo{font-size:4.4rem;line-height:1;display:inline-block;animation:bob 5s ease-in-out infinite;filter:drop-shadow(0 8px 24px rgba(255,200,120,.5))}
+.hero h1{font-size:clamp(2.6rem,8vw,4.6rem);margin:8px 0 10px;line-height:1.05}
+.hero .tag{font-family:Fraunces,Georgia,"Times New Roman",serif;font-size:clamp(1.15rem,3.4vw,1.75rem);margin:0 0 14px;text-shadow:0 1px 14px var(--ts)}
+.hero p.m{max-width:640px;margin:0 auto 28px;font-size:1.05rem;color:var(--t);text-shadow:0 1px 18px var(--ts),0 0 3px var(--ts)}
+.cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.cta a{display:inline-block;text-decoration:none;padding:14px 26px;border-radius:16px;border:1px solid var(--b);background:var(--c);color:var(--t);font-weight:700;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.cta a.p{background:var(--ag);color:#fff;border-color:transparent;box-shadow:0 8px 24px rgba(255,93,122,.35)}.cta a:hover{transform:translateY(-3px)}
+.hint{margin-top:46px;color:var(--t);text-shadow:0 1px 12px var(--ts);font-size:.9rem;animation:bob 2.6s ease-in-out infinite!important}
+.sec{padding:64px 0 10px}.sec>h2{text-align:center;font-size:clamp(1.6rem,4.4vw,2.4rem);margin:0 0 8px}.sec>.m{text-align:center;max-width:640px;margin:0 auto 32px}
+.win{background:var(--c);border:1px solid var(--b);border-radius:22px;padding:22px;box-shadow:var(--sh);-webkit-backdrop-filter:blur(14px) saturate(1.4);backdrop-filter:blur(14px) saturate(1.4);box-sizing:border-box}
+.win h3{margin:0 0 6px;font-size:1.2rem}.win p{margin:0;color:var(--m)}.win .ic{font-size:2rem;line-height:1;display:block;margin-bottom:8px}
+.steps,.feat,.th3{display:grid;gap:16px}.steps{grid-template-columns:repeat(auto-fit,minmax(270px,1fr))}.feat{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}.th3{grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.step .n{width:40px;height:40px;border-radius:50%;background:var(--ag);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;margin-bottom:10px;box-shadow:0 6px 18px rgba(255,93,122,.4)}
+.rvl{opacity:0;transform:translateY(36px) scale(.97);transition:opacity .85s var(--ease),transform .85s var(--ease),border-color .4s,box-shadow .4s;transition-delay:var(--d,0ms)}
+.rvl.rl{transform:translateX(-50px)}.rvl.rr{transform:translateX(50px)}
+.rvl.in{opacity:1;transform:none}.win.rvl.in:hover{transform:translateY(-5px);border-color:var(--a)}
+.mk{margin-top:14px;padding:12px;border-radius:14px;background:rgba(128,128,128,.12);border:1px solid var(--b);font-size:.9rem;text-align:left}
+.mk .q{color:var(--a);font-size:.8rem;font-weight:700;margin:0}.mk b{display:block;margin:2px 0 4px}
+.mk .o{padding:8px 12px;border:1px solid var(--b);border-radius:11px;margin:6px 0 0;background:var(--c)}.mk .o.on{background:var(--ag);color:#fff;border-color:transparent}
+.mk .bub{max-width:90%;padding:8px 12px;border-radius:14px;background:rgba(128,128,128,.2);margin:6px 0 0}.mk .bub.me{margin-left:auto;background:var(--ag);color:#fff}
+.mk .bub small{display:block;opacity:.75;margin-top:2px}
+.vb2{display:inline-block;padding:5px 10px;border:1px solid var(--a);border-radius:9px;color:var(--a);font-weight:600;font-size:.82rem;margin:8px 6px 0 0}.vb2.dn{background:var(--ag);color:#fff;border-color:transparent}
+.mk .row2{display:flex;gap:10px;align-items:center}.mk .av0{width:34px;height:34px;border-radius:50%;background:var(--ag);color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none}
+.mk .heart{float:right;color:#ff3d78;font-size:1.2rem}
+.tile{position:relative;height:210px;border-radius:22px;overflow:hidden;border:1px solid var(--b);box-shadow:var(--sh)}
+.tile .lb{position:absolute;left:0;right:0;bottom:0;padding:34px 16px 14px;color:#fff;background:linear-gradient(transparent,rgba(5,5,30,.72));text-shadow:none}.tile .lb b{display:block;font-family:Fraunces,Georgia,serif;font-size:1.2rem}.tile .lb span{font-size:.88rem;opacity:.9}
+.tile .em{position:absolute;left:50%;top:38%;transform:translate(-50%,-50%);font-size:3.2rem;animation:bob 5s ease-in-out infinite}
+.t1{background:linear-gradient(180deg,#2a1b5e 0%,#c0456f 62%,#ff9a5a 100%)}.t2{background:linear-gradient(180deg,#8fc8ff 0%,#cfe9ff 55%,#ffe3b0 100%)}.t3{background:radial-gradient(ellipse at 50% 40%,#1b2052,#0c1034 55%,#04061a)}
+.sat{position:absolute;left:50%;top:40%;width:0;height:0;transform:rotate(-20deg)}
+.sat i{position:absolute;left:-26px;top:-26px;width:52px;height:52px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#f3dfbd,#d2a878 55%,#7f6a8e)}
+.sat b{position:absolute;left:-60px;top:-11px;width:120px;height:22px;border-radius:50%;border:4px solid rgba(217,185,141,.85);box-sizing:border-box}
+.sat u{position:absolute;left:-6px;top:-6px;width:12px;height:12px;animation:oy 3.5s ease-in-out infinite alternate -1.75s}
+.sat u::after{content:"";position:absolute;inset:0;border-radius:50%;background:#aab6ff;box-shadow:0 0 12px #aab6ff;animation:ox 3.5s ease-in-out infinite alternate}
+@keyframes ox{from{transform:translateX(-76px)}to{transform:translateX(76px)}}@keyframes oy{from{transform:translateY(-26px)}to{transform:translateY(26px)}}
+.ldf{text-align:center;color:var(--m);font-size:.85rem;padding:0 0 28px}
+
+/* небо */
+#sky{position:fixed;inset:0;z-index:-1;overflow:hidden}
+#stars{position:absolute;left:0;top:0;width:100%;height:72%}#stars i{position:absolute;border-radius:50%;background:#fff;animation:tw 3s ease-in-out infinite}
+@keyframes tw{50%{transform:scale(.4);opacity:.3}}
+#sun,#moon{position:absolute;border-radius:50%;will-change:top,left}
+#sun{left:72%;width:150px;height:150px;margin:-75px 0 0 -75px}
+#sun::before{content:"";position:absolute;inset:-70%;border-radius:50%;background:repeating-conic-gradient(rgba(255,255,255,.2) 0 5deg,transparent 5deg 15deg);-webkit-mask:radial-gradient(circle,#000 22%,transparent 68%);mask:radial-gradient(circle,#000 22%,transparent 68%);animation:spin 80s linear infinite}
+#moon{left:24%;width:80px;height:80px;margin:-40px 0 0 -40px;background:#eef1ff;box-shadow:inset -14px -5px 0 rgba(120,130,180,.45),0 0 50px 10px rgba(200,210,255,.35)}
+#clouds{position:absolute;inset:0;will-change:transform}
+#clouds b{position:absolute;left:0;height:56px;border-radius:56px;background:var(--cl,rgba(255,255,255,.3));animation:drift linear infinite}
+#clouds b::before,#clouds b::after{content:"";position:absolute;border-radius:50%;background:inherit}
+#clouds b::before{width:70px;height:70px;left:30px;top:-32px}#clouds b::after{width:90px;height:90px;right:34px;top:-44px}
+#clouds b:nth-child(1){top:16%;width:210px;animation-duration:110s;animation-delay:-30s}
+#clouds b:nth-child(2){top:32%;width:290px;animation-duration:160s;animation-delay:-90s}
+#clouds b:nth-child(3){top:48%;width:180px;animation-duration:130s;animation-delay:-10s}
+#hill{position:absolute;left:0;bottom:0;width:100%;height:36vh}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
+
+.card{display:flex;flex-direction:column}.card .act{margin-top:auto;padding-top:10px}.act small{display:block;margin-bottom:2px}
+.card .row{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}.card .row .vb{margin:0}
+.rt{font-size:.9rem;margin:2px 0 2px}.rt b{color:#ffb020}
+textarea{width:100%;box-sizing:border-box;min-height:90px;resize:vertical;padding:13px 16px;border:1px solid var(--b);border-radius:14px;background:var(--c);color:var(--t);font:inherit;margin:8px 0;outline:0}
+textarea:focus{border-color:var(--a);box-shadow:0 0 0 4px rgba(255,140,70,.22)}
+.stp{display:flex;gap:4px;margin:6px 0}.stp button{border:0;background:none;font-size:2.1rem;line-height:1;cursor:pointer;color:var(--m);opacity:.5;padding:2px}
+.stp button.on{color:#ffb020;opacity:1;text-shadow:0 0 14px rgba(255,176,32,.6)}.stp button:hover{transform:scale(1.25)}
+.rv{padding:12px 0;border-top:1px solid rgba(128,128,128,.25)}.rh{display:flex;gap:10px;align-items:center}.sr{color:#ffb020}.rv p{margin:8px 0 4px;word-break:break-word}
+.av2.sm{width:34px;height:34px;font-size:.95rem}
+.pc *{text-shadow:none!important}
+.pc .btn,.pc input,.pc textarea{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(128,128,128,.14)}.pc .btn.c{background:var(--ag)}
+</style></head><body><div id="sky"><div id="stars"></div><div id="sun"></div><div id="moon"></div><div id="clouds"><b></b><b></b><b></b></div><svg id="hill" viewBox="0 0 100 34" preserveAspectRatio="none"><path id="hf" d="M0 14Q14 5 30 10T58 6T82 11T100 8L100 34L0 34Z"/><path id="hp" d="M0 18Q12 11 26 16T52 14T76 17T100 13L100 34L0 34Z"/></svg></div><button id="th" class="tbtn thf"></button>
+<div class="ld">
+<section class="hero"><span class="logo">🌙</span><h1>MoonMix</h1><p class="tag">Места Астаны под ваше настроение</p>
+<p class="m">Ответьте на 5 вопросов — и получите подборку из 100 мест города: парки, кафе, бани, бассейны, ТЦ, аттракционы. Отмечайте, где побывали, находите друзей с похожим настроением и зовите их гулять.</p>
+<div class="cta"><a class="p" href="#auth" data-tab="register">Начать →</a><a href="#auth" data-tab="login">Войти</a></div><div class="hint">Листайте вниз — расскажем, как всё устроено ↓</div></section>
+
+<section class="sec"><h2 class="rvl">Как это работает</h2><p class="m rvl">Три шага от «не знаю, куда пойти» до отметки «я здесь был».</p>
+<div class="steps" data-stag>
+<div class="win step rvl rl"><div class="n">1</div><h3>Пройдите тест</h3><p>5 коротких вопросов о том, чего хочется и сколько сил.</p>
+<div class="mk"><p class="q">Вопрос 5 из 5</p><b>Как вы себя чувствуете?</b><div class="o">Радостно</div><div class="o">Задумчиво</div><div class="o on">Грустно, плохое настроение</div></div></div>
+<div class="win step rvl"><div class="n">2</div><h3>Получите подборку</h3><p>Мы подберём места из 10 категорий: от уединения и прогулок до вечеринок и бань.</p>
+<div class="mk"><span class="heart">♥</span><b>Ботанический сад</b>Тихие аллеи, оранжереи и пруды — спокойное место, чтобы побыть наедине.<br><small style="color:var(--a);font-weight:600">📍 Район Ишима</small></div></div>
+<div class="win step rvl rr"><div class="n">3</div><h3>Отмечайте и делитесь</h3><p>Ставьте «Был здесь», сохраняйте в избранное, оставляйте оценки и отзывы.</p>
+<div class="mk"><span class="vb2 dn">✔ Вы были здесь</span><span class="vb2">💬 Отзывы</span><span class="vb2">🚶 Предложить прогулку</span><div style="margin-top:8px;color:#ffb020">★★★★☆ <span class="m">4,6 · 12 отзывов</span></div></div></div>
+</div></section>
+
+<section class="sec"><h2 class="rvl">Что здесь можно делать</h2><p class="m rvl">Не только выбирать места — но и ходить туда вместе.</p>
+<div class="feat" data-stag>
+<div class="win rvl rl"><span class="ic">🎯</span><h3>Подборка по настроению</h3><p>100 мест в 10 категориях, поиск и фильтры. Вкладка «Для вас» собирается по результатам теста.</p></div>
+<div class="win rvl rr"><span class="ic">♥</span><h3>Избранное и «Был здесь»</h3><p>Сохраняйте понравившееся и отмечайте посещённое. Отметку можно снять — история в профиле всегда актуальна.</p></div>
+<div class="win rvl rl"><span class="ic">⭐</span><h3>Оценки и отзывы</h3><p>Ставьте оценки, читайте отзывы других и заглядывайте в профили авторов.</p></div>
+<div class="win rvl rr"><span class="ic">🗺</span><h3>Открыть в 2ГИС</h3><p>Одна кнопка — и место откроется в 2ГИС: на сайте или в приложении, если оно у вас есть.</p></div>
+<div class="win rvl rl"><span class="ic">🔍</span><h3>Друзья по настроению</h3><p>Мы покажем людей с похожим настроением. Отправьте запрос — человек увидит, кто вы, и сможет принять или отклонить.</p>
+<div class="mk"><div class="row2"><div class="av0">А</div><div><b style="margin:0">Алия · совпадение 86%</b><span class="m">Хочется тишины и покоя</span></div></div><span class="vb2 dn">➕ Добавить в друзья</span><span class="vb2">👤 Профиль</span></div></div>
+<div class="win rvl rr"><span class="ic">💬</span><h3>Чаты и прогулки</h3><p>Пишите друзьям и приглашайте их на прогулку прямо с карточки места — приглашение придёт в чат.</p>
+<div class="mk"><div class="bub me"><b style="margin:0">🚶 Вы предлагаете прогулку</b>Центральный парк<small>⏳ Ждёт ответа</small></div><div class="bub">✔ Идём! Прогулка: Центральный парк</div></div></div>
+</div></section>
+
+<section class="sec"><h2 class="rvl">Три темы — под ваше настроение</h2><p class="m rvl">Небо над сайтом плавно меняется, пока вы листаете страницу.</p>
+<div class="th3" data-stag>
+<div class="tile t1 rvl rl"><div class="em">🌇</div><div class="lb"><b>Закат</b><span>Тёплые сумерки и первые звёзды</span></div></div>
+<div class="tile t2 rvl"><div class="em">☀️</div><div class="lb"><b>Восход</b><span>Светлое утреннее небо и облака</span></div></div>
+<div class="tile t3 rvl rr"><div class="sat"><i></i><b></b><u></u></div><div class="lb"><b>Грусть</b><span>Космос, Сатурн и грустный человечек. Появляется, если выбрать «Грустно» в тесте</span></div></div>
+</div></section>
+</div>
+<div id="auth"><div class="ac rvl"><h1>🌙 MoonMix</h1>
+<p class="m">Войдите или создайте аккаунт — это займёт меньше минуты. Затем вас ждёт тест настроения и подборка мест.</p>
+<div class="tb"><button id="tl" class="on">Войти</button><button id="tr">Регистрация</button></div>
+<input id="lg" placeholder="Логин" autocomplete="username"><input id="pw" type="password" placeholder="Пароль (от 6 символов)" autocomplete="current-password">
+<button class="btn c" id="sub">Войти</button><p id="err" class="er"></p></div></div>
+<script>// «Бэкенд» в браузере: все данные хранятся в LS. Используется обеими страницами.
+const LS=(()=>{try{const t="__t";localStorage.setItem(t,"1");localStorage.removeItem(t);return localStorage}catch(e){
+  const g=()=>{try{return JSON.parse(window.name)||{}}catch{return {}}};
+  return{getItem:k=>{const v=g()[k];return v===undefined?null:v},setItem:(k,v)=>{const o=g();o[k]=String(v);window.name=JSON.stringify(o)},removeItem:k=>{const o=g();delete o[k];window.name=JSON.stringify(o)}}}})();
+const DB = {
+  K: "astana_db", S: "astana_session",
+  load() { try { return JSON.parse(LS.getItem(this.K)) || { users: {} }; } catch { return { users: {} }; } },
+  store(d) { LS.setItem(this.K, JSON.stringify(d)); },
+  pub(u) { return { login: u.login, created: u.created, avatar: u.avatar || null, friends: u.friends || [], favs: u.favs, visits: u.visits, moods: u.moods, last: u.moods[u.moods.length - 1] || null }; },
+  mini(t) { return { login: t.login, avatar: t.avatar || null, last: t.moods[t.moods.length - 1] || null }; },
+  cyrb(s) { let a = 0xdeadbeef, b = 0x41c6ce57; for (let i = 0; i < s.length; i++) { const c = s.charCodeAt(i); a = Math.imul(a ^ c, 2654435761); b = Math.imul(b ^ c, 1597334677); }
+    a = Math.imul(a ^ (a >>> 16), 2246822507) ^ Math.imul(b ^ (b >>> 13), 3266489909); b = Math.imul(b ^ (b >>> 16), 2246822507) ^ Math.imul(a ^ (a >>> 13), 3266489909);
+    return (4294967296 * (2097151 & b) + (a >>> 0)).toString(16); },
+  async hash(pw, salt, alg) {
+    const s = salt + pw, sub = globalThis.crypto && crypto.subtle;
+    alg = alg || (sub ? "s:" : "c:");
+    if (alg === "s:" && sub) { const h = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s)); return "s:" + [...new Uint8Array(h)].map(x => x.toString(16).padStart(2, "0")).join(""); }
+    return "c:" + this.cyrb(s);
+  },
+  async call(p, b = {}) {
+    const d = this.load();
+    if (p === "register") {
+      const { login, password } = b;
+      if (typeof login !== "string" || !/^[\p{L}\p{N}_.-]{3,32}$/u.test(login)) throw new Error("Логин: 3–32 символа (буквы, цифры, _ . -)");
+      if (typeof password !== "string" || password.length < 6 || password.length > 100) throw new Error("Пароль: от 6 символов");
+      const k = login.toLowerCase();
+      if (d.users[k]) throw new Error("Такой логин уже занят");
+      const salt = Math.random().toString(36).slice(2) + Date.now().toString(36);
+      d.users[k] = { login, salt, hash: await this.hash(password, salt), created: new Date().toISOString(), favs: [], visits: [], moods: [] };
+      this.store(d); LS.setItem(this.S, k); return this.pub(d.users[k]);
+    }
+    if (p === "login") {
+      const u = d.users[String(b.login || "").toLowerCase()];
+      if (!u || u.hash !== await this.hash(String(b.password || ""), u.salt, u.hash.slice(0, 2))) throw new Error("Неверный логин или пароль");
+      LS.setItem(this.S, u.login.toLowerCase()); return this.pub(u);
+    }
+    if (p === "logout") { LS.removeItem(this.S); return { ok: true }; }
+    const k = LS.getItem(this.S), u = k && d.users[k];
+    if (!u) throw new Error("Требуется вход");
+    const ok = (v, n) => typeof v === "string" && v.length > 0 && v.length <= n;
+    d.requests = d.requests || [];
+    for (const [a, ua] of Object.entries(d.users)) for (const f of (ua.friends || [])) { const fu = d.users[f]; if (fu && !(fu.friends || []).includes(a)) { ua.friends = ua.friends.filter(x => x !== f); if (!d.requests.some(r => r.from === a && r.to === f)) d.requests.push({ from: a, to: f, at: new Date().toISOString() }); } }
+    if (p === "ratings") { const m = {}; (d.reviews || []).forEach(r => { const x = m[r.key] || (m[r.key] = { s: 0, n: 0 }); x.s += r.rating; x.n++; }); Object.values(m).forEach(x => x.avg = x.s / x.n); return m; }
+    if (p === "reviews") { if (!ok(b.key, 150)) throw new Error("Некорректные данные"); return (d.reviews || []).filter(r => r.key === b.key).sort((a, c) => c.at.localeCompare(a.at)).map(r => ({ ...r, avatar: (d.users[r.user] || {}).avatar || null })); }
+    if (p === "review") {
+      const t = typeof b.text === "string" ? b.text.trim() : "";
+      if (!ok(b.key, 150) || !Number.isInteger(b.rating) || b.rating < 1 || b.rating > 5 || t.length > 1000) throw new Error("Некорректный отзыв");
+      d.reviews = (d.reviews || []).filter(r => !(r.key === b.key && r.user === k));
+      d.reviews.push({ key: b.key, user: k, login: u.login, rating: b.rating, text: t, at: new Date().toISOString() });
+      this.store(d); return { ok: true };
+    }
+    if (p === "review_del") { if (!ok(b.key, 150)) throw new Error("Некорректные данные"); d.reviews = (d.reviews || []).filter(r => !(r.key === b.key && r.user === k)); this.store(d); return { ok: true }; }
+    if (p === "profile") {
+      const tk = String(b.login || "").toLowerCase(), t = d.users[tk]; if (!t) throw new Error("Пользователь не найден");
+      return { login: t.login, avatar: t.avatar || null, rel: (u.friends || []).includes(tk) ? "friend" : d.requests.some(r => r.from === k && r.to === tk) ? "out" : d.requests.some(r => r.from === tk && r.to === k) ? "in" : "none", created: t.created, visits: t.visits.length, favs: t.favs.length, last: t.moods[t.moods.length - 1] || null, recent: t.visits.slice(-5).reverse(), reviews: (d.reviews || []).filter(r => r.user === tk).length };
+    }
+    if (p === "friends") return (u.friends || []).map(x => d.users[x]).filter(Boolean).map(t => this.mini(t));
+    if (p === "requests") {
+      const mk = (list, who) => list.filter(r => d.users[r[who]]).map(r => ({ ...this.mini(d.users[r[who]]), at: r.at })).sort((a, c) => c.at.localeCompare(a.at));
+      return { in: mk(d.requests.filter(r => r.to === k), "from"), out: mk(d.requests.filter(r => r.from === k), "to") };
+    }
+    if (p === "suggest") {
+      const L = u.moods[u.moods.length - 1]; if (!L) return [];
+      const fr = u.friends || [], inc = d.requests.filter(r => r.to === k).map(r => r.from);
+      return Object.entries(d.users).filter(([x, t]) => x !== k && !fr.includes(x) && !inc.includes(x) && t.moods.length).map(([x, t]) => {
+        const m = t.moods[t.moods.length - 1], sh = m.cats.filter(c => L.cats.includes(c)).length;
+        return { ...this.mini(t), sh, st: d.requests.some(r => r.from === k && r.to === x) ? "out" : "none", match: Math.min(100, sh * 30 + (m.cats[0] === L.cats[0] ? 20 : 0) + Math.round((100 - Math.abs(m.energy - L.energy)) * 0.2)) };
+      }).filter(t => t.sh > 0).sort((a, c) => c.match - a.match).slice(0, 10);
+    }
+    if (p.startsWith("friend_")) {
+      const t = String(b.login || "").toLowerCase(), tu = d.users[t];
+      if (!tu || t === k) throw new Error("Пользователь не найден");
+      u.friends = u.friends || []; tu.friends = tu.friends || [];
+      const has = (a, c) => d.requests.some(r => r.from === a && r.to === c);
+      const drop = (a, c) => { d.requests = d.requests.filter(r => !(r.from === a && r.to === c)); };
+      if (p === "friend_add") {
+        if (u.friends.includes(t)) { /* уже друзья */ }
+        else if (has(t, k)) { u.friends.push(t); tu.friends.push(k); drop(t, k); }
+        else if (!has(k, t)) d.requests = [...d.requests, { from: k, to: t, at: new Date().toISOString() }].slice(-1000);
+      } else if (p === "friend_cancel") drop(k, t);
+      else if (p === "friend_accept") { if (!has(t, k)) throw new Error("Запрос не найден"); if (!u.friends.includes(t)) u.friends.push(t); if (!tu.friends.includes(k)) tu.friends.push(k); drop(t, k); drop(k, t); }
+      else if (p === "friend_decline") drop(t, k);
+      else if (p === "friend_del") { u.friends = u.friends.filter(x => x !== t); tu.friends = tu.friends.filter(x => x !== k); }
+      else throw new Error("Неизвестная операция");
+      this.store(d); return this.pub(u);
+    }
+    if (["unread", "chats", "chat", "send", "walk_reply"].includes(p)) {
+      d.messages = d.messages || []; u.read = u.read || {};
+      const M = d.messages, fr = u.friends || [];
+      const pair = (x, y) => M.filter(m => (m.from === x && m.to === y) || (m.from === y && m.to === x));
+      const unr = t => M.filter(m => m.from === t && m.to === k && m.at > (u.read[t] || "")).length;
+      const nid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+      if (p === "unread") return fr.reduce((s, t) => s + unr(t), 0);
+      if (p === "chats") return fr.filter(x => d.users[x]).map(x => ({ ...this.mini(d.users[x]), lastMsg: pair(k, x).slice(-1)[0] || null, unread: unr(x) }))
+        .sort((a, c) => ((c.lastMsg || {}).at || "").localeCompare((a.lastMsg || {}).at || ""));
+      const t = String(b.login || "").toLowerCase(), tu = d.users[t];
+      if (!tu || t === k) throw new Error("Пользователь не найден");
+      const isF = fr.includes(t) && (tu.friends || []).includes(k);
+      if (p === "chat") {
+        if (unr(t)) { u.read[t] = new Date().toISOString(); this.store(d); }
+        return { user: this.mini(tu), friend: isF, msgs: pair(k, t).slice(-200) };
+      }
+      if (!isF) throw new Error("Писать можно только друзьям");
+      if (p === "send") {
+        const text = typeof b.text === "string" ? b.text.trim() : "", w = b.place;
+        if (w !== undefined && !ok(w, 100)) throw new Error("Некорректные данные");
+        if (text.length > (w ? 300 : 1000) || (!w && !text)) throw new Error("Сообщение: от 1 до 1000 символов");
+        M.push({ id: nid(), from: k, to: t, at: new Date().toISOString(), text, ...(w ? { type: "walk", place: w, status: "pending" } : {}) });
+      } else {
+        const m = M.find(x => x.id === b.id);
+        if (!m || m.type !== "walk" || m.to !== k || m.from !== t || m.status !== "pending" || !["accepted", "declined"].includes(b.status)) throw new Error("Приглашение недоступно");
+        m.status = b.status;
+        M.push({ id: nid(), from: k, to: t, at: new Date().toISOString(), text: b.status === "accepted" ? "✔ Идём! Прогулка: " + m.place : "✖ Не получится: " + m.place + ". Давай в другой раз" });
+      }
+      d.messages = M.slice(-5000); this.store(d); return { ok: true };
+    }
+    if (p === "unvisit") { if (!ok(b.place, 100)) throw new Error("Некорректные данные"); u.visits = u.visits.filter(v => v.place !== b.place); this.store(d); return this.pub(u); }
+    if (p === "avatar") {
+      const a = b.data;
+      if (a === null) delete u.avatar;
+      else { if (typeof a !== "string" || a.length > 150000 || !/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+\/=]+$/.test(a)) throw new Error("Некорректное изображение"); u.avatar = a; }
+      this.store(d); return this.pub(u);
+    }
+    if (p === "mood") {
+      const { mood, energy, cats } = b;
+      if (!ok(mood, 100) || !Number.isFinite(energy) || !Array.isArray(cats) || cats.length !== 2) throw new Error("Некорректные данные теста");
+      u.moods = [...u.moods, { mood, energy, cats, sad: b.sad === true, at: new Date().toISOString() }].slice(-100);
+    } else if (p === "visit") {
+      if (!ok(b.place, 100) || !ok(b.cat, 50)) throw new Error("Некорректные данные");
+      u.visits = [...u.visits, { place: b.place, cat: b.cat, at: new Date().toISOString() }].slice(-500);
+    } else if (p === "fav") {
+      if (!ok(b.key, 150)) throw new Error("Некорректные данные");
+      u.favs = u.favs.includes(b.key) ? u.favs.filter(x => x !== b.key) : [...u.favs, b.key];
+    } else if (p !== "me") throw new Error("Неизвестная операция");
+    this.store(d); return this.pub(u);
+  },
+};</script>
+<script>
+const $=i=>document.getElementById(i);let mode="login";
+function setMode(m){mode=m;$("tl").className=m=="login"?"on":"";$("tr").className=m=="login"?"":"on";$("sub").textContent=m=="login"?"Войти":"Создать аккаунт";$("pw").autocomplete=m=="login"?"current-password":"new-password";$("err").textContent=""}
+$("tl").onclick=()=>setMode("login");$("tr").onclick=()=>setMode("register");
+async function submit(){try{await DB.call(mode,{login:$("lg").value.trim(),password:$("pw").value});location.replace("app.html")}catch(e){$("err").textContent=e.message}}
+$("sub").onclick=submit;$("pw").onkeydown=e=>{if(e.key=="Enter")submit()};
+(async()=>{try{await DB.call("me");location.replace("app.html")}catch{}})();
+(function(){const els=[...document.querySelectorAll(".rvl")];
+document.querySelectorAll("[data-stag]").forEach(g=>[...g.children].forEach((e,i)=>e.style.setProperty("--d",i*110+"ms")));
+const show=e=>{e.classList.add("in");setTimeout(()=>{e.style.transitionDelay="0ms"},1500)};
+if(!("IntersectionObserver" in window)){els.forEach(show)}else{const io=new IntersectionObserver(es=>es.forEach(x=>{if(x.isIntersecting){show(x.target);io.unobserve(x.target)}}),{threshold:.15,rootMargin:"0px 0px -5% 0px"});els.forEach(e=>io.observe(e))}
+document.querySelectorAll("[data-tab]").forEach(a=>a.addEventListener("click",()=>setMode(a.dataset.tab)))})();
+
+</script><script>(function(){
+const g=i=>document.getElementById(i),sky=g("sky"),sun=g("sun"),moon=g("moon"),stars=g("stars"),hp=g("hp"),hf=g("hf"),cl=g("clouds"),th=g("th");
+for(let i=0;i<90;i++){const s=document.createElement("i"),z=1+Math.random()*2;s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;width:${z}px;height:${z}px;opacity:${.4+Math.random()*.6};animation-delay:-${Math.random()*3}s`;stars.appendChild(s)}
+// кадр: [верх неба rgb],[низ неба rgb],высота солнца,[цвет солнца],звёзды,[земля],высота луны (доля экрана, горизонт ≈ 0.68)
+const K=(a,b,c,d,e,f,h)=>[...a,...b,c,...d,e,...f,h];
+const NIGHT=K([7,11,31],[28,30,74],1.08,[255,120,60],1,[10,10,24],.22);
+const KF={
+dark:[K([72,60,152],[255,152,72],.42,[255,214,110],0,[46,26,66],1.1),K([54,40,112],[216,82,102],.62,[255,146,84],.2,[32,18,50],.85),K([20,22,60],[96,54,114],.84,[255,110,70],.7,[20,12,36],.5),NIGHT],
+light:[NIGHT,K([88,72,160],[255,168,100],.72,[255,176,90],.35,[40,28,54],.6),K([92,172,246],[255,226,190],.42,[255,236,160],0,[52,104,64],1.1),K([62,148,240],[204,234,255],.2,[255,248,205],0,[58,116,72],1.1)]};
+let mode=document.documentElement.dataset.theme==="light"?"light":"dark",p=0,S=null,run=false;
+const rm=matchMedia("(prefers-reduced-motion: reduce)").matches;
+function samp(k,p){const n=k.length-1,x=Math.min(p*n,n-1e-9),i=Math.floor(x),t=x-i,a=k[i],b=k[i+1];return a.map((v,j)=>v+(b[j]-v)*t)}
+const c3=(a,o)=>a.slice(o,o+3).map(v=>v|0).join(","),mix=(a,b,t)=>a.map((v,i)=>(v+(b[i]-v)*t)|0).join(",");
+function frame(){const T=samp(KF[mode],p);if(!S||rm)S=T.slice();let d=0;
+for(let i=0;i<T.length;i++){const df=T[i]-S[i];S[i]+=df*.07;d+=Math.abs(df)}
+sky.style.background=`linear-gradient(rgb(${c3(S,0)}) 0%,rgb(${c3(S,3)}) 70%)`;
+sun.style.top=S[6]*100+"%";sun.style.left=(76-p*10)+"%";sun.style.background=`radial-gradient(circle,#fff 0%,rgb(${c3(S,7)}) 55%)`;
+sun.style.boxShadow=`0 0 90px 50px rgba(${c3(S,7)},.55),0 0 220px 110px rgba(${c3(S,7)},.25)`;
+stars.style.opacity=Math.max(0,Math.min(1,S[10]));moon.style.top=S[14]*100+"%";
+hp.style.fill=`rgb(${c3(S,11)})`;hf.style.fill=`rgb(${mix(S.slice(11,14),S.slice(3,6),.4)})`;
+cl.style.transform=`translateY(${-p*90}px)`;cl.style.setProperty("--cl",`rgba(${mix(S.slice(3,6),[255,255,255],.55)},${(.12+.36*(1-Math.min(1,S[10]))).toFixed(2)})`);
+if(d>.02)requestAnimationFrame(frame);else run=false}
+function kick(){if(!run){run=true;requestAnimationFrame(frame)}}
+function onS(){const h=document.documentElement.scrollHeight-innerHeight;p=h>0?Math.min(1,Math.max(0,scrollY/h)):0;kick()}
+addEventListener("scroll",onS,{passive:true});addEventListener("resize",onS);
+if(window.ResizeObserver)new ResizeObserver(onS).observe(document.body);
+function setTheme(t,np){mode=t;document.documentElement.dataset.theme=t;if(!np)try{localStorage.setItem("moonmix_theme",t)}catch(e){}
+if(th){th.textContent=t=="dark"?"☀️ Восход":"🌇 Закат";th.title=t=="dark"?"Сейчас закат. Переключить на восход":"Сейчас восход. Переключить на закат"}kick()}
+if(th)th.onclick=()=>setTheme(mode=="dark"?"light":"dark");
+setTheme(mode,1);onS();
+})();
+</script></body></html>
