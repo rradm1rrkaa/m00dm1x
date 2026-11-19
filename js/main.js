@@ -1,5 +1,6 @@
 import { createModal } from './components/modal.js';
-import { avatar, byId, runAction, toast } from './components/ui.js';
+import { avatar, byId, node, runAction, toast } from './components/ui.js';
+import { paintIcons } from './components/icons.js';
 import { createCatalog } from './features/catalog.js';
 import { createProfiles } from './features/profiles.js';
 import { createQuiz } from './features/quiz.js';
@@ -8,6 +9,7 @@ import { createLocalApi } from './services/local-api.js';
 import { createTheme } from './theme/theme.js';
 
 async function initialize() {
+  paintIcons();
   const api = createLocalApi();
   const modal = createModal(byId('pf'), byId('pfc'));
   let session = await api.session();
@@ -19,12 +21,35 @@ async function initialize() {
   const getResult = () => result;
   const catalogRegion = byId('catalog');
   const quizRegion = byId('quiz');
+  const workspaceRegion = byId('workspace');
+  const app = byId('app');
+  let catalogScroll = 0;
+  const workspace = {
+    get active() { return app.dataset.view; },
+    show(view, content, focus = true) {
+      const changed = app.dataset.view !== view;
+      switchView(view);
+      workspaceRegion.replaceChildren(content);
+      const heading = workspaceRegion.querySelector('h1');
+      workspaceRegion.setAttribute('aria-label', heading?.textContent || 'MoodMix');
+      if (focus && heading) {
+        heading.tabIndex = -1;
+        heading.focus({ preventScroll: true });
+      }
+      if (changed) scrollTo(0, 0);
+    },
+    close() {
+      showCatalog(false);
+      scrollTo(0, catalogScroll);
+      byId('nav-catalog').focus({ preventScroll: true });
+    }
+  };
 
   const theme = await createTheme(api, byId('theme-slot'), toast);
-  const context = { api, modal, getSession, getResult, afterWrite };
+  const context = { api, modal, workspace, getSession, getResult, afterWrite };
   const catalog = createCatalog({ ...context, social: () => social });
   const social = createSocial(context);
-  const profiles = createProfiles({ ...context, changeMode, openPlace: catalog.openPlace });
+  const profiles = createProfiles({ ...context, changeMode, openPlace: catalog.openPlace, openPeople: social.openPeople });
   const quiz = createQuiz(quizRegion, {
     leave: () => showCatalog(true),
     finish: completeQuiz,
@@ -38,18 +63,28 @@ async function initialize() {
   if (params.has('demo')) await api.switchProfile('demo');
   if (params.size) history.replaceState(history.state, '', location.pathname + location.hash);
 
+  function switchView(view) {
+    if (app.dataset.view === 'catalog' && view !== 'catalog') catalogScroll = window.scrollY;
+    app.dataset.view = view;
+    quizRegion.hidden = view !== 'quiz';
+    catalogRegion.hidden = view !== 'catalog';
+    workspaceRegion.hidden = view === 'quiz' || view === 'catalog';
+    byId('skip-link').hidden = view !== 'catalog';
+    for (const [name, id] of Object.entries({ catalog: 'nav-catalog', quiz: 'nav-quiz', profile: 'profile', messages: 'chats' })) {
+      if (name === view) byId(id).setAttribute('aria-current', 'page');
+      else byId(id).removeAttribute('aria-current');
+    }
+    if (view !== 'quiz') theme.setMood(result?.theme);
+  }
+
   function showCatalog(focus) {
-    quizRegion.hidden = true;
-    catalogRegion.hidden = false;
-    byId('skip-link').hidden = false;
-    theme.setMood(result?.theme);
+    switchView('catalog');
     if (focus) byId('out').focus();
   }
 
   function showQuiz() {
-    catalogRegion.hidden = true;
-    byId('skip-link').hidden = true;
-    quizRegion.hidden = false;
+    switchView('quiz');
+    scrollTo(0, 0);
     quiz.choose();
   }
 
@@ -78,9 +113,10 @@ async function initialize() {
   async function afterWrite({ redraw = false } = {}) {
     session = await api.session();
     const guest = session.mode === 'guest';
-    for (const control of ['find-friends', 'friends', 'chats']) byId(control).hidden = guest;
+    for (const control of ['friends', 'chats']) byId(control).hidden = guest;
     const profileControl = byId('profile');
-    profileControl.replaceChildren(avatar(session.profile, 'sm'), document.createTextNode(guest ? 'Профиль' : session.profile.name));
+    profileControl.replaceChildren(avatar(session.profile, 'sm'), node('span', 'profile-caption', guest ? 'Профиль' : session.profile.name));
+    profileControl.setAttribute('aria-label', guest ? 'Профиль' : 'Профиль · ' + session.profile.name);
     byId('mode-note').textContent = guest ? 'Гость · избранное и отметки сохраняются в этом браузере.'
       : session.mode === 'demo' ? 'Демо · вымышленные профили и локальная переписка.'
         : 'Локальный профиль · данные из прежней версии.';
@@ -108,12 +144,22 @@ async function initialize() {
     catalog.reset();
     catalog.setView('all');
     await afterWrite({ redraw: true });
+    scrollTo(0, 0);
   }
 
   byId('start-quiz').addEventListener('click', showQuiz);
+  byId('nav-catalog').addEventListener('click', () => {
+    catalog.setView('all');
+    showCatalog(false);
+    scrollTo(0, 0);
+  });
+  byId('nav-quiz').addEventListener('click', () => {
+    if (workspace.active === 'quiz') return;
+    if (result) { catalog.setView('recommended'); showCatalog(true); }
+    else showQuiz();
+  });
   byId('profile').addEventListener('click', runAction(() => profiles.open()));
   byId('profiles').addEventListener('click', runAction(profiles.pick));
-  byId('find-friends').addEventListener('click', runAction(() => social.openPeople()));
   byId('friends').addEventListener('click', runAction(() => social.openPeople(true)));
   byId('chats').addEventListener('click', runAction(social.openChats));
 

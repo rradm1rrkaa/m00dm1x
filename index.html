@@ -1,56 +1,82 @@
-<!DOCTYPE html>
-<html lang="ru" data-theme="dark"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Места и идеи для отдыха в Астане под ваше настроение. Попробуйте бесплатную гостевую подборку.">
-<title>MoodMix — отдых в Казахстане</title>
-
-<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&amp;family=Manrope:wght@400;600;700&amp;display=swap" rel="stylesheet"><link rel="stylesheet" href="css/base.css">
-  <link rel="stylesheet" href="css/landing.css">
+<!doctype html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="Места и идеи для отдыха в Астане под ваше настроение.">
+  <title>MoodMix — отдых в Казахстане</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/sky.css">
-<link rel="stylesheet" href="css/showcase.css">
-<script type="module" src="js/landing.js"></script>
-</head><body class="landing-page"><div id="sky" aria-hidden="true"><div id="stars"></div><div id="sun"></div><div id="moon"></div><div id="clouds"></div><svg id="hill" viewBox="0 0 100 34" preserveAspectRatio="none"><path id="hf" d="M0 14Q14 5 30 10T58 6T82 11T100 8L100 34L0 34Z"/><path id="hp" d="M0 18Q12 11 26 16T52 14T76 17T100 13L100 34L0 34Z"/></svg></div><div id="theme-slot" class="thf"></div>
-<main class="ld">
-<section class="hero"><h1 id="wt" lang="en">Welcome to MoodMix</h1><p class="tag">Места Казахстана под ваше настроение</p>
-<p class="m">Выберите настроение и планы на день. MoodMix предложит места в Астане и окрестностях — от тихой прогулки до новых впечатлений.</p>
-<div class="hero-actions"><a class="btn c" href="app.html?start=quiz&amp;guest=1">Подобрать место</a><a class="btn" href="app.html?start=catalog&amp;guest=1">Посмотреть каталог</a></div>
-<p class="guest-note">Можно попробовать без регистрации.</p>
-<div class="hint">Листайте вниз — расскажем, как всё устроено ↓</div></section>
+  <link rel="stylesheet" href="css/showcase.css">
+  <link rel="stylesheet" href="css/navigation.css">
+  <link rel="stylesheet" href="css/landing.css">
+  <script type="module" src="js/landing.js"></script>
+</head>
+<body class="landing-page">
+  <div id="sky" aria-hidden="true"><div id="stars"></div><div id="sun"></div><div id="moon"></div><div id="clouds"></div><svg id="hill" viewBox="0 0 100 34" preserveAspectRatio="none"><path id="hf" d="M0 14Q14 5 30 10T58 6T82 11T100 8L100 34L0 34Z"/><path id="hp" d="M0 18Q12 11 26 16T52 14T76 17T100 13L100 34L0 34Z"/></svg></div>
+  <header class="landing-navbar content-width surface-panel">
+    <a class="brand" href="#top"><span data-icon="compass"></span>MoodMix</a>
+    <span id="theme-slot"></span>
+  </header>
+  <main>
+    <section class="hero" id="top">
+      <h1 id="wt" lang="en">Welcome to MoodMix</h1>
+      <p class="tag">Места Казахстана под ваше настроение</p>
+      <p class="hero-copy">От тихой прогулки до новых впечатлений. Найдите место в Астане и окрестностях под ваши планы на день.</p>
+      <div class="hero-actions">
+        <a class="btn c" href="app.html?start=quiz&amp;guest=1">Подобрать место<span data-icon="arrow"></span></a>
+        <a class="btn" href="app.html?start=catalog&amp;guest=1">Посмотреть каталог</a>
+      </div>
+      <p class="guest-note">Можно попробовать без регистрации.</p>
+      <a href="#how" class="hero-scroll">Как это работает<span data-icon="arrow"></span></a>
+    </section>
 
-<section class="sec"><h2 class="rvl">Как это работает</h2><p class="m rvl">Три шага от «не знаю, куда пойти» до отметки «я здесь был».</p>
-<div class="steps" data-stag>
-<div class="win step rvl rl"><div class="n">1</div><h3>Пройдите тест</h3><p>Выберите быстрый тест из 7 вопросов или полный из 25.</p>
-<div class="mk"><p class="q">Вопрос 3 из 7</p><b>Какой темп вам сейчас по душе?</b><div class="o">Лежать и ничего не делать</div><div class="o on">Неспешно идти</div><div class="o">Активно двигаться</div></div></div>
-<div class="win step rvl"><div class="n">2</div><h3>Получите подборку</h3><p>Мы подберём места из 10 категорий: от уединения и прогулок до вечеринок и бань.</p>
-<div class="mk"><b>Ботанический сад</b>Тихие аллеи для неспешной прогулки.<br><small style="color:var(--a);font-weight:600">Проспект Кабанбай Батыра</small></div></div>
-<div class="win step rvl rr"><div class="n">3</div><h3>Отмечайте и делитесь</h3><p>Ставьте «Был здесь», сохраняйте в избранное, оставляйте оценки и отзывы.</p>
-<div class="mk"><span class="vb2 dn">Вы были здесь</span><span class="vb2">Отзывы</span><span class="vb2">Предложить прогулку</span><div style="margin-top:8px;color:#ffb020">★★★★☆ <span class="m">Пример оценки</span></div></div></div>
-</div></section>
+    <div class="landing-sections">
+      <section class="sec content-width" id="how">
+        <div class="section-header"><h2>Как это работает</h2><p>От пары ответов о планах до места, куда хочется вернуться.</p></div>
+        <div class="steps">
+          <article class="win"><span data-icon="spark"></span><h3>Выберите настроение</h3><p>Ответьте на 7 вопросов для быстрого подбора или на 25 для подробного.</p></article>
+          <article class="win"><span data-icon="compass"></span><h3>Посмотрите подборку</h3><p>У каждого места есть пояснение, почему оно подходит под ваши планы.</p></article>
+          <article class="win"><span data-icon="heart"></span><h3>Сохраните место</h3><p>Добавьте его в избранное и отметьте посещение, когда побываете там.</p></article>
+        </div>
+      </section>
 
-<section class="sec"><h2 class="rvl">Что здесь можно делать</h2><p class="m rvl">Не только выбирать места — но и ходить туда вместе.</p>
-<div class="feat" data-stag>
-<div class="win rvl rl"><h3>Подборка по настроению</h3><p>188 мест и идей в 10 категориях, поиск и объяснение, почему место попало в подборку. Вкладка «Для вас» собирается по результатам теста.</p></div>
-<div class="win rvl rr"><h3>Избранное и «Был здесь»</h3><p>Сохраняйте понравившееся и отмечайте посещённое. Отметку можно снять — история в профиле всегда актуальна.</p></div>
-<div class="win rvl rl"><h3>Оценки и отзывы</h3><p>В демо можно оставить отзыв и попробовать реакции на примерах.</p></div>
-<div class="win rvl rr"><h3>Найти на карте</h3><p>Откройте карточку на карте или поиск по названию и локации.</p></div>
-<div class="win rvl rl"><h3>Друзья по настроению</h3><p>В демонстрационном режиме можно переключаться между вымышленными профилями и управлять заявками.</p>
-<div class="mk"><div class="row2"><div class="av0">А</div><div><b style="margin:0">Алия · демонстрационный профиль</b><span class="m">Хочется тишины и покоя</span></div></div><span class="vb2 dn">Добавить в друзья</span><span class="vb2">Профиль</span></div></div>
-<div class="win rvl rr"><h3>Чаты и прогулки</h3><p>Попробуйте отправить локальное сообщение или приглашение на прогулку.</p>
-<div class="mk"><div class="bub me"><b style="margin:0">Вы предлагаете прогулку</b>Центральный парк<small>Ждёт ответа</small></div><div class="bub">Идём! Прогулка: Центральный парк</div></div></div>
-</div></section>
+      <section class="sec content-width">
+        <div class="section-header"><h2>Что можно делать в MoodMix</h2><p>Ищите места, читайте отзывы и пробуйте совместные прогулки в локальном демо.</p></div>
+        <div class="feat">
+          <article class="win"><span data-icon="search"></span><h3>Искать и фильтровать</h3><p>188 мест и идей в 10 категориях.</p></article>
+          <article class="win"><span data-icon="pin"></span><h3>Открывать на карте</h3><p>Смотрите адрес и переходите к карте из карточки.</p></article>
+          <article class="win"><span data-icon="star"></span><h3>Оставлять отзывы</h3><p>Попробуйте оценки и реакции на демонстрационных профилях.</p></article>
+          <article class="win"><span data-icon="users"></span><h3>Находить друзей</h3><p>Отправляйте и принимайте заявки между демопрофилями.</p></article>
+          <article class="win"><span data-icon="chat"></span><h3>Переписываться</h3><p>Читайте и отправляйте сообщения в этом браузере.</p></article>
+          <article class="win"><span data-icon="calendar"></span><h3>Звать на прогулку</h3><p>Предложите место и время прямо из карточки.</p></article>
+        </div>
+      </section>
 
-<section class="sec"><h2 class="rvl">Четыре темы — под ваше настроение</h2><p class="m rvl">Небо над сайтом плавно меняется, пока вы листаете страницу.</p>
-<div class="th3" data-stag>
-<div class="tile t1 rvl rl"><div class="lb"><b>Закат</b><span>Тёплые сумерки и первые звёзды</span></div></div>
-<div class="tile t2 rvl"><div class="lb"><b>Восход</b><span>Светлое утреннее небо и облака</span></div></div>
-<div class="tile t3 rvl"><div class="lb"><b>Грусть</b><span>Космос, Сатурн и далёкие звёзды</span></div></div>
-<div class="tile t4 rvl rr"><div class="lb"><b>Веселье</b><span>Пляж, волны и яркое солнце</span></div></div>
-</div></section>
-<section class="sec" id="try"><h2 class="rvl">Готовы попробовать?</h2><p class="m rvl">Демонстрационные профили, отзывы и переписка доступны в этом браузере.</p>
-<a class="btn c landing-demo-cta" href="app.html?demo=1">Открыть демо с профилями</a>
-</section></main>
+      <section class="sec content-width" aria-labelledby="reviews-title">
+        <div class="section-header"><h2 id="reviews-title">Демонстрационные отзывы</h2><p>Так выглядят отзывы в MoodMix. Авторы и записи взяты из локального демо.</p></div>
+        <div id="demo-reviews" class="reviews-grid"></div>
+      </section>
 
-<footer class="fw"><div class="ft"><div class="fb"><div class="fn">MoodMix</div><p>Места Казахстана под ваше настроение.</p></div><nav class="fg" aria-label="Контакты создателя"><a href="https://t.me/rradm1rrkaa" target="_blank" rel="noopener noreferrer">Telegram</a><a href="https://github.com/rradm1rrkaa" target="_blank" rel="noopener noreferrer">GitHub</a><a href="https://www.instagram.com/rradm1rrkaa/" target="_blank" rel="noopener noreferrer">Instagram</a><a href="https://wa.me/77781013899" target="_blank" rel="noopener noreferrer">WhatsApp</a><a href="tel:+77781013899">Телефон</a></nav></div></footer>
+      <section class="sec content-width">
+        <div class="section-header"><h2>Четыре атмосферы</h2><p>Выберите оформление сами или доверьте его своему настроению.</p></div>
+        <div class="theme-grid">
+          <article class="tile t1"><h3>Закат</h3><p>Тёплые сумерки</p></article>
+          <article class="tile t2"><h3>Восход</h3><p>Светлое небо и облака</p></article>
+          <article class="tile t3"><h3>Грусть</h3><p>Космос и далёкие звёзды</p></article>
+          <article class="tile t4"><h3>Веселье</h3><p>Пляж и волны</p></article>
+        </div>
+      </section>
 
-<div id="toast" role="status" aria-live="polite"></div>
-</body></html>
+      <section class="sec demo-cta surface-panel content-width" id="try">
+        <div class="section-header"><h2>Попробуйте MoodMix вместе</h2><p>Переключайтесь между вымышленными профилями, чтобы испытать переписку, отзывы и приглашения.</p></div>
+        <a class="btn c landing-demo-cta" href="app.html?demo=1">Открыть демо с профилями<span data-icon="arrow"></span></a>
+      </section>
+    </div>
+  </main>
+  <footer class="fw"><div class="ft content-width"><div class="fb"><div class="fn">MoodMix</div><p>Места Казахстана под ваше настроение.</p></div><nav class="fg" aria-label="Контакты создателя"><a href="https://t.me/rradm1rrkaa" target="_blank" rel="noopener noreferrer">Telegram</a><a href="https://github.com/rradm1rrkaa" target="_blank" rel="noopener noreferrer">GitHub</a><a href="https://www.instagram.com/rradm1rrkaa/" target="_blank" rel="noopener noreferrer">Instagram</a><a href="https://wa.me/77781013899" target="_blank" rel="noopener noreferrer">WhatsApp</a><a href="tel:+77781013899">Телефон</a></nav></div></footer>
+  <div id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

@@ -1,24 +1,22 @@
 /* небо */
-#sky{position:fixed;inset:0;z-index:-1;overflow:hidden}
-#neb,#cosmos{opacity:0;visibility:hidden;translate:0 -34vh;transition:opacity 1.4s ease,translate 1.7s ease-in,visibility 0s 1.8s}#shoot{visibility:hidden}
-#stars{transition:opacity 1.6s ease}#sun,#moon,#clouds,#hill,#beach{transition:translate 1.6s ease,opacity 1.4s ease}
-.tx #sun{transition:top 1.8s ease,left 1.8s ease,box-shadow 1.8s ease,translate 1.6s ease,opacity 1.4s ease}
-:root[data-theme="sad"]{--t:#eaeeff;--m:#b3bce6;--a:#a9b8ff;--ag:linear-gradient(135deg,#5f6fe0,#9a62e0);--c:rgba(20,26,66,.38);--b:rgba(190,200,255,.18);--bg:#070a22;--pn:rgba(10,14,44,.3);--ts:rgba(0,0,10,.6);--sh:0 10px 34px rgba(0,0,20,.5)}
+body { isolation: isolate; }
+#sky{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+#neb,#cosmos{opacity:0;visibility:hidden;translate:0 -34vh;transition:opacity var(--scene-motion) ease,translate var(--scene-motion) ease-in,visibility 0s var(--scene-motion)}#shoot{visibility:hidden}
+#stars{transition:opacity var(--scene-motion) ease}#sun,#moon,#clouds,#hill,#beach{transition:translate var(--scene-motion) ease,opacity var(--scene-motion) ease}
+.tx #sun{transition:top var(--scene-motion) ease,left var(--scene-motion) ease,box-shadow var(--scene-motion) ease,translate var(--scene-motion) ease,opacity var(--scene-motion) ease}
 :root[data-theme="sad"] #sky{background:radial-gradient(ellipse at 50% 40%,#1b2052 0%,#0c1034 48%,#04061a 100%)}
-:root[data-theme="sad"] :is(#sun,#moon,#clouds,#hill,#beach){translate:0 42vh;opacity:0;transition:translate 1.6s cubic-bezier(.5,0,.9,.5),opacity 1.4s ease .1s}
-:root[data-theme="sad"] :is(#neb,#cosmos){opacity:1;visibility:visible;translate:0 0;transition:opacity 1.7s ease .5s,translate 1.8s cubic-bezier(.2,.7,.2,1) .3s,visibility 0s}:root[data-theme="sad"] #shoot{visibility:visible}
+:root[data-theme="sad"] :is(#sun,#moon,#clouds,#hill,#beach){translate:0 42vh;opacity:0;transition:translate var(--scene-motion) cubic-bezier(.5,0,.9,.5),opacity var(--scene-motion) ease .1s}
+:root[data-theme="sad"] :is(#neb,#cosmos){opacity:1;visibility:visible;translate:0 0;transition:opacity var(--scene-motion) ease .15s,translate var(--scene-motion) cubic-bezier(.2,.7,.2,1) .3s,visibility 0s}:root[data-theme="sad"] #shoot{visibility:visible}
 :root[data-theme="sad"] #stars{height:100%}
-:root[data-theme="sad"] .pc{background:#121842}
-:root[data-theme="sad"] :is(.tabs button.on,.btn.c,.vb.done,#av){box-shadow:0 6px 20px rgba(110,100,230,.4)}
 #neb{position:absolute;inset:-10%;background:linear-gradient(118deg,transparent 28%,rgba(150,140,255,.13) 44%,rgba(210,170,255,.2) 50%,rgba(120,160,255,.12) 57%,transparent 72%),radial-gradient(ellipse 14% 7% at 14% 20%,rgba(190,170,255,.4),transparent 70%),radial-gradient(ellipse at 20% 75%,rgba(120,70,200,.35),transparent 55%),radial-gradient(ellipse at 85% 22%,rgba(60,110,220,.3),transparent 55%),radial-gradient(ellipse at 60% 92%,rgba(190,80,170,.18),transparent 50%);animation:neb 40s ease-in-out infinite alternate}
 @keyframes neb{to{transform:translate(-3%,2%) scale(1.06)}}
 #shoot{position:absolute;top:14%;left:78%;width:110px;height:2px;border-radius:2px;background:linear-gradient(270deg,transparent,#fff);opacity:0;animation:shoot 12s linear infinite 3s}
 @keyframes shoot{0%{opacity:0;transform:translate(0,0) rotate(-28deg)}3%{opacity:.9}10%,100%{opacity:0;transform:translate(-420px,220px) rotate(-28deg)}}
-#cosmos{position:absolute;left:50%;top:40%;width:min(100vw,100vh,920px);aspect-ratio:1;transform:translate(-50%,calc(-50% + var(--py,0px)));animation:cfade 1.4s ease both}
+#cosmos{position:absolute;left:50%;top:40%;width:min(100vw,100vh,920px);aspect-ratio:1;transform:translate(-50%,calc(-50% + var(--py,0px)));animation:cfade var(--scene-motion) ease both}
 @media(min-width:900px){#cosmos{left:74%;top:46%;width:min(92vh,860px)}}
 #cosmos svg{width:100%;height:100%;overflow:visible}
 @keyframes cfade{from{opacity:0}}
-#stars i.dp{visibility:hidden;transition:visibility 0s 1.8s}:root[data-theme="sad"] #stars i.dp{visibility:visible;background:#cfd8ff;transition:none}#cosmos .far{animation:farf 9s ease-in-out infinite alternate}@keyframes farf{from{transform:translateY(0)}to{transform:translateY(-6px)}}
+#stars i.dp{visibility:hidden;transition:visibility 0s var(--scene-motion)}:root[data-theme="sad"] #stars i.dp{visibility:visible;background:#cfd8ff;transition:none}#cosmos .far{animation:farf 9s ease-in-out infinite alternate}@keyframes farf{from{transform:translateY(0)}to{transform:translateY(-6px)}}
 #cosmos .earth{transform:translate(80px,-10px)}@media(min-width:900px){#cosmos .earth{transform:translate(-300px,-60px)}}
 #cosmos .bands{animation:band 18s ease-in-out infinite alternate}@keyframes band{from{transform:translateX(-14px)}to{transform:translateX(14px)}}
 #cosmos .rk{transform-box:fill-box;transform-origin:center;animation:rock 5s ease-in-out infinite}@keyframes rock{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg) translateY(-1px)}}
@@ -34,17 +32,13 @@
 .cp{fill:var(--cl)}
 #hill{position:absolute;left:0;bottom:0;width:100%;height:36vh}
 /* «Восход»: пока небо тёмное (ночь вверху страницы) — светлый текст */
-:root.nightsky[data-theme="light"]{--t:#f6f0fd;--m:#cdc1e3;--a:#ffb27a;--c:rgba(26,16,54,.3);--b:rgba(255,255,255,.16);--pn:rgba(14,10,34,.22);--ts:rgba(0,0,0,.5);--sh:0 10px 34px rgba(0,0,0,.38)}
-:root.nightsky[data-theme="light"] .pc{background:#1c1438}
 /* тема «Веселье»: море, песок, пальма */
-:root[data-theme="fun"]{--t:#0b2a4a;--m:#2a5878;--a:#d9480f;--ag:linear-gradient(135deg,#ffb347,#ff6b6b);--c:rgba(255,255,255,.42);--b:rgba(255,255,255,.75);--bg:#8fdcf0;--pn:rgba(255,255,255,.3);--ts:rgba(255,255,255,.65);--sh:0 10px 30px rgba(10,80,120,.2)}
-#beach{position:absolute;inset:0;overflow:hidden;opacity:0}:root[data-theme="fun"] #beach{opacity:1;transition:opacity 1.2s ease,translate 1.9s cubic-bezier(.2,.7,.2,1)}
-#fsky{position:absolute;inset:0;opacity:0;background:linear-gradient(#2d8fe8,#bfeeff 56%);transition:opacity 1.8s ease}:root[data-theme="fun"] #fsky{opacity:1}
-#beach .pt{transition:opacity 1.9s ease,translate 2.6s cubic-bezier(.2,.7,.2,1)}#beach .sea{opacity:0;transition-delay:.2s}#beach .lgl{opacity:0;translate:-480px 0;transition-delay:.9s}#beach .lgr{opacity:0;translate:480px 0;transition-delay:1.2s}#beach .umb{opacity:0;transition-delay:1.5s}#beach .palm{opacity:0;transition-delay:.6s}
+#beach{position:absolute;inset:0;overflow:hidden;opacity:0}:root[data-theme="fun"] #beach{opacity:1;transition:opacity var(--scene-motion) ease,translate var(--scene-motion) cubic-bezier(.2,.7,.2,1)}
+#fsky{position:absolute;inset:0;opacity:0;background:linear-gradient(#2d8fe8,#bfeeff 56%);transition:opacity var(--scene-motion) ease}:root[data-theme="fun"] #fsky{opacity:1}
+#beach .pt{transition:opacity var(--scene-motion) ease,translate var(--scene-motion) cubic-bezier(.2,.7,.2,1)}#beach .sea{opacity:0;transition-delay:.2s}#beach .lgl{opacity:0;translate:-480px 0;transition-delay:.9s}#beach .lgr{opacity:0;translate:480px 0;transition-delay:var(--scene-motion)}#beach .umb{opacity:0;transition-delay:var(--scene-motion)}#beach .palm{opacity:0;transition-delay:.6s}
 :root[data-theme="fun"] #beach .pt{opacity:1;translate:0 0}
-:root[data-theme="fun"][data-from="dark"] #beach .pt{transition:opacity 2.2s ease .3s}:root[data-theme="fun"][data-from="sad"] #beach .pt{transition:none}
-:root.tx[data-theme="fun"][data-from="light"] #sun{animation:sunin 2.2s ease both}@keyframes sunin{from{opacity:0;scale:.6}}#beach svg{width:100%;height:100%;display:block}
+:root[data-theme="fun"][data-from="dark"] #beach .pt{transition:opacity var(--scene-motion) ease .3s}:root[data-theme="fun"][data-from="sad"] #beach .pt{transition:none}
+:root.tx[data-theme="fun"][data-from="light"] #sun{animation:sunin var(--scene-motion) ease both}@keyframes sunin{from{opacity:0;scale:.6}}#beach svg{width:100%;height:100%;display:block}
 :root[data-theme="fun"] :is(#moon,#hill){opacity:0}
-:root[data-theme="fun"] :is(.tabs button.on,.btn.c,.vb.done,#av){box-shadow:0 6px 20px rgba(255,120,80,.4)}
 #beach .sw{transform-origin:870px 320px;animation:swy 6s ease-in-out infinite alternate}@keyframes swy{from{transform:rotate(-1.8deg)}to{transform:rotate(1.8deg)}}
 #beach .wv{animation:wvy 7s ease-in-out infinite alternate}@keyframes wvy{to{transform:translateX(50px)}}

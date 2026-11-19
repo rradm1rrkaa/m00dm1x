@@ -3,6 +3,8 @@ import { expect, test } from '@playwright/test';
 const errors = new WeakMap();
 const dialog = page => page.getByRole('dialog');
 const tabs = page => page.locator('#tabs');
+const messages = page => page.locator('.messenger');
+const profilePage = page => page.locator('.profile-page');
 const card = (page, name) => page.locator('.card').filter({ has: page.getByRole('heading', { name, exact: true }) });
 
 test.beforeEach(async ({ page }) => {
@@ -11,7 +13,6 @@ test.beforeEach(async ({ page }) => {
   page.on('console', message => {
     if (message.type() === 'error' && message.location().url.includes('/js/')) errors.get(page).push(message.text());
   });
-  await page.route('https://fonts.googleapis.com/**', route => route.abort());
 });
 test.afterEach(async ({ page }) => expect(errors.get(page)).toEqual([]));
 
@@ -24,21 +25,22 @@ test('landing opens guest catalog from the first screen without a test', async (
   await expect(page.getByRole('heading', { name: 'Места и идеи отдыха' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Ботанический сад' })).toBeVisible();
   await expect(page.locator('#mode-note')).toContainText('Гость');
-  await expect(page.getByRole('button', { name: 'Чаты' })).toBeHidden();
+  await expect(page.getByRole('button', { name: 'Сообщения' })).toBeHidden();
   await tabs(page).getByRole('button', { name: 'Подборка Астаны' }).click();
   await expect(page.locator('.showcase-grid .card')).toHaveCount(19);
   await expect(page.locator('.showcase-grid .card').first()).toHaveCSS('flex-direction', 'column');
 });
 
-for (const [mode, total] of [['Быстрый', 7], ['Полный', 25]]) {
+for (const [mode, total] of [['Быстрый', 7], ['Подробный', 25]]) {
   test(mode + ' тест supports changing answers and shows ranked recommendations', async ({ page }) => {
     await page.goto('/app.html?start=quiz&guest=1');
-    await page.getByRole('button', { name: new RegExp(mode + ' тест') }).click();
+    await page.getByRole('button', { name: new RegExp(mode + ' подбор') }).click();
     const quiz = page.locator('#quiz');
     const choices = quiz.locator('.opts button');
     await expect(quiz.getByText('Вопрос 1 из ' + total)).toBeVisible();
     await choices.first().click();
-    await quiz.getByRole('button', { name: '← Назад' }).click();
+    await expect(quiz.getByText('Вопрос 2 из ' + total)).toBeVisible();
+    await quiz.getByRole('button', { name: 'Назад' }).click();
     await expect(choices.first()).toHaveAttribute('aria-pressed', 'true');
     await choices.nth(1).click();
     for (let question = 2; question <= total; question++) {
@@ -46,8 +48,8 @@ for (const [mode, total] of [['Быстрый', 7], ['Полный', 25]]) {
       await choices.first().click();
     }
     await expect(quiz.getByRole('button', { name: 'Начать заново' })).toBeVisible();
-    await quiz.getByRole('button', { name: 'Показать подборку →' }).click();
-    await expect(tabs(page).getByRole('button', { name: '✨ Для вас' })).toHaveAttribute('aria-pressed', 'true');
+    await quiz.getByRole('button', { name: 'Показать подборку' }).click();
+    await expect(tabs(page).getByRole('button', { name: 'Для вас' })).toHaveAttribute('aria-pressed', 'true');
     await expect(page.locator('.recommendation-reason').first()).toBeVisible();
   });
 }
@@ -61,7 +63,9 @@ test('saving and marking a place persists; dialog handles keyboard focus', async
   const title = panel.getByRole('heading', { name: 'Ботанический сад' });
   await expect(title).toBeFocused();
   await page.keyboard.press('Shift+Tab');
-  await expect(panel.getByRole('button', { name: 'Закрыть' })).toBeFocused();
+  await expect(panel.getByRole('button', { name: 'Закрыть', exact: true })).toBeFocused();
+  await page.keyboard.press('Tab');
+  await expect(panel.getByRole('button', { name: 'Закрыть окно', exact: true })).toBeFocused();
   await page.keyboard.press('Tab');
   await expect(panel.getByRole('button', { name: 'Предыдущее фото' })).toBeFocused();
   await page.keyboard.press('Tab');
@@ -69,24 +73,24 @@ test('saving and marking a place persists; dialog handles keyboard focus', async
   await page.keyboard.press('Enter');
   await expect(panel.getByText('Фото 2 из 2')).toBeVisible();
   await expect.poll(() => panel.locator('img').evaluate(image => image.naturalWidth)).toBeGreaterThan(0);
-  await panel.getByRole('button', { name: '♡ Сохранить' }).focus();
+  await panel.getByRole('button', { name: 'Сохранить' }).focus();
   await page.keyboard.press('Enter');
-  await expect(panel.getByRole('button', { name: '♥ Сохранено' })).toHaveAttribute('aria-pressed', 'true');
-  await panel.getByRole('button', { name: '✔ Был здесь' }).click();
+  await expect(panel.getByRole('button', { name: 'Сохранено' })).toHaveAttribute('aria-pressed', 'true');
+  await panel.getByRole('button', { name: 'Был здесь' }).click();
   await page.keyboard.press('Escape');
   await expect(panel).toBeHidden();
   await expect(opener).toBeFocused();
   await page.reload();
-  await tabs(page).getByRole('button', { name: '♥ Избранное' }).click();
+  await tabs(page).getByRole('button', { name: 'Избранное' }).click();
   await expect(card(page, 'Ботанический сад')).toBeVisible();
   await card(page, 'Ботанический сад').getByRole('button', { name: 'Подробнее' }).click();
-  await expect(dialog(page).getByRole('button', { name: '✔ Вы были здесь' })).toBeVisible();
+  await expect(dialog(page).getByRole('button', { name: 'Вы были здесь' })).toBeVisible();
 });
 
 test('demo ratings, query and filters combine; reset recovers an empty result', async ({ page }) => {
   await page.goto('/app.html?demo=1');
   await expect(page.locator('#mode-note')).toContainText('Демо');
-  await page.locator('summary').click();
+  await page.locator('#filters > summary').click();
   await page.getByRole('combobox', { name: 'Оценка', exact: true }).selectOption('4');
   await expect(page.locator('.showcase-grid .card')).toHaveCount(2);
   await page.getByLabel('Поиск по местам').fill('байтерек');
@@ -107,48 +111,97 @@ test('manual theme survives reload and overrides quiz theme', async ({ page }) =
     await selector.selectOption(theme);
     await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
   }
-  await page.getByRole('button', { name: /Быстрый тест/ }).click();
+  await page.getByRole('button', { name: /Быстрый подбор/ }).click();
   for (let i = 0; i < 7; i++) await page.locator('.opts button').first().click();
-  await page.getByRole('button', { name: 'Показать подборку →' }).click();
+  await page.getByRole('button', { name: 'Показать подборку' }).click();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'fun');
   await page.reload();
   await expect(page.getByLabel('Тема оформления')).toHaveValue('fun');
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'fun');
 });
 
+test('automatic atmosphere previews all four themes and restores the accepted result', async ({ page }) => {
+  await page.goto('/app.html?start=quiz&guest=1');
+  await page.getByRole('button', { name: /Быстрый подбор/ }).click();
+  const answers = page.locator('.opts button');
+  for (const [index, theme] of [[0, 'sad'], [2, 'dark'], [3, 'light'], [4, 'fun']]) {
+    await answers.nth(index).click();
+    await expect(page.locator('html')).toHaveAttribute('data-theme', theme);
+    if (theme !== 'fun') await page.locator('#quiz').getByRole('button', { name: 'Назад' }).click();
+  }
+  for (let i = 1; i < 7; i++) await answers.first().click();
+  await page.getByText('Настройки истории').click();
+  await page.getByRole('checkbox', { name: /Сохранять результаты/ }).check();
+  await page.getByRole('button', { name: 'Показать подборку' }).click();
+  await page.reload();
+  await expect(page.getByLabel('Тема оформления')).toHaveValue('auto');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'fun');
+});
+
+test('local Montserrat, SVG icons and aligned demo CTA on the landing', async ({ page }) => {
+  await page.goto('/');
+  const demo = page.getByRole('link', { name: 'Открыть демо с профилями' });
+  const section = page.locator('#try');
+  await expect(page.locator('.demo-review')).toHaveCount(2);
+  await expect(page.locator('.demo-review svg')).toHaveCount(10);
+  for (const zoom of [.8, 1, 1.25]) {
+    await page.evaluate(zoom => { document.body.style.zoom = String(zoom); }, zoom);
+    await demo.scrollIntoViewIfNeeded();
+    const [link, block] = await Promise.all([demo.boundingBox(), section.boundingBox()]);
+    expect(Math.abs(link.x + link.width / 2 - (block.x + block.width / 2))).toBeLessThan(2);
+  }
+  await demo.focus();
+  await expect(demo).toBeFocused();
+  const isLoaded = await page.evaluate(async () => {
+    const faces = await document.fonts.load('600 16px Montserrat', 'Русский текст');
+    await document.fonts.ready;
+    return faces.length > 0 && faces.every(font => font.family === 'Montserrat' && font.status === 'loaded')
+      && document.fonts.check('600 16px Montserrat', 'Русский текст')
+      && getComputedStyle(document.body).fontFamily.startsWith('Montserrat');
+  });
+  expect(isLoaded).toBe(true);
+  expect(await page.locator('body').innerText()).not.toMatch(/[\p{Extended_Pictographic}\uFE0F\u2605]/u);
+  await demo.press('Enter');
+  await expect(page.locator('#mode-note')).toContainText('Демо');
+  expect(await page.locator('body').innerText()).not.toMatch(/[\p{Extended_Pictographic}\uFE0F\u2605]/u);
+});
+
 test('switching demo participants isolates favorites and displays sent messages', async ({ page }) => {
   await page.goto('/app.html?demo=1');
-  await tabs(page).getByRole('button', { name: '♥ Избранное' }).click();
+  await tabs(page).getByRole('button', { name: 'Избранное' }).click();
   await expect(card(page, 'Ботанический сад')).toBeVisible();
   await page.getByRole('button', { name: 'Сменить профиль' }).click();
   await dialog(page).getByRole('button', { name: 'Тимур', exact: true }).click();
-  await tabs(page).getByRole('button', { name: '♥ Избранное' }).click();
+  await tabs(page).getByRole('button', { name: 'Избранное' }).click();
   await expect(card(page, 'Байтерек')).toBeVisible();
   await expect(card(page, 'Ботанический сад')).toHaveCount(0);
-  await page.getByRole('button', { name: /Чаты/ }).click();
-  await dialog(page).getByRole('button', { name: /Алия/ }).click();
-  await dialog(page).getByRole('button', { name: 'Принять прогулку' }).click();
-  await expect(dialog(page).getByRole('log').getByText('Принято', { exact: true })).toBeVisible();
-  await dialog(page).getByLabel('Сообщение', { exact: true }).fill('Проверка: встречаемся в саду!');
-  await dialog(page).getByRole('button', { name: 'Отправить' }).click();
-  await expect(dialog(page).getByRole('log').getByText('Проверка: встречаемся в саду!')).toBeVisible();
-  await page.keyboard.press('Escape');
+  await page.getByRole('button', { name: /Сообщения/ }).click();
+  await messages(page).getByRole('button', { name: /Алия/ }).click();
+  await messages(page).getByRole('button', { name: 'Принять прогулку' }).click();
+  await expect(messages(page).getByRole('log').getByText('Принято', { exact: true })).toBeVisible();
+  await messages(page).getByLabel('Сообщение', { exact: true }).fill('Проверка: встречаемся в саду!');
+  await messages(page).getByRole('button', { name: 'Отправить' }).click();
+  await expect(messages(page).getByRole('log').getByText('Проверка: встречаемся в саду!')).toBeVisible();
+  const back = messages(page).getByRole('button', { name: 'К списку диалогов' });
+  if (await back.isVisible()) await back.click();
+  await messages(page).getByRole('button', { name: 'Выйти из сообщений' }).click();
   await page.getByRole('button', { name: 'Сменить профиль' }).click();
   await dialog(page).getByRole('button', { name: 'Алия', exact: true }).click();
-  await page.getByRole('button', { name: /Чаты/ }).click();
-  await dialog(page).getByRole('button', { name: /Тимур/ }).click();
-  await expect(dialog(page).getByRole('log').getByText('Проверка: встречаемся в саду!')).toBeVisible();
+  await page.getByRole('button', { name: /Сообщения/ }).click();
+  await messages(page).getByRole('button', { name: /Тимур/ }).click();
+  await expect(messages(page).getByRole('log').getByText('Проверка: встречаемся в саду!')).toBeVisible();
 });
 
 test('profile deletion leaves a guest state and empty favorites after reload', async ({ page }) => {
   page.on('dialog', prompt => prompt.accept());
   await page.goto('/app.html?demo=1');
   await page.locator('#profile').click();
-  await dialog(page).getByRole('button', { name: 'Удалить локальный профиль' }).click();
+  await profilePage(page).getByLabel('Действия профиля').click();
+  await profilePage(page).getByRole('button', { name: 'Удалить локальный профиль' }).click();
   await expect(page.locator('#mode-note')).toContainText('Гость');
   await page.reload();
   await expect(page.locator('#mode-note')).toContainText('Гость');
-  await tabs(page).getByRole('button', { name: '♥ Избранное' }).click();
+  await tabs(page).getByRole('button', { name: 'Избранное' }).click();
   await expect(page.getByRole('heading', { name: 'Избранное пока пусто' })).toBeVisible();
   await page.getByRole('button', { name: 'Демо-профили' }).click();
   await expect(dialog(page).getByRole('button', { name: 'Алия', exact: true })).toHaveCount(0);
@@ -157,6 +210,7 @@ test('profile deletion leaves a guest state and empty favorites after reload', a
 test('profile editing, portrait and privacy survive a switch', async ({ page }) => {
   await page.goto('/app.html?demo=1');
   await page.locator('#profile').click();
+  await profilePage(page).getByRole('button', { name: 'Редактировать профиль' }).click();
   const panel = dialog(page);
   await panel.getByRole('textbox', { name: 'Имя' }).fill('Алия · демо');
   const image = await page.evaluate(() => {
@@ -169,10 +223,11 @@ test('profile editing, portrait and privacy survive a switch', async ({ page }) 
   });
   await panel.getByLabel(/Аватар/).setInputFiles({ name: 'portrait.png', mimeType: 'image/png', buffer: Buffer.from(image, 'base64') });
   await panel.getByText('Показывать недавние посещения в локальном профиле').click();
-  await panel.getByRole('button', { name: 'Сохранить настройки' }).click();
-  await expect(panel.getByRole('heading', { name: 'Алия · демо' })).toBeVisible();
   await expect(panel.locator('img')).toHaveCount(1);
-  await page.keyboard.press('Escape');
+  await panel.getByRole('button', { name: 'Сохранить изменения' }).click();
+  await expect(profilePage(page).getByRole('heading', { name: 'Алия · демо' })).toBeVisible();
+  await expect(profilePage(page).locator('img')).toHaveCount(1);
+  await page.locator('#nav-catalog').click();
   await page.getByRole('button', { name: 'Сменить профиль' }).click();
   await panel.getByRole('button', { name: 'Тимур', exact: true }).click();
   await page.locator('#friends').click();
@@ -181,18 +236,30 @@ test('profile editing, portrait and privacy survive a switch', async ({ page }) 
   await expect(panel.getByRole('heading', { name: 'Посещённые места' })).toBeVisible();
 });
 
-test('long local messages wrap at 320 px and stay within the dialog', async ({ page }) => {
+test('long local messages wrap at 320 px and stay within the messenger', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 680 });
   await page.goto('/app.html?demo=1');
-  await page.getByRole('button', { name: /Чаты/ }).click();
-  await dialog(page).getByRole('button', { name: /Тимур/ }).click();
+  await page.getByRole('button', { name: /Сообщения/ }).click();
+  await messages(page).getByRole('button', { name: /Тимур/ }).click();
   const message = 'сообщение'.repeat(80);
-  await dialog(page).getByLabel('Сообщение', { exact: true }).fill(message);
-  await dialog(page).getByRole('button', { name: 'Отправить' }).click();
-  const bubble = dialog(page).getByText(message, { exact: true });
+  const composer = messages(page).getByLabel('Сообщение', { exact: true });
+  await expect(messages(page).getByRole('button', { name: 'Отправить' })).toBeDisabled();
+  await page.setViewportSize({ width: 320, height: 350 });
+  await composer.focus();
+  const inputBounds = await composer.boundingBox();
+  expect(inputBounds.y + inputBounds.height).toBeLessThanOrEqual(350);
+  await page.setViewportSize({ width: 320, height: 680 });
+  await composer.fill('Первая строка');
+  await composer.press('Shift+Enter');
+  await expect(composer).toHaveValue('Первая строка\n');
+  await composer.fill(message);
+  await composer.press('Enter');
+  const bubble = messages(page).getByRole('log').getByText(message, { exact: true });
   await expect(bubble).toBeVisible();
   expect(await bubble.evaluate(element => element.scrollWidth <= element.clientWidth + 1)).toBe(true);
-  expect(await dialog(page).evaluate(element => element.scrollWidth <= element.clientWidth + 1)).toBe(true);
+  expect(await messages(page).evaluate(element => element.scrollWidth <= element.clientWidth + 1)).toBe(true);
+  await messages(page).getByRole('button', { name: 'К списку диалогов' }).click();
+  await expect(messages(page).getByRole('navigation', { name: 'Диалоги' })).toBeVisible();
 });
 
 test('demo review updates card rating and profile export contains the review', async ({ page }) => {
@@ -209,7 +276,8 @@ test('demo review updates card rating and profile export contains the review', a
   await expect(place).toContainText('3.0');
   await page.locator('#profile').click();
   const exported = page.waitForEvent('download');
-  await panel.getByRole('button', { name: 'Скачать мои данные' }).click();
+  await profilePage(page).getByLabel('Действия профиля').click();
+  await profilePage(page).getByRole('button', { name: 'Скачать мои данные' }).click();
   const file = await exported;
   expect(file.suggestedFilename()).toBe('moodmix-data.json');
   const stream = await file.createReadStream();
@@ -221,6 +289,7 @@ test('demo review updates card rating and profile export contains the review', a
 });
 
 test('layout fits nine requested widths on landing, catalog, modal and quiz', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
   const fits = () => page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth);
   const widths = [320, 360, 375, 390, 430, 768, 1024, 1440, 1920];
   await page.goto('/');
@@ -231,7 +300,7 @@ test('layout fits nine requested widths on landing, catalog, modal and quiz', as
   }
   await page.goto('/app.html?demo=1');
   await expect(page.locator('.showcase-grid')).toBeVisible();
-  await page.locator('summary').click();
+  await page.locator('#filters > summary').click();
   for (const width of widths) {
     await page.setViewportSize({ width, height: 900 });
     expect(await fits(), 'catalog at ' + width).toBe(true);
@@ -241,9 +310,12 @@ test('layout fits nine requested widths on landing, catalog, modal and quiz', as
     await page.keyboard.press('Escape');
   }
   await page.getByRole('button', { name: 'Подобрать место', exact: true }).click();
-  await page.getByRole('button', { name: /Быстрый тест/ }).click();
+  await page.getByRole('button', { name: /Быстрый подбор/ }).click();
   for (const width of widths) {
     await page.setViewportSize({ width, height: 900 });
     expect(await fits(), 'quiz at ' + width).toBe(true);
+    const [region, panel] = await Promise.all([page.locator('#quiz').boundingBox(), page.locator('.quiz-panel').boundingBox()]);
+    expect(Math.abs(region.x + region.width / 2 - (panel.x + panel.width / 2))).toBeLessThan(2);
+    expect(Math.abs(region.y + region.height / 2 - (panel.y + panel.height / 2))).toBeLessThan(12);
   }
 });

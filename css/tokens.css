@@ -1,0 +1,109 @@
+@font-face {
+  font-family: Montserrat;
+  src: url("../assets/fonts/montserrat-cyrillic-ext.woff2") format("woff2");
+  font-weight: 400 700;
+  font-display: swap;
+  unicode-range: U+0460-052F,U+1C80-1C8A,U+20B4,U+2DE0-2DFF,U+A640-A69F,U+FE2E-FE2F;
+}
+@font-face {
+  font-family: Montserrat;
+  src: url("../assets/fonts/montserrat-cyrillic.woff2") format("woff2");
+  font-weight: 400 700;
+  font-display: swap;
+  unicode-range: U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116;
+}
+@font-face {
+  font-family: Montserrat;
+  src: url("../assets/fonts/montserrat-latin.woff2") format("woff2");
+  font-weight: 400 700;
+  font-display: swap;
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+
+:root {
+  color-scheme: dark;
+  --font: Montserrat, system-ui, sans-serif;
+  --text-xs: .75rem;
+  --text-sm: .875rem;
+  --text-base: .96875rem;
+  --text-lg: 1.125rem;
+  --title: clamp(1.75rem, 4.3vw, 3.25rem);
+  --space-1: .25rem;
+  --space-2: .5rem;
+  --space-3: .75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --radius-control: 13px;
+  --radius-card: 20px;
+  --radius-panel: 26px;
+  --gutter: clamp(12px, 3.4vw, 50px);
+  --content: 1320px;
+  --fast: 170ms;
+  --panel-motion: 260ms;
+  --scene-motion: 980ms;
+  --ease: cubic-bezier(.2,.7,.3,1);
+  --layer-header: 5;
+  --layer-toast: 10;
+
+  --ink: #f9f3ec;
+  --muted: #c6bac2;
+  --accent: #f6c5a5;
+  --on-accent: #2b1c23;
+  --primary: linear-gradient(115deg,#f6d6ad,#edb3a3);
+  --canvas: #1b1925;
+  --paper: #26232f;
+  --glass: rgb(34 29 44 / 89%);
+  --surface: rgb(255 248 245 / 6%);
+  --raised: rgb(255 248 245 / 10%);
+  --selected: rgb(246 197 165 / 15%);
+  --line: rgb(249 243 236 / 16%);
+  --strong-line: rgb(249 243 236 / 30%);
+  --danger: #ffc1bd;
+  --shadow: 0 18px 54px rgb(12 9 22 / 25%);
+  --hero-ink: #fff8ed;
+  --hero-scrim: rgb(35 21 45 / 40%);
+}
+:root[data-theme="sad"] {
+  --ink: #f0f2ff;
+  --muted: #bfc7e2;
+  --accent: #c7caff;
+  --on-accent: #242446;
+  --primary: linear-gradient(110deg,#d6d8ff,#becff3);
+  --canvas: #10162e;
+  --paper: #202641;
+  --glass: rgb(24 30 54 / 89%);
+  --selected: rgb(194 203 255 / 16%);
+  --hero-scrim: rgb(20 24 55 / 36%);
+}
+:root:is([data-theme="light"], [data-theme="fun"]) {
+  color-scheme: light;
+  --ink: #27313e;
+  --muted: #555b68;
+  --accent: #81502f;
+  --on-accent: #30221e;
+  --primary: linear-gradient(115deg,#f8d7ab,#eeb6a5);
+  --canvas: #d6ddea;
+  --paper: #fcf8f1;
+  --glass: rgb(255 250 242 / 91%);
+  --surface: rgb(68 52 62 / 5%);
+  --raised: rgb(68 52 62 / 9%);
+  --selected: rgb(160 93 55 / 13%);
+  --line: rgb(48 54 69 / 17%);
+  --strong-line: rgb(48 54 69 / 31%);
+  --danger: #98312b;
+  --shadow: 0 18px 54px rgb(41 49 71 / 19%);
+}
+:root[data-theme="fun"] {
+  --accent: #26656f;
+  --on-accent: #193a42;
+  --primary: linear-gradient(110deg,#bde7df,#cde5ee);
+  --canvas: #add8ea;
+  --paper: #f2fbf9;
+  --glass: rgb(244 253 252 / 91%);
+  --selected: rgb(54 129 137 / 14%);
+  --hero-scrim: rgb(15 42 64 / 42%);
+}

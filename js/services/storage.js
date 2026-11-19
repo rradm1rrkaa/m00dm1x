@@ -23,7 +23,7 @@ function normalizeMood(value) {
     ? ['quiet', 'nightlife', 'walks', 'shopping', 'water', 'spa', 'outdoors', 'food', 'games', 'attractions'][category] : text(category, 32)).filter(Boolean);
   return {
     mood: text(mood.mood, 120), categories,
-    at: time(mood.at), theme: mood.theme === 'fun' || mood.theme === 'sad' ? mood.theme : mood.sad ? 'sad' : null,
+    at: time(mood.at), theme: ['light', 'dark', 'sad', 'fun'].includes(mood.theme) ? mood.theme : mood.sad ? 'sad' : null,
     ...(Number.isFinite(mood.energy) ? { energy: mood.energy } : {}),
     ...(mood.dims ? { dims: Object.fromEntries(Object.entries(record(mood.dims)).filter(([key, n]) => /^[EVSNTP]$/.test(key) && Number.isFinite(n))) } : {}),
     ...(Array.isArray(mood.why) ? { why: mood.why.slice(0, 2).map(row => list(row).slice(0, 5).map(item => text(item, 80))) } : {}),

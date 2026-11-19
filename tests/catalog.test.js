@@ -57,6 +57,12 @@ test('both quiz lengths score ten categories with stable ordering', () => {
   }
 });
 
+test('explicit mood previews the four atmospheres using the existing quiz', () => {
+  const questions = questionsFor('quick');
+  assert.deepEqual([0, 2, 3, 4].map(option => analyzeAnswers(questions, [option]).theme),
+    ['sad', 'dark', 'light', 'fun']);
+});
+
 test('ranking rewards supported preferences and explains actual matches', () => {
   const result = { scores: { quiet: 50, walks: 50, attractions: 50 }, preferences: {
     pace: 'quiet', company: 'family', atmosphere: 'outdoor', duration: 120, budget: 0

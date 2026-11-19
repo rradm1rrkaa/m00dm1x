@@ -1,4 +1,6 @@
 import { placeById } from '../services/catalog.js';
+import { createMessenger } from './messenger.js';
+import { icon } from '../components/icons.js';
 import { avatar, button, field, formatDate, node, runAction, toast } from '../components/ui.js';
 
 function personRow(profile) {
@@ -10,13 +12,10 @@ function personRow(profile) {
   return card;
 }
 
-const statusText = { pending: 'Ожидает ответа', accepted: 'Принято', declined: 'Отклонено' };
-
-export function createSocial({ api, modal, getSession, getResult, afterWrite }) {
-  let chatRefresh;
+export function createSocial({ api, modal, getSession, getResult, afterWrite, workspace }) {
+  const messenger = createMessenger({ api, workspace, modal, getSession, afterWrite, openPeople });
 
   function show(title, content, options = {}) {
-    chatRefresh = null;
     modal.show(title, content, options);
   }
 
@@ -57,117 +56,41 @@ export function createSocial({ api, modal, getSession, getResult, afterWrite }) 
   async function openPeople(onlyConnections = false) {
     const people = await api.people(getResult()?.categories);
     const visible = people.filter(person => !onlyConnections || person.related || person.incoming || person.outgoing);
-    const title = onlyConnections ? 'Друзья и заявки' : 'Найти друзей';
     const scope = node('div', 'social-list');
+    const search = node('input');
+    search.type = 'search';
+    search.setAttribute('aria-label', 'Поиск по имени');
+    search.placeholder = 'Найти по имени';
+    const filters = node('div', 'field-row people-filters');
     const redraw = () => openPeople(onlyConnections);
-    for (const person of visible) {
-      const card = personRow(person);
-      if (person.sharedCategories) card.append(node('p', 'm', 'Есть общие предпочтения'));
-      if (person.incoming) card.append(node('p', 'm', 'Входящая заявка'));
-      if (person.outgoing) card.append(node('p', 'm', 'Заявка отправлена'));
-      card.append(relationshipActions(person, redraw));
-      scope.append(card);
+    for (const [label, mine] of [['Мои связи', true], ['Найти друзей', false]]) {
+      const item = button(label, runAction(() => openPeople(mine)), 'btn');
+      item.setAttribute('aria-pressed', String(mine === onlyConnections));
+      filters.append(item);
     }
-    if (!visible.length) scope.append(node('p', 'm', onlyConnections ? 'Друзей и заявок пока нет.' : 'Других локальных профилей пока нет.'));
-    const switcher = onlyConnections ? 'Найти друзей' : 'Мои друзья и заявки';
-    show(title, [scope, button(switcher, runAction(() => openPeople(!onlyConnections)))]);
-  }
-
-  async function openChats() {
-    const chats = await api.chats();
-    const list = node('div', 'social-list');
-    for (const chat of chats) {
-      const action = button('', runAction(() => openChat(chat.id, openChats)), 'rv chat-list-button');
-      const header = node('span', 'rh');
-      header.append(avatar(chat, 'sm'), node('strong', '', chat.name));
-      if (chat.unread) header.append(node('span', 'bd', String(chat.unread)));
-      const last = chat.last?.placeId ? 'Приглашение на прогулку' : chat.last?.text || 'Сообщений пока нет';
-      action.append(header, node('span', 'm', last.slice(0, 85)));
-      list.append(action);
-    }
-    if (!chats.length) list.append(node('p', 'm', 'Добавьте друзей, чтобы начать локальный чат.'),
-      button('Найти друзей', runAction(() => openPeople())));
-    show('Чаты', [list]);
-  }
-
-  async function openChat(profileId, back = openChats) {
-    const chat = await api.chat(profileId);
-    const { profile } = getSession();
-    const transcript = node('div', 'cm transcript');
-    transcript.setAttribute('role', 'log');
-    transcript.setAttribute('aria-label', 'Сообщения');
-    const body = [transcript];
-    const form = node('form', 'cin chat-form');
-    const input = node('input');
-    input.maxLength = 1000;
-    input.required = true;
-    input.placeholder = 'Текст сообщения';
-    const submit = node('button', 'vb', 'Отправить');
-    submit.type = 'submit';
-    const footer = node('p', 'm');
-    form.append(field('Сообщение', input), submit);
-    body.push(form, footer);
-    let signature;
-
-    function paint(next) {
-      form.hidden = !next.canSend;
-      footer.textContent = next.canSend ? '' : 'Переписка доступна для чтения. Отправка доступна друзьям.';
-      const nextSignature = JSON.stringify(next.messages);
-      if (signature === nextSignature) return;
-      signature = nextSignature;
-      const atBottom = transcript.scrollHeight - transcript.clientHeight - transcript.scrollTop < 60;
-      transcript.replaceChildren();
-      if (!next.messages.length) transcript.append(node('p', 'm', 'Здесь появится первое сообщение.'));
-      for (const message of next.messages) {
-        const bubble = node('article', message.from === profile.id ? 'bubble mine' : 'bubble');
-        if (message.placeId) {
-          bubble.append(node('strong', '', 'Прогулка · ' + (placeById(message.placeId)?.name || 'Место недоступно')));
-          bubble.append(node('span', 'm', statusText[message.status]));
-        }
-        if (message.text) bubble.append(node('p', 'message-text', message.text));
-        bubble.append(node('small', 'm', formatDate(message.at)));
-        if (message.placeId && message.to === profile.id && message.status === 'pending') {
-          const actions = node('div', 'place-actions');
-          for (const [status, name] of [['accepted', 'Принять прогулку'], ['declined', 'Отклонить прогулку']]) {
-            actions.append(button(name, runAction(async () => {
-              await api.replyWalk(message.id, status);
-              await afterWrite();
-              await refresh();
-              input.focus();
-            }), 'vb'));
-          }
-          bubble.append(actions);
-        }
-        transcript.append(bubble);
+    function render() {
+      const query = search.value.trim().toLocaleLowerCase('ru');
+      scope.replaceChildren();
+      for (const person of visible.filter(person => person.name.toLocaleLowerCase('ru').includes(query))) {
+        const card = personRow(person);
+        const status = person.incoming ? 'Входящая заявка' : person.outgoing ? 'Заявка отправлена' : person.related ? 'В друзьях' : person.sharedCategories ? 'Есть общие предпочтения' : '';
+        if (status) card.append(node('span', 'status-label', status));
+        card.append(relationshipActions(person, redraw));
+        scope.append(card);
       }
-      if (atBottom) transcript.scrollTop = transcript.scrollHeight;
+      if (!scope.children.length) scope.append(node('p', 'm', query ? 'По этому имени никого не найдено.' : onlyConnections ? 'Друзей и заявок пока нет.' : 'Других локальных профилей пока нет.'));
     }
+    search.addEventListener('input', render);
+    render();
+    show('Друзья и заявки', [filters, search, scope], { className: 'people-panel' });
+  }
 
-    async function refresh() {
-      if (!transcript.isConnected || !transcript.closest('dialog')?.open) return;
-      const next = await api.chat(profileId);
-      if (transcript.isConnected) paint(next);
-    }
+  function openChats() {
+    return messenger.show();
+  }
 
-    let sending = false;
-    form.addEventListener('submit', async event => {
-      event.preventDefault();
-      if (sending || !input.value.trim()) return;
-      sending = true;
-      submit.disabled = true;
-      try {
-        await api.send(profileId, input.value);
-        input.value = '';
-        await afterWrite();
-        await refresh();
-      } catch (error) { toast(error.message); }
-      finally { sending = false; submit.disabled = false; input.focus(); }
-    });
-    show('Чат · ' + chat.profile.name, body, { back });
-    paint(chat);
-    transcript.scrollTop = transcript.scrollHeight;
-    chatRefresh = refresh;
-    await afterWrite();
+  function openChat(profileId, back) {
+    return messenger.show(profileId, back);
   }
 
   async function openInvite(place, back) {
@@ -228,7 +151,9 @@ export function createSocial({ api, modal, getSession, getResult, afterWrite }) 
     for (const row of reviews) {
       const card = personRow(row.author);
       const reactions = await api.reactions(row.id);
-      card.append(node('p', '', '★ ' + row.rating + '/5 · ' + formatDate(row.at)));
+      const rating = node('p', 'rating');
+      rating.append(icon('star'), node('span', '', row.rating + ' / 5  ' + formatDate(row.at)));
+      card.append(rating);
       if (row.text) card.append(node('p', 'message-text', row.text));
       const controls = node('div', 'place-actions');
       if (row.authorId === profile.id) controls.append(button('Удалить отзыв', runAction(async () => {
@@ -279,5 +204,5 @@ export function createSocial({ api, modal, getSession, getResult, afterWrite }) 
     show('Реакции · ' + place.name, [controls], { back });
   }
 
-  return { openPeople, openChats, openInvite, openReviews, openReactions, refreshChat: () => chatRefresh?.() };
+  return { openPeople, openChats, openInvite, openReviews, openReactions, refreshChat: messenger.refresh };
 }

@@ -14,12 +14,22 @@ export function questionsFor(mode) {
   return indices.map(id => ({ id, data: fullQuestions[id] }));
 }
 
-function moodLabel(energy, mood, tension) {
-  if (mood <= 40) return 'Хочется отдохнуть и восстановиться';
-  if (tension >= 68) return 'Хочется немного выдохнуть';
-  if (energy >= 68) return 'Есть силы на активный отдых';
-  return 'Хочется провести время в своём темпе';
+function moodAtmosphere(dimensions, selected) {
+  const { E, V, T } = dimensions;
+  const answer = selected[24] ?? selected[2];
+  if (answer === 0 || selected[24] === 1 || V <= 32) return 'sad';
+  if (answer === 4 || (V >= 70 && E >= 68 && T < 55)) return 'fun';
+  if (selected[23] === 0 && E < 68) return 'dark';
+  if (answer === 3 || (V >= 58 && T < 55)) return 'light';
+  return 'dark';
 }
+
+const moodLabels = {
+  sad: 'Хочется отдохнуть и восстановиться',
+  fun: 'Есть силы на новые впечатления',
+  light: 'Подойдёт день в спокойном ритме',
+  dark: 'Хочется провести время в своём темпе'
+};
 
 export function analyzeAnswers(questions, answers) {
   const sum = {}, total = {}, affinity = categories.map(() => 0);
@@ -43,7 +53,7 @@ export function analyzeAnswers(questions, answers) {
   const dims = Object.fromEntries(scaleNames.map(k => [k, total[k] ? Math.round(sum[k] / total[k] * 25) : 50]));
   const sad = dims.V <= 40 || (dims.V <= 50 && dims.E <= 35) || (dims.V <= 45 && dims.T >= 60) ||
     selected[2] === 0 || selected[22] === 3 || selected[24] <= 1;
-  const fun = !sad && ((dims.V >= 68 && dims.E >= 45 && dims.T <= 50) || selected[24] === 4);
+  const theme = moodAtmosphere(dims, selected);
   const max = Math.max(1, ...affinity);
   const scores = Object.fromEntries(categoryProfiles.map((profile, i) => {
     const distance = scaleNames.reduce((sum, key, j) => sum + Math.abs(dims[key] - profile[j]) * weights[j], 0);
@@ -61,7 +71,7 @@ export function analyzeAnswers(questions, answers) {
     budget: [0, 5000, 10000][selected[15]]
   };
   return {
-    mood: moodLabel(dims.E, dims.V, dims.T), theme: sad ? 'sad' : fun ? 'fun' : null, scores,
+    mood: moodLabels[theme], theme, scores,
     categories: Object.keys(scores).sort((a, b) => scores[b] - scores[a]).slice(0, 2),
     preferences: Object.fromEntries(Object.entries(preferences).filter(([, value]) => value !== undefined))
   };

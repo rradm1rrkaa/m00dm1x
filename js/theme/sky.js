@@ -4,7 +4,6 @@ const randomBetween = (min, max) => min + Math.random() * (max - min);
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 const blend = (a, b, ratio) => a.map((n, i) => n + (b[i] - n) * ratio);
 const rgb = values => values.map(Math.round).join(',');
-const lightness = ([r,g,b]) => (.2126 * r + .7152 * g + .0722 * b) / 255;
 
 // A keyframe describes the sky colours, sun position and colour, stars, hill and moon.
 const keyframe = (top, bottom, altitude, sun, stars, hill, moon) => [...top, ...bottom, altitude, ...sun, stars, ...hill, moon];
@@ -16,7 +15,8 @@ const gradients = {
     keyframe([20,22,60], [96,54,114], .84, [255,110,70], .7, [20,12,36], .5), night
   ],
   light: [
-    night, keyframe([88,72,160], [255,168,100], .72, [255,176,90], .35, [40,28,54], .6),
+    keyframe([94,126,187], [246,183,147], .61, [255,224,163], .14, [78,83,103], .34),
+    keyframe([111,157,215], [255,202,159], .53, [255,229,170], .02, [78,107,110], .7),
     keyframe([92,172,246], [255,226,190], .42, [255,236,160], 0, [52,104,64], 1.1),
     keyframe([62,148,240], [204,234,255], .2, [255,248,205], 0, [58,116,72], 1.1)
   ]
@@ -116,10 +116,6 @@ export function mountSky(initialTheme) {
     const current = previousGradient && !reduce.matches ? blend(previousGradient, target, .18) : target;
     previousGradient = current;
     const colourTop = current.slice(0, 3), colourBottom = current.slice(3, 6);
-    const luminosity = .6 * lightness(colourTop) + .4 * lightness(colourBottom);
-    if (theme === 'light' && luminosity < .5) root.classList.add('nightsky');
-    else if (theme !== 'light' || luminosity > .58) root.classList.remove('nightsky');
-
     sky.style.background = 'linear-gradient(rgb(' + rgb(colourTop) + '),rgb(' + rgb(colourBottom) + ') 70%)';
     sun.style.top = current[6] * 100 + '%';
     sun.style.left = 76 - progress * 10 + '%';
@@ -158,7 +154,6 @@ export function mountSky(initialTheme) {
     theme = next;
     root.dataset.theme = next;
     if (next === 'sad' || next === 'fun') {
-      root.classList.remove('nightsky');
       sky.style.background = '';
       stars.style.opacity = next === 'sad' ? '1' : '0';
       clouds.style.transform = '';

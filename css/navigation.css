@@ -1,0 +1,40 @@
+.app-header {
+  position: sticky; z-index: var(--layer-header); top: max(8px,env(safe-area-inset-top));
+  display: grid; grid-template-columns: auto 1fr auto; grid-template-areas: "brand primary options"; align-items: center;
+  gap: var(--space-5); margin-block: max(12px,env(safe-area-inset-top)) 0; padding: .47rem .65rem .47rem 1rem;
+}
+.brand {
+  grid-area: brand; display: inline-flex; align-items: center; gap: .45rem;
+  color: var(--ink); font-size: 1.19rem; font-weight: 700; letter-spacing: -.05em; text-decoration: none;
+}
+.brand .icon { width: 24px; height: 24px; color: var(--accent); }
+.head-primary { grid-area: primary; display: flex; align-items: center; justify-content: center; gap: var(--space-1); min-width: 0; }
+.head-utilities { grid-area: options; display: flex; align-items: center; justify-content: flex-end; gap: .4rem; min-width: 0; }
+.nav-link {
+  display: inline-flex; align-items: center; justify-content: center; gap: .43rem;
+  border: 1px solid transparent; border-radius: var(--radius-control); min-height: 44px;
+  padding: .45rem .65rem; background: transparent; color: var(--muted); cursor: pointer;
+  font-size: var(--text-sm); font-weight: 600; white-space: nowrap;
+  transition: color var(--fast), background-color var(--fast);
+}
+.nav-link:hover, .nav-link[aria-current] { color: var(--ink); background: var(--raised); }
+.nav-link[aria-current] .icon { color: var(--accent); }
+#profile { padding: .24rem .56rem .24rem .3rem; }
+#profile .profile-caption { max-width: 8rem; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+#profile[aria-current] { background: var(--selected); border-color: var(--strong-line); }
+@media (max-width: 1040px) {
+  html { scroll-padding-top: 140px; }
+  .app-header { gap: .42rem var(--space-3); grid-template-columns: 1fr auto; grid-template-areas: "brand options" "primary primary"; }
+  .head-primary { justify-content: flex-start; border-top: 1px solid var(--line); padding-top: .3rem; }
+}
+@media (max-width: 560px) {
+  .app-header { padding: .36rem .48rem; gap: .24rem; }
+  .brand { padding-left: .18rem; font-size: 1.05rem; }
+  .brand .icon { width: 21px; height: 21px; }
+  #profile { width: 44px; padding: 0; }
+  #profile .profile-caption { position: absolute; width: 1px; height: 1px; clip-path: inset(50%); }
+  .head-primary { justify-content: space-around; }
+  .nav-link { position: relative; flex: 1 1 auto; flex-direction: column; gap: .06rem; padding: .26rem .15rem; font-size: clamp(.62rem,2.8vw,.74rem); }
+  .nav-link .icon { width: 17px; height: 17px; }
+  .nav-link .bd { position: absolute; top: 2px; left: calc(50% + 8px); min-width: 1rem; height: 1rem; }
+}
