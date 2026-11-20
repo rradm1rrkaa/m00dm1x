@@ -1,6 +1,10 @@
 import { placeById } from '../services/catalog.js';
 import { avatar, button, formatDate, node, runAction, toast } from '../components/ui.js';
 import { icon } from '../components/icons.js';
+import { VISIT_ZONE } from '../services/visit-time.js';
+import { wallpaperControl } from './chat-wallpaper.js';
+import { mountAtmosphere } from '../theme/atmosphere.js';
+import { ATMOSPHERE_CHANGE, currentAtmosphere, isAtmosphere } from '../theme/themes.js';
 
 const statusText = { pending: 'Ожидает ответа', accepted: 'Принято', declined: 'Отклонено' };
 const textFor = message => message?.placeId ? 'Приглашение на прогулку' : message?.text || 'Сообщений пока нет';
@@ -13,14 +17,36 @@ function displayTime(value, short = false) {
 }
 
 export function createMessenger({ api, workspace, modal, getSession, afterWrite, openPeople }) {
-  let updateThread;
+  let updateThread, refreshAtmosphere;
   const drafts = new Map();
+  document.addEventListener(ATMOSPHERE_CHANGE, () => refreshAtmosphere?.());
 
   async function show(selectedId = null, back = null, query = '') {
     modal.close();
     const { profile } = getSession();
-    const conversations = await api.chats();
+    const [conversations, settings] = await Promise.all([api.chats(), api.settings()]);
     const layout = node('div', 'messenger');
+    const art = node('div', 'chat-art scene-art');
+    art.setAttribute('aria-hidden', 'true');
+    const scene = mountAtmosphere(art, { context: 'chat', onError: toast });
+    const wallpaper = wallpaperControl(api, layout, settings.chatWallpaper, syncAppearance);
+
+    function syncAppearance() {
+      if (!layout.isConnected) return;
+      const mode = layout.dataset.wallpaper;
+      const theme = mode === 'theme' ? currentAtmosphere() : mode;
+      if (isAtmosphere(theme)) {
+        scene.show(theme, applied => { layout.dataset.chatAtmosphere = applied; });
+      } else {
+        scene.clear();
+        layout.dataset.chatAtmosphere = 'neutral';
+      }
+    }
+    function showMessenger(focus) {
+      workspace.show('messages', layout, focus, { threadId: selectedId });
+      refreshAtmosphere = syncAppearance;
+      syncAppearance();
+    }
     const sidebar = node('aside', 'messenger-sidebar');
     const listTitle = node('div', 'messenger-list-title');
     const leave = button('', runAction(async () => {
@@ -30,7 +56,10 @@ export function createMessenger({ api, workspace, modal, getSession, afterWrite,
     leave.setAttribute('aria-label', 'Выйти из сообщений');
     leave.append(icon('back'));
     const heading = node('h1', '', 'Direct');
-    listTitle.append(heading, leave);
+    const listActions = node('div', 'messenger-list-actions');
+    if (!selectedId) listActions.append(wallpaper.panel);
+    listActions.append(leave);
+    listTitle.append(heading, listActions);
     const search = node('input');
     search.type = 'search';
     search.placeholder = 'Поиск диалогов';
@@ -43,6 +72,7 @@ export function createMessenger({ api, workspace, modal, getSession, afterWrite,
     sidebar.append(listTitle, searchbox, list);
     const active = node('section', 'messenger-thread');
     active.setAttribute('aria-label', 'Переписка');
+    active.append(art);
     layout.append(sidebar, active);
     if (selectedId) layout.dataset.thread = 'open';
 
@@ -88,15 +118,16 @@ export function createMessenger({ api, workspace, modal, getSession, afterWrite,
 
     if (!selectedId) {
       const empty = node('div', 'messenger-empty');
-      empty.append(icon('chat'), node('h2', '', conversations.length ? 'Выберите диалог' : 'Начните переписку'),
+      empty.append(node('h2', '', conversations.length ? 'Выберите диалог' : 'Начните переписку'),
         node('p', 'm', conversations.length ? 'Здесь откроется история сообщений.' : 'Найдите друзей и напишите первое сообщение.'));
       active.append(empty);
       updateThread = async () => {
         if (!layout.isConnected) return;
         visibleChats = await api.chats();
+        wallpaper.apply((await api.settings()).chatWallpaper);
         if (layout.isConnected) paintList(visibleChats);
       };
-      workspace.show('messages', layout);
+      showMessenger(true);
       return;
     }
 
@@ -109,7 +140,7 @@ export function createMessenger({ api, workspace, modal, getSession, afterWrite,
     const title = node('h2', '', firstThread.profile.name);
     title.tabIndex = -1;
     identity.append(title, node('p', 'm', getSession().mode === 'demo' ? 'Демонстрационный профиль' : 'Локальный профиль'));
-    header.append(backButton, avatar(firstThread.profile), identity);
+    header.append(backButton, avatar(firstThread.profile), identity, wallpaper.panel);
     const transcript = node('div', 'transcript');
     transcript.setAttribute('role', 'log');
     transcript.setAttribute('aria-label', 'Сообщения');
@@ -145,9 +176,15 @@ export function createMessenger({ api, workspace, modal, getSession, afterWrite,
       const own = message.from === profile.id;
       const bubble = node('article', 'bubble' + (own ? ' mine' : '') + (message.placeId ? ' invitation' : ''));
       if (message.placeId) {
-        const label = node('div', 'invite-label');
-        label.append(icon('calendar'), node('span', '', 'Приглашение на прогулку'));
+        const label = node('div', 'invite-label', 'Приглашение на прогулку');
         bubble.append(label, node('strong', '', placeById(message.placeId)?.name || 'Место недоступно'));
+        if (message.walkAt) {
+          const time = node('time', 'invite-date', new Intl.DateTimeFormat('ru-KZ', {
+            dateStyle: 'long', timeStyle: 'short', timeZone: VISIT_ZONE
+          }).format(new Date(message.walkAt)));
+          time.dateTime = message.walkAt;
+          bubble.append(time);
+        }
         if (message.text) bubble.append(node('p', 'message-text', message.text));
         bubble.append(node('span', 'status-label', statusText[message.status]));
       } else if (message.text) bubble.append(node('p', 'message-text', message.text));
@@ -186,7 +223,10 @@ export function createMessenger({ api, workspace, modal, getSession, afterWrite,
           const day = new Date(message.at).toDateString();
           if (day !== lastDay) {
             lastDay = day;
-            transcript.append(node('p', 'transcript-date', new Intl.DateTimeFormat('ru-KZ', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(message.at))));
+            const marker = node('p', 'transcript-date');
+            const date = new Intl.DateTimeFormat('ru-KZ', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(message.at));
+            marker.append(node('span', '', date));
+            transcript.append(marker);
           }
         }
         transcript.append(bubbleFor(message));
@@ -198,6 +238,7 @@ export function createMessenger({ api, workspace, modal, getSession, afterWrite,
       if (!layout.isConnected || workspace.active !== 'messages') return;
       const thread = await api.chat(selectedId);
       visibleChats = await api.chats();
+      wallpaper.apply((await api.settings()).chatWallpaper);
       if (!layout.isConnected || workspace.active !== 'messages') return;
       paint(thread, forceBottom);
       paintList(visibleChats);
@@ -217,7 +258,7 @@ export function createMessenger({ api, workspace, modal, getSession, afterWrite,
       } catch (error) { toast(error.message); }
       finally { sending = false; submitState(); if (input.isConnected) input.focus(); }
     });
-    workspace.show('messages', layout, false);
+    showMessenger(false);
     title.focus({ preventScroll: true });
     paint(firstThread, true);
     visibleChats = await api.chats();

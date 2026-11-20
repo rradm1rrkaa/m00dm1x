@@ -8,45 +8,47 @@
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/base.css">
-  <link rel="stylesheet" href="css/sky.css">
+  <link rel="stylesheet" href="css/atmosphere.css">
   <link rel="stylesheet" href="css/showcase.css">
   <link rel="stylesheet" href="css/navigation.css">
   <link rel="stylesheet" href="css/app.css">
   <link rel="stylesheet" href="css/quiz.css">
   <link rel="stylesheet" href="css/profile.css">
   <link rel="stylesheet" href="css/messenger.css">
+  <link rel="stylesheet" href="css/place.css">
   <script type="module" src="js/main.js"></script>
 </head>
 <body class="app-page">
-  <div id="sky" aria-hidden="true">
-    <div id="stars"></div><div id="sun"></div><div id="moon"></div><div id="clouds"></div>
-    <svg id="hill" viewBox="0 0 100 34" preserveAspectRatio="none"><path id="hf" d="M0 14Q14 5 30 10T58 6T82 11T100 14V34H0Z"/><path id="hp" d="M0 18Q12 11 26 16T52 14T76 17T100 18V34H0Z"/></svg>
-  </div>
-  <a class="skip" id="skip-link" href="#out">Перейти к каталогу</a>
-  <div id="app" data-view="catalog">
+  <div class="app-atmosphere scene-art" aria-hidden="true"></div>
+  <a class="skip" id="skip-link" href="#out" hidden>Перейти к каталогу</a>
+  <div id="app" data-view="loading">
     <header class="app-header">
-      <div class="head-inner content-width">
-        <a class="brand" href="index.html"><span data-icon="compass"></span>MoodMix</a>
+      <div class="head-inner">
+        <a class="brand brand-script" href="index.html">MoodMix</a>
         <nav class="head-primary" aria-label="Навигация">
-          <button id="nav-catalog" type="button" class="nav-link" aria-current="page"><span data-icon="compass"></span>Каталог</button>
-          <button id="nav-quiz" type="button" class="nav-link"><span data-icon="spark"></span>Подборка</button>
-          <button id="friends" type="button" class="nav-link" hidden><span data-icon="users"></span>Друзья <span class="bd" id="friend-badge" hidden></span></button>
-          <button id="chats" type="button" class="nav-link" aria-label="Direct · Сообщения" hidden><span data-icon="chat"></span>Direct <span class="bd" id="chat-badge" hidden></span></button>
+          <button id="nav-catalog" type="button" class="nav-link" aria-current="page">Каталог</button>
+          <button id="nav-quiz" type="button" class="nav-link">Подборка</button>
+          <button id="friends" type="button" class="nav-link" hidden>Друзья <span class="bd" id="friend-badge" hidden></span></button>
+          <button id="chats" type="button" class="nav-link" aria-label="Direct · Сообщения" hidden>Direct <span class="bd" id="chat-badge" hidden></span></button>
         </nav>
         <div class="head-utilities"><div id="theme-slot"></div><button id="profile" type="button" class="tbtn">Профиль</button></div>
       </div>
     </header>
+    <div id="app-loading" class="content-width" role="status">
+      <p id="startup-note">Загружаем MoodMix…</p>
+      <noscript><p>Включите JavaScript для просмотра каталога.</p></noscript>
+    </div>
     <section id="quiz" class="gate content-width" aria-label="Тест по настроению" hidden></section>
     <section id="workspace" class="content-width" hidden></section>
-    <section id="catalog" class="content-width" aria-label="Каталог MoodMix">
+    <section id="catalog" class="content-width" aria-label="Каталог MoodMix" hidden>
       <div class="bar" id="catalog-toolbar">
         <section class="app-intro">
           <div class="intro-copy">
-            <p class="destination"><span data-icon="pin"></span>Астана и окрестности</p>
+            <p class="destination">Астана и окрестности</p>
             <h1>Куда сходить?</h1>
             <p class="intro-lead">Найдите место под настроение и планы на день.</p>
             <div class="intro-actions">
-              <button id="start-quiz" class="btn c" type="button">Подобрать место<span data-icon="arrow"></span></button>
+              <button id="start-quiz" class="btn c" type="button">Подобрать место</button>
               <button id="profiles" class="btn quiet" type="button">Демо-профили</button>
             </div>
             <p id="mode-note" class="m">Места и идеи для отдыха</p>
@@ -63,16 +65,15 @@
             <span data-icon="search"></span><input type="search" id="q" placeholder="Парк или кафе" autocomplete="off">
           </div>
           <details class="catalog-filters" id="filters">
-            <summary><span data-icon="sliders"></span>Фильтры</summary>
+            <summary>Фильтры</summary>
             <div id="filter-controls" class="filter-controls"></div>
           </details>
           <div id="tabs" class="tabs" aria-label="Раздел каталога"></div>
         </div>
       </div>
-      <main id="out" tabindex="-1"><p class="m" id="startup-note">Загружаем каталог…</p></main>
-      <noscript><p>Включите JavaScript для просмотра каталога.</p></noscript>
+      <main id="out" tabindex="-1"></main>
     </section>
-    <footer class="app-footer"><div class="content-width"><a href="index.html">MoodMix</a><span>Часы работы и цены уточняйте перед поездкой.</span></div></footer>
+    <footer class="app-footer"><div class="app-footer-inner"><a class="brand brand-script" href="index.html">MoodMix</a><span>Часы работы и цены уточняйте перед поездкой.</span></div></footer>
   </div>
   <dialog id="pf" aria-labelledby="dialog-title">
     <div class="pc" id="pfc"></div>

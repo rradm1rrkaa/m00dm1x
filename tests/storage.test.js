@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createLocalApi } from '../js/services/local-api.js';
 import { createStorage, STORAGE_KEY, avatarSource } from '../js/services/storage.js';
+import { plannedVisit } from '../js/services/visit-time.js';
 
 function memory(initial = {}) {
   const values = new Map(Object.entries(initial));
@@ -15,6 +16,37 @@ function memory(initial = {}) {
 }
 
 const iso = '2026-11-19T10:00:00Z';
+
+test('a failed durable favorite leaves the previous state and a later retry can save', async () => {
+  const store = memory();
+  const api = createLocalApi(store);
+  const write = store.setItem;
+  store.setItem = () => { throw new Error('quota'); };
+  await assert.rejects(() => api.toggleFavorite('mm-001', { durable: true }), /не смог сохранить/);
+  assert.equal((await api.session()).profile.favorites.includes('mm-001'), false);
+  store.setItem = write;
+  assert.equal(await api.toggleFavorite('mm-001', { durable: true }), true);
+  assert.equal((await createLocalApi(store).session()).profile.favorites.includes('mm-001'), true);
+});
+
+test('planned walks validate local times and store timestamps alongside old invitations', async () => {
+  const fixedNow = new Date('2026-11-20T16:00:00Z');
+  assert.equal(plannedVisit('2026-11-21', '00:15', fixedNow), '2026-11-20T19:15:00.000Z');
+  assert.throws(() => plannedVisit('2026-11-20', '20:00', fixedNow), /будущем/);
+  assert.throws(() => plannedVisit('2026-02-30', '14:00', fixedNow), /Проверьте/);
+  assert.throws(() => plannedVisit('2026-11-21', '24:00', fixedNow), /Проверьте/);
+  const store = memory();
+  const api = createLocalApi(store);
+  await api.switchProfile('demo');
+  const walkAt = new Date(Date.now() + 86400000).toISOString();
+  await api.send('demo-timur', 'У входа', 'mm-057', walkAt);
+  const thread = await createLocalApi(store).chat('demo-timur');
+  assert.equal(thread.messages.at(-1).walkAt, walkAt);
+  assert.equal(thread.messages.find(row => row.placeId === 'mm-001').walkAt, undefined);
+  await api.setChatWallpaper('pattern');
+  assert.equal((await createLocalApi(store).settings()).chatWallpaper, 'pattern');
+  assert.equal((await api.settings()).theme, 'auto');
+});
 const legacy = {
   users: {
     old: { login: 'Old', hash: 'p:discard', salt: 'discard', favs: ['0|Ботанический сад'], friends: ['friend'],

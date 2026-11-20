@@ -1,5 +1,8 @@
 import { placeGroups } from '../data/places.js';
 import { verifiedPlaces, placeTraits } from '../data/place-details.js';
+import { placePhotos } from '../data/place-photos.js';
+import { guides, placeFacilities } from '../data/place-guides.js';
+import { VISIT_ZONE, visitParts } from './visit-time.js';
 
 export const categories = placeGroups.map(({ id, icon, name }) => ({ id, icon, name }));
 const knownRegions = /Бурабай|Коргальжын|Акмолинская обл\.|Малиновка|Пригород/i;
@@ -26,10 +29,20 @@ export const places = placeGroups.flatMap(({ id: category, places: entries }, ca
       price: details.price || { status: 'unknown', min: null, max: null, currency: 'KZT' },
       openingHours: details.openingHours || null,
       summerHours: details.summerHours || null,
+      schedule: details.openingHours ? {
+        timezone: VISIT_ZONE, weekly: details.openingHours, summer: details.summerHours || null,
+        exceptions: details.exceptions || {},
+        verifiedAt: details.hoursVerifiedAt || null, sourceUrl: details.hoursSource || details.source || null
+      } : null,
       mapUrl: details.mapUrl || null,
-      images: details.images || [],
+        images: details.images || placePhotos[entry.id] || [],
       source: details.source || null,
-      lastVerifiedAt: details.source ? '2026-11-19' : null,
+      guide: guides[entry.id] || null,
+      website: details.website || null,
+      contact: details.contact || null,
+      facilities: placeFacilities[entry.id] || [],
+      sources: guides[entry.id]?.sources || [],
+      lastVerifiedAt: guides[entry.id]?.sources[0]?.verifiedAt || (details.source ? '2026-11-19' : null),
       verificationStatus: details.source ? 'partial' : 'unverified'
     };
   })
@@ -39,6 +52,7 @@ const byId = new Map(places.map(p => [p.id, p]));
 const byName = new Map(places.map(p => [p.name, p.id]));
 const byLegacyKey = new Map(places.map(p => [p.categoryIndex + '|' + p.name, p.id]));
 export const placeById = id => byId.get(id);
+export const placeHref = id => 'app.html?place=' + encodeURIComponent(id);
 export function resolvePlaceId(value) {
   if (byId.has(value)) return value;
   const previousName = typeof value === 'string' ? value.replace(/^\d+\|/, '') : '';
@@ -64,21 +78,33 @@ export function mapLink(place) {
 }
 
 const normalize = value => String(value || '').toLowerCase().replaceAll('ё', 'е').trim();
+export const weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+export function hoursForVisit(place, date = new Date()) {
+  const schedule = place.schedule;
+  if (!schedule?.verifiedAt) return null;
+  const dateKey = visitParts(date).date;
+  const month = Number(dateKey.slice(5, 7));
+  const weekday = new Intl.DateTimeFormat('en-GB', { timeZone: VISIT_ZONE, weekday: 'short' }).format(date);
+  const weekly = schedule.summer && month >= 6 && month <= 8 ? schedule.summer : schedule.weekly;
+  return { ...schedule, weekly, today: schedule.exceptions[dateKey] ?? weekly[weekday] ?? null };
+}
 
 export function hoursStatus(place, date = new Date()) {
   if (!place.openingHours) return 'unknown';
   const parts = new Intl.DateTimeFormat('en-GB', {
-    timeZone: 'Asia/Almaty', weekday: 'short', month: 'numeric', hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
+    timeZone: VISIT_ZONE, weekday: 'short', month: 'numeric', hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
   }).formatToParts(date);
   const part = type => parts.find(p => p.type === type).value;
-  const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-  const day = days.indexOf(part('weekday'));
+  const day = weekdays.indexOf(part('weekday'));
   const time = Number(part('hour')) * 60 + Number(part('minute'));
   const month = Number(part('month'));
   const schedule = place.summerHours && month >= 6 && month <= 8 ? place.summerHours : place.openingHours;
-  const intervals = d => schedule[days[d]] || [];
-  const open = intervals(day).some(([from, to]) => time >= from && (to < from || time < to))
-    || intervals((day + 6) % 7).some(([from, to]) => to < from && time < to);
+  const intervals = d => schedule[weekdays[d]] || [];
+  const today = hoursForVisit(place, date)?.today ?? intervals(day);
+  const yesterday = hoursForVisit(place, new Date(date.getTime() - 86400000))?.today ?? intervals((day + 6) % 7);
+  const open = today.some(([from, to]) => time >= from && (to < from || time < to))
+    || yesterday.some(([from, to]) => to < from && time < to);
   return open ? 'open' : 'closed';
 }
 

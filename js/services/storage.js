@@ -4,6 +4,7 @@ import { resolvePlaceId } from './catalog.js';
 export const STORAGE_KEY = 'moodmix_showcase';
 const VERSION = 1;
 const themes = new Set(['auto', 'dark', 'light', 'sad', 'fun']);
+export const wallpapers = ['theme', 'solid', 'pattern', 'light', 'dark', 'sad', 'fun'];
 const legacyKeys = ['astana_db', 'astana_session', 'moodmix_guest', 'moodmix_px', 'moodmix_theme', 'moodmix_sad', 'moodmix_sad_off'];
 const record = value => value && typeof value === 'object' && !Array.isArray(value) ? value : {};
 const list = value => Array.isArray(value) ? value : [];
@@ -63,7 +64,10 @@ function normalizeSpace(raw) {
     .map(r => ({ id: text(r.id, 100), authorId: r.authorId, placeId: resolvePlaceId(r.placeId), text: text(r.text), rating: r.rating, at: time(r.at) }));
   const messages = list(source.messages).filter(pair).map(m => ({
     id: text(m.id, 100), from: m.from, to: m.to, text: text(m.text), at: time(m.at),
-    ...(resolvePlaceId(m.placeId) ? { placeId: resolvePlaceId(m.placeId), status: ['accepted', 'declined'].includes(m.status) ? m.status : 'pending' } : {})
+    ...(resolvePlaceId(m.placeId) ? {
+      placeId: resolvePlaceId(m.placeId), status: ['accepted', 'declined'].includes(m.status) ? m.status : 'pending',
+      ...(time(m.walkAt) ? { walkAt: time(m.walkAt) } : {})
+    } : {})
   }));
   const friendships = list(source.friendships).filter(row => Array.isArray(row) && row.length === 2 && row.every(member) && row[0] !== row[1]);
   const reviewIds = new Set(reviews.map(r => r.id));
@@ -135,7 +139,7 @@ export function migrateLegacy(store) {
     const preferred = store.getItem('moodmix_theme');
     if (['dark', 'light'].includes(preferred)) theme = preferred;
   } catch {}
-  return { version: VERSION, settings: { theme }, guest, active: { mode: 'guest', id: 'guest' }, demo: null, legacy: normalizeSpace(legacy) };
+  return { version: VERSION, settings: { theme, chatWallpaper: 'theme' }, guest, active: { mode: 'guest', id: 'guest' }, demo: null, legacy: normalizeSpace(legacy) };
 }
 
 function normalizeState(value) {
@@ -144,7 +148,10 @@ function normalizeState(value) {
   const legacy = normalizeSpace(value.legacy);
   const space = active.mode === 'demo' ? demo : active.mode === 'legacy' ? legacy : null;
   return {
-    version: VERSION, settings: { theme: themes.has(value.settings?.theme) ? value.settings.theme : 'auto' },
+    version: VERSION, settings: {
+      theme: themes.has(value.settings?.theme) ? value.settings.theme : 'auto',
+      chatWallpaper: wallpapers.includes(value.settings?.chatWallpaper) ? value.settings.chatWallpaper : 'theme'
+    },
     guest: normalizeProfile(value.guest, 'guest'), demo, legacy,
     active: space && Object.hasOwn(space.profiles, active.id) ? { mode: active.mode, id: active.id } : { mode: 'guest', id: 'guest' }
   };
@@ -186,8 +193,9 @@ export function createStorage(storage) {
     }
   }
 
-  function update(change) {
+  function update(change, { durable = false } = {}) {
     refresh();
+    if (durable && blocked) throw new Error(issue);
     const next = structuredClone(current);
     const result = change(next);
     if (!blocked) {
@@ -198,6 +206,10 @@ export function createStorage(storage) {
         issue = '';
       } catch {
         issue = 'Изменения доступны в этой вкладке. Браузер не смог их сохранить.';
+        if (durable) {
+          issue = 'Браузер не смог сохранить изменения.';
+          throw new Error(issue);
+        }
       }
     }
     current = next;

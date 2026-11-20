@@ -1,0 +1,101 @@
+.scene-art { pointer-events: none; overflow: hidden; }
+.atmosphere-layer, .atmosphere-layer picture, .atmosphere-layer img, .scene-solar {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.atmosphere-layer { opacity: 0; overflow: hidden; transition: opacity 680ms ease; }
+.atmosphere-layer.visible { opacity: 1; }
+.atmosphere-layer img { object-fit: cover; object-position: var(--scene-position, center); }
+.atmosphere-layer[data-scene="space"] { --scene-position: 50% 42%; }
+.atmosphere-layer[data-scene="coast"] { --scene-position: 58% 48%; }
+.scene-effect { position: absolute; }
+.scene-solar { transform-origin: 58% 64%; }
+[data-scene="dawn"] .scene-solar { animation: sun-rise 19s cubic-bezier(.22,.65,.35,1) both; }
+[data-scene="dusk"] .scene-solar { animation: sun-set 23s cubic-bezier(.22,.65,.35,1) both; }
+.scene-sunlight {
+  inset: 15% 7% 19% 25%;
+  background: radial-gradient(ellipse at 67% 59%, #ffe1a625, transparent 52%);
+  mix-blend-mode: screen;
+}
+[data-scene="dusk"] .scene-sunlight { background: radial-gradient(ellipse at 65% 55%, #f499532c, transparent 58%); }
+.hero-art [data-scene="dusk"] .scene-sunlight { inset: 40% 50% 10% 0; }
+.scene-cirrus, .scene-high-cloud {
+  width: min(71vw, 880px);
+  height: clamp(40px, 11vh, 125px);
+  top: 9%;
+  left: -8%;
+  mix-blend-mode: screen;
+  opacity: .55;
+  background: radial-gradient(ellipse 42% 16% at 25% 49%, #fff0df4f, transparent 100%),
+    radial-gradient(ellipse 44% 20% at 56% 54%, #ffeddf45, transparent 100%),
+    radial-gradient(ellipse 26% 12% at 82% 45%, #ffe1ce3b, transparent 100%);
+  rotate: -6deg;
+  animation: drift-cloud 39s ease-in-out -9s infinite alternate;
+}
+.scene-high-cloud { top: 22%; left: 51%; width: min(55vw, 650px); opacity: .42; animation-duration: 52s; animation-direction: alternate-reverse; }
+[data-scene="dusk"] :is(.scene-cirrus,.scene-high-cloud) { opacity: .34; }
+
+.scene-palm {
+  mask-image: radial-gradient(ellipse 45% 44% at 91% 4%, #000 55%, transparent 100%);
+  transform-origin: 85% 4%;
+  animation: sway-palm 7s ease-in-out infinite alternate;
+}
+.scene-waves {
+  inset: 47% auto auto -3%;
+  width: 106%;
+  height: 42%;
+  fill: none;
+  stroke: #fff8e0;
+  stroke-width: 1.45;
+  opacity: .27;
+  mask-image: linear-gradient(90deg,transparent, #000 15%, #000 57%,transparent 84%);
+  mix-blend-mode: screen;
+  animation: roll-waves 8s ease-in-out -2s infinite alternate;
+}
+.scene-waterlight {
+  inset: 45% 26% 12% -9%;
+  background: radial-gradient(ellipse at 47% 72%, #ffecd443, transparent 45%);
+  opacity: .32;
+  mix-blend-mode: screen;
+  animation: waterlight 11s ease-in-out infinite alternate;
+}
+.scene-planet {
+  mask-image: radial-gradient(ellipse 22% 40% at 9% 15%, #000 49%, transparent 99%);
+  animation: orbit-planet 23s ease-in-out -5s infinite alternate;
+}
+.scene-nebula {
+  inset: -18% -14% 28% 25%;
+  background: radial-gradient(ellipse at 58% 46%, #9c80f23a, transparent 58%);
+  mix-blend-mode: screen;
+  animation: drift-nebula 27s ease-in-out infinite alternate;
+}
+.scene-stars { inset: 4% 0 auto; width: 100%; height: 51%; fill: none; stroke: #fff7e9; stroke-width: .95; stroke-linecap: round; }
+.scene-stars path { animation: pulse-stars 6.3s ease-in-out infinite alternate; }
+.scene-stars path + path { animation-delay: -3.8s; animation-duration: 8.1s; }
+
+@keyframes sun-rise { from { transform: scale(1.085) translateY(2.8%); } to { transform: scale(1.035) translateY(-1.2%); } }
+@keyframes sun-set { from { transform: scale(1.085) translateY(-2.6%); } to { transform: scale(1.035) translateY(1.2%); } }
+@keyframes drift-cloud { from { transform: translateX(-7%); } to { transform: translateX(31%); } }
+@keyframes sway-palm { from { transform: rotate(-.65deg) scale(1.002); } to { transform: rotate(.78deg) scale(1.012); } }
+@keyframes roll-waves { from { transform: translate(-2%,1%); opacity: .18; } to { transform: translate(2.2%,-2.5%); opacity: .37; } }
+@keyframes waterlight { to { transform: translate(4%,-2%); opacity: .6; } }
+@keyframes orbit-planet { from { transform: translate(0,0) scale(1.006); } to { transform: translate(7px,-4px) scale(1.014); } }
+@keyframes drift-nebula { to { transform: translate(-6%,5%) scale(1.09); opacity: .63; } }
+@keyframes pulse-stars { from { opacity: .18; } to { opacity: .77; } }
+
+:is(.scene-art[data-outside], .atmosphere-layer:not(.visible), .scene-leaving) :is(.scene-effect, .scene-stars path),
+.app-page:has(#app[data-view="messages"]) .app-atmosphere :is(.scene-effect, .scene-stars path) { animation-play-state: paused; }
+
+@media (max-width: 730px) and (orientation: portrait) {
+  .atmosphere-layer { --scene-position: center; }
+  .hero-art [data-scene="dusk"] { --scene-position: 87% center; }
+  .scene-palm { mask-image: radial-gradient(ellipse 70% 33% at 90% 8%, #000 53%, transparent 100%); }
+  .scene-cirrus { width: 95vw; }
+  .scene-high-cloud { width: 70vw; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scene-effect { animation: none; }
+  :is(.scene-palm,.scene-planet) { visibility: hidden; }
+}

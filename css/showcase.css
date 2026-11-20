@@ -6,7 +6,6 @@ dialog#pf {
   border-radius: var(--radius-panel); background: var(--paper); color: var(--ink); box-shadow: var(--shadow);
   overflow: auto; overscroll-behavior: contain;
 }
-dialog#pf:has(.place-dialog) { --dialog-width: 965px; }
 dialog#pf:has(.edit-profile) { --dialog-width: 650px; }
 dialog#pf[open] { animation: up var(--panel-motion) var(--ease); }
 dialog#pf::backdrop { background: rgb(13 13 25 / 65%); backdrop-filter: blur(5px); }
@@ -14,7 +13,7 @@ dialog#pf::backdrop { background: rgb(13 13 25 / 65%); backdrop-filter: blur(5px
 .dialog-heading { display: flex; align-items: start; justify-content: space-between; gap: var(--space-3); margin-bottom: var(--space-5); }
 .dialog-title { font-size: clamp(1.35rem,3vw,2rem); }
 .dialog-actions { display: flex; justify-content: flex-end; gap: var(--space-2); margin-top: var(--space-5); }
-.dialog-toast { display: none; position: sticky; bottom: 0; padding: .6rem 1rem; background: var(--accent); color: var(--on-accent); text-align: center; }
+.dialog-toast { display: none; position: sticky; bottom: 0; padding: .6rem 1rem; background: var(--accent); color: var(--on-solid-accent); text-align: center; }
 .dialog-toast.on { display: block; }
 #toast {
   position: fixed; z-index: var(--layer-toast); bottom: max(18px,env(safe-area-inset-bottom)); left: 50%; width: max-content;

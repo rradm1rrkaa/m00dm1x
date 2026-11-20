@@ -1,24 +1,25 @@
-import { categories, filterPlaces, hoursStatus, mapLink, places, safeHttps } from '../services/catalog.js';
+import { favoriteButton } from '../components/favorite-button.js';
+import { photoSource, showPlacePhoto } from '../components/place-photo.js';
+import { categories, filterPlaces, places, placeHref } from '../services/catalog.js';
 import { rankPlaces } from '../services/recommendations.js';
-import { byId, button, externalLink, field, node, runAction, select, toast } from '../components/ui.js';
+import { byId, button, field, link, node, select } from '../components/ui.js';
 import { icon } from '../components/icons.js';
 
 const PAGE_SIZE = 24;
 const labels = { free: 'Бесплатно', paid: 'Платно', unknown: 'Цена не указана' };
-const statusLabels = { open: 'По графику открыто', closed: 'По графику закрыто', unknown: 'График не указан' };
 const allOptions = ['','Все'];
-const landmarkIcons = { 'mm-002': 'museum', 'mm-004': 'pyramid', 'mm-011': 'music' };
+const landmarkStyles = { 'mm-002': 'museum', 'mm-004': 'pyramid', 'mm-011': 'music' };
+const photoPriority = place => Number(Boolean(place.source)) + Number(Boolean(place.images.length));
 
-function placeIllustration(place, className) {
-  const glyph = landmarkIcons[place.id] || categories[place.categoryIndex].icon;
+export function placeIllustration(place, className) {
   const illustration = node('div', className);
-  illustration.dataset.illustration = glyph;
+  illustration.dataset.illustration = landmarkStyles[place.id] || categories[place.categoryIndex].icon;
   illustration.setAttribute('aria-hidden', 'true');
-  illustration.append(icon(glyph));
   return illustration;
 }
 
-export function createCatalog({ api, modal, getSession, getResult, afterWrite, social }) {
+export function createCatalog(context) {
+  const { api, getSession, getResult, openPlace } = context;
   const out = byId('out');
   const tabs = byId('tabs');
   const search = byId('q');
@@ -74,15 +75,14 @@ export function createCatalog({ api, modal, getSession, getResult, afterWrite, s
   }
 
   function updateTabs() {
-    const entries = [['all', 'Все места'], ['featured', 'Подборка Астаны'], ['recommended', 'Для вас', 'spark'], ['saved', 'Избранное', 'heart']];
-    tabs.replaceChildren(...entries.map(([id, label, glyph]) => {
+    const entries = [['all', 'Все места'], ['featured', 'Подборка Астаны'], ['recommended', 'Для вас'], ['saved', 'Избранное']];
+    tabs.replaceChildren(...entries.map(([id, label]) => {
       const item = button(label, () => {
         setView(id);
         [...tabs.children].find(tab => tab.dataset.view === id)?.focus();
       }, view === id ? 'on' : '');
       item.dataset.view = id;
       item.setAttribute('aria-pressed', String(view === id));
-      if (glyph) item.prepend(icon(glyph));
       return item;
     }));
   }
@@ -101,23 +101,7 @@ export function createCatalog({ api, modal, getSession, getResult, afterWrite, s
     return line;
   }
 
-  function metadata(glyph, text) {
-    const row = node('span', 'meta-row');
-    row.append(icon(glyph), node('span', '', text));
-    return row;
-  }
-
-  function imageSource(source) {
-    return /^assets\/images\/[a-z\d-]+\.jpg$/.test(source) ? source : safeHttps(source);
-  }
-
-  function toggleLabel(control, glyph, label, checked) {
-    control.replaceChildren(icon(glyph), node('span', '', label));
-    control.setAttribute('aria-pressed', String(checked));
-  }
-
   function card(place, reason) {
-    const { profile } = getSession();
     const article = node('article', 'card');
     article.dataset.place = place.id;
     const container = node('div', 'card-kicker');
@@ -126,43 +110,38 @@ export function createCatalog({ api, modal, getSession, getResult, afterWrite, s
     container.append(node('span', '', category.name));
     if (place.type === 'idea') container.append(node('span', 'status-label', 'Идея'));
     const cover = place.images[0];
-    if (cover && imageSource(cover.src)) {
+    if (cover && photoSource(cover.src)) {
       const image = node('img', 'card-cover');
-      image.src = imageSource(cover.src);
       image.alt = '';
       image.loading = 'lazy';
+      showPlacePhoto(image, cover, '(max-width: 600px) 94vw, 360px', () => {
+        image.replaceWith(placeIllustration(place, 'card-cover card-cover-art'));
+      });
       article.append(image);
     } else {
       article.append(placeIllustration(place, 'card-cover card-cover-art'));
     }
     const heading = node('h3');
-    heading.append(button(place.name, () => openPlace(place, reason), 'ttl'));
-    article.append(container, heading, node('p', '', place.description));
+    const title = link(place.name, placeHref(place.id), 'ttl');
+    title.addEventListener('click', event => {
+      if (event.button || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+      event.preventDefault();
+      openPlace(place, reason);
+    });
+    heading.append(title);
+    article.append(heading, container, node('p', '', place.description));
     const where = place.address || place.city || place.region;
-    if (where) article.append(metadata('pin', where));
+    if (where) article.append(node('span', 'meta-row', where));
     if (reason) article.append(node('p', 'recommendation-reason', reason));
     if (ratings[place.id]) article.append(ratingLine(ratings[place.id]));
-    if (place.price.status !== 'unknown') article.append(metadata('calendar', priceLabel(place.price)));
+    if (place.price.status !== 'unknown') article.append(node('span', 'meta-row', priceLabel(place.price)));
 
-    const actions = node('div', 'place-actions');
-    const saved = profile.favorites.includes(place.id);
-    const save = button('', runAction(async () => {
-      const isSaved = await api.toggleFavorite(place.id);
-      await afterWrite();
+    article.append(favoriteButton(place, context, isSaved => {
       if (view === 'saved' && !isSaved) {
         render();
-        out.querySelector('.ttl')?.focus();
-        if (!out.querySelector('.ttl')) out.focus();
-      } else {
-        toggleLabel(save, 'heart', isSaved ? 'Сохранено' : 'Сохранить', isSaved);
+        (out.querySelector('.ttl') || out).focus({ preventScroll: true });
       }
-      toast(isSaved ? 'Место сохранено' : 'Место убрано из избранного');
-    }), 'vb');
-    toggleLabel(save, 'heart', saved ? 'Сохранено' : 'Сохранить', saved);
-    const details = button('Подробнее', () => openPlace(place, reason), 'btn quiet');
-    details.append(icon('arrow'));
-    actions.append(save, details);
-    article.append(actions);
+    }));
     return article;
   }
 
@@ -190,8 +169,8 @@ export function createCatalog({ api, modal, getSession, getResult, afterWrite, s
     }
     let pool = places;
     if (view === 'saved') pool = places.filter(place => profile.favorites.includes(place.id));
-    if (view === 'featured') pool = places.filter(place => place.source);
-    if (view === 'all') pool = [...places].sort((a, b) => Number(Boolean(b.source)) - Number(Boolean(a.source)));
+    if (view === 'featured') pool = places.filter(place => place.source).sort((a, b) => photoPriority(b) - photoPriority(a));
+    if (view === 'all') pool = [...places].sort((a, b) => photoPriority(b) - photoPriority(a));
     const visible = filterPlaces(pool, filters, ratings);
     if (!visible.length) {
       empty('Места не найдены', 'Попробуйте изменить запрос или убрать часть фильтров.',
@@ -215,50 +194,11 @@ export function createCatalog({ api, modal, getSession, getResult, afterWrite, s
         limit += PAGE_SIZE;
         renderBatch(start, limit);
         count.textContent = 'Показано ' + Math.min(limit, entries.length) + ' из ' + entries.length;
-        grid.children[start]?.querySelector('button')?.focus();
+        grid.children[start]?.querySelector('.ttl')?.focus();
         if (entries.length <= limit) more.remove();
       }, 'btn load-more');
       out.append(more);
     }
-  }
-
-  function placeVisual(place) {
-    const holder = node('figure', 'place-visual');
-    const images = place.images.map(image => ({
-      ...image, src: imageSource(image.src)
-    })).filter(image => image.src);
-    if (!images.length) return placeIllustration(place, 'place-illustration');
-    let index = 0;
-    const image = node('img');
-    image.loading = 'lazy';
-    const credit = node('figcaption', 'photo-credit m');
-    const position = node('span', 'm');
-    position.setAttribute('aria-live', 'polite');
-    const change = offset => {
-      index = (index + offset + images.length) % images.length;
-      const photo = images[index];
-      image.src = photo.src;
-      image.alt = photo.alt || place.name;
-      position.textContent = 'Фото ' + (index + 1) + ' из ' + images.length;
-      credit.replaceChildren();
-      if (safeHttps(photo.source)) credit.append(externalLink(photo.author, safeHttps(photo.source)));
-      if (safeHttps(photo.licenseUrl)) credit.append(externalLink(photo.license, safeHttps(photo.licenseUrl)));
-    };
-    change(0);
-    holder.append(image);
-    if (images.length > 1) {
-      const controls = node('div', 'photo-controls');
-      const prev = button('', () => change(-1), 'vb icon-button');
-      const next = button('', () => change(1), 'vb icon-button');
-      prev.append(icon('left'));
-      next.append(icon('chevron'));
-      prev.setAttribute('aria-label', 'Предыдущее фото');
-      next.setAttribute('aria-label', 'Следующее фото');
-      controls.append(prev, position, next);
-      holder.append(controls);
-    }
-    holder.append(credit);
-    return holder;
   }
 
   function priceLabel(price) {
@@ -272,58 +212,19 @@ export function createCatalog({ api, modal, getSession, getResult, afterWrite, s
     return labels[price.status];
   }
 
-  function openPlace(place, reason, focus) {
-    const { mode, profile } = getSession();
-    const category = categories[place.categoryIndex];
-    const info = node('div', 'place-info');
-    info.append(node('p', 'card-kicker', category.name + (place.type === 'idea' ? ' · Идея для отдыха' : '')));
-    if (place.address || place.city || place.region) info.append(metadata('pin', place.address || place.city || place.region));
-    info.append(node('p', '', place.description));
-    if (reason) info.append(node('p', 'recommendation-reason', reason));
-    if (place.type === 'place') {
-      const status = hoursStatus(place);
-      const facts = node('div', 'place-facts');
-      facts.append(metadata('clock', statusLabels[status]), metadata('calendar', priceLabel(place.price)));
-      info.append(facts);
-    }
-    if (ratings[place.id]) info.append(ratingLine(ratings[place.id]));
-    const actions = node('div', 'place-actions');
-    for (const action of [
-      { glyph: 'heart', present: profile.favorites.includes(place.id), yes: 'Сохранено', no: 'Сохранить', toggle: () => api.toggleFavorite(place.id) },
-      { glyph: 'check', present: profile.visits.some(visit => visit.placeId === place.id), yes: 'Вы были здесь', no: 'Был здесь', toggle: () => api.toggleVisit(place.id) }
-    ]) {
-      const item = button('', runAction(async () => {
-        const next = await action.toggle();
-        await afterWrite();
-        toggleLabel(item, action.glyph, next ? action.yes : action.no, next);
-        if (view === 'saved' && action.glyph === 'heart') render();
-        else if (action.glyph === 'heart') {
-          const saved = out.querySelector('[data-place="' + place.id + '"] .place-actions button');
-          if (saved) toggleLabel(saved, 'heart', item.textContent, next);
-        }
-        toast(item.textContent);
-      }), 'vb');
-      toggleLabel(item, action.glyph, action.present ? action.yes : action.no, action.present);
-      actions.append(item);
-    }
-    const map = externalLink('Найти на карте', mapLink(place));
-    map.prepend(icon('pin'));
-    actions.append(map);
-    if (place.source && safeHttps(place.source)) actions.append(externalLink('Источник сведений', safeHttps(place.source)));
-    if (mode !== 'guest') {
-      actions.append(button('Отзывы', runAction(() => social().openReviews(place, () => openPlace(place, reason, 'Отзывы'))), 'vb'));
-      actions.append(button('Предложить прогулку', runAction(() => social().openInvite(place, () => openPlace(place, reason, 'Предложить прогулку'))), 'vb'));
-      actions.append(button('Реакции', runAction(() => social().openReactions(place, () => openPlace(place, reason, 'Реакции'))), 'vb'));
-    }
-    info.append(actions);
-    const grid = node('div', 'place-detail-grid');
-    grid.append(placeVisual(place), info);
-    modal.show(place.name, [grid], { className: 'place-dialog', preserveFocus: focus });
-  }
-
   return {
     setView,
-    openPlace,
+    capture() { return { view, limit, filters: { ...filters }, expanded: filterPanel.open }; },
+    restore(snapshot) {
+      if (!snapshot) return;
+      ({ view, limit } = snapshot);
+      Object.assign(filters, snapshot.filters);
+      search.value = filters.query;
+      for (const [id, input] of Object.entries(selects)) input.value = filters[id];
+      filterPanel.open = snapshot.expanded;
+      updateTabs();
+      render();
+    },
     reset,
     async refresh({ redraw = true } = {}) {
       ratings = await api.ratings();

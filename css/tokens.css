@@ -20,9 +20,18 @@
   unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
 }
 
+@font-face {
+  font-family: "MoodMix Script";
+  src: url("../assets/fonts/marck-script.ttf") format("truetype");
+  font-weight: 400;
+  font-display: swap;
+}
+
 :root {
   color-scheme: dark;
   --font: Montserrat, system-ui, sans-serif;
+  --font-script: "MoodMix Script", "Segoe Script", cursive;
+  --chrome-gutter: clamp(16px, 2.2vw, 42px);
   --text-xs: .75rem;
   --text-sm: .875rem;
   --text-base: .96875rem;
@@ -53,9 +62,13 @@
   --muted: #c6bac2;
   --accent: #f6c5a5;
   --on-accent: #2b1c23;
+  --on-solid-accent: var(--on-accent);
   --primary: linear-gradient(115deg,#f6d6ad,#edb3a3);
   --canvas: #1d1722;
   --paper: #28212c;
+  --scene-panel: rgb(37 26 37 / 94%);
+  --scene-card: rgb(43 29 40 / 94%);
+  --scene-edge: #e9a878;
   --glass: rgb(39 30 43 / 94%);
   --surface: rgb(255 248 245 / 6%);
   --raised: rgb(255 248 245 / 10%);
@@ -73,6 +86,9 @@
   --primary: linear-gradient(110deg,#d6d8ff,#becff3);
   --canvas: #10162e;
   --paper: #202641;
+  --scene-panel: rgb(23 28 56 / 94%);
+  --scene-card: rgb(29 34 63 / 94%);
+  --scene-edge: #a3a7f3;
   --glass: rgb(24 30 54 / 89%);
   --selected: rgb(194 203 255 / 16%);
 }
@@ -82,9 +98,13 @@
   --muted: #555b68;
   --accent: #81502f;
   --on-accent: #30221e;
+  --on-solid-accent: var(--paper);
   --primary: linear-gradient(115deg,#f8d7ab,#eeb6a5);
   --canvas: #d6ddea;
   --paper: #fcf8f1;
+  --scene-panel: rgb(255 245 232 / 94%);
+  --scene-card: rgb(255 247 239 / 94%);
+  --scene-edge: #9d603d;
   --glass: rgb(255 250 242 / 91%);
   --surface: rgb(68 52 62 / 5%);
   --raised: rgb(68 52 62 / 9%);
@@ -100,6 +120,9 @@
   --primary: linear-gradient(110deg,#bde7df,#cde5ee);
   --canvas: #add8ea;
   --paper: #f2fbf9;
+  --scene-panel: rgb(251 248 228 / 94%);
+  --scene-card: rgb(237 249 242 / 94%);
+  --scene-edge: #38807c;
   --glass: rgb(244 253 252 / 91%);
   --selected: rgb(54 129 137 / 14%);
 }

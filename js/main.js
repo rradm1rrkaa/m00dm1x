@@ -1,7 +1,9 @@
 import { createModal } from './components/modal.js';
 import { avatar, byId, node, runAction, toast } from './components/ui.js';
 import { paintIcons } from './components/icons.js';
-import { createCatalog } from './features/catalog.js';
+import { createCatalog, placeIllustration } from './features/catalog.js';
+import { createPlaceDetail } from './features/place-detail.js';
+import { placeById, placeHref } from './services/catalog.js';
 import { createProfiles } from './features/profiles.js';
 import { createQuiz } from './features/quiz.js';
 import { createSocial } from './features/social.js';
@@ -12,8 +14,12 @@ async function initialize() {
   paintIcons();
   const api = createLocalApi();
   const modal = createModal(byId('pf'), byId('pfc'));
+  const params = new URLSearchParams(location.search);
+  const entry = params.get('start');
+  if (params.has('guest') || entry === 'quiz' || entry === 'catalog' || params.has('reg')) await api.switchProfile('guest');
+  if (params.has('demo')) await api.switchProfile('demo');
   let session = await api.session();
-  let result = null;
+  let result = session.profile.moods.at(-1) || null;
   const sessionKey = () => session.mode + '|' + session.profile.id;
   const temporaryResults = new Map();
 
@@ -23,10 +29,17 @@ async function initialize() {
   const quizRegion = byId('quiz');
   const workspaceRegion = byId('workspace');
   const app = byId('app');
+  const path = location.pathname;
+  const routePlace = () => new URLSearchParams(location.search).get('place');
+  history.scrollRestoration = 'manual';
   let catalogScroll = 0;
   const workspace = {
     get active() { return app.dataset.view; },
-    show(view, content, focus = true) {
+    show(view, content, focus = true, state = {}) {
+      if (view !== 'place') leavePlaceRoute({ ...state, view });
+      if (view === 'messages' && history.state?.view === 'messages') {
+        history.replaceState({ ...history.state, ...state }, '', location.href);
+      }
       const changed = app.dataset.view !== view;
       switchView(view);
       workspaceRegion.replaceChildren(content);
@@ -40,16 +53,21 @@ async function initialize() {
     },
     close() {
       showCatalog(false);
+      if (history.state?.view) history.replaceState({ ...history.state, view: 'catalog' }, '', location.href);
       scrollTo(0, catalogScroll);
       byId('nav-catalog').focus({ preventScroll: true });
     }
   };
 
-  const theme = await createTheme(api, byId('theme-slot'), toast);
+  const theme = await createTheme(api, byId('theme-slot'), toast, { mood: result?.theme });
   const context = { api, modal, workspace, getSession, getResult, afterWrite };
-  const catalog = createCatalog({ ...context, social: () => social });
+  const catalog = createCatalog({ ...context, openPlace });
   const social = createSocial(context);
-  const profiles = createProfiles({ ...context, changeMode, openPlace: catalog.openPlace, openPeople: social.openPeople });
+  const profiles = createProfiles({ ...context, changeMode, openPlace, openPeople: social.openPeople });
+  const detail = createPlaceDetail({
+    ...context, ...social, goBack, returnToPlace, placeIllustration,
+    pickProfile: profiles.pick, refreshCatalog: catalog.refresh
+  });
   const quiz = createQuiz(quizRegion, {
     leave: () => showCatalog(true),
     finish: completeQuiz,
@@ -57,32 +75,96 @@ async function initialize() {
     setTheme: theme.setMood
   });
 
-  const params = new URLSearchParams(location.search);
-  const entry = params.get('start');
-  if (params.has('guest') || entry === 'quiz' || entry === 'catalog' || params.has('reg')) await api.switchProfile('guest');
-  if (params.has('demo')) await api.switchProfile('demo');
-  if (params.size) history.replaceState(history.state, '', location.pathname + location.hash);
+  for (const key of ['start', 'guest', 'demo', 'reg']) params.delete(key);
+  history.replaceState(history.state, '', path + (params.size ? '?' + params : '') + location.hash);
+
+  function catalogState(y = scrollY, focusPlace = null) {
+    return { catalog: catalog.capture(), scroll: y, focusPlace };
+  }
+
+  function openPlace(place, reason) {
+    const from = workspace.active;
+    if (from === 'catalog') history.replaceState(catalogState(scrollY, place.id), '', location.href);
+    if (from === 'profile') history.replaceState({ view: 'profile', catalog: catalog.capture(), scroll: scrollY }, '', location.href);
+    history.pushState({ placeOrigin: true, reason }, '', placeHref(place.id));
+    detail.show(place.id, reason);
+    scrollTo(0, 0);
+  }
+
+  function leavePlaceRoute(next = {}) {
+    const placeId = routePlace();
+    if (placeId === null) return;
+    history.pushState({ ...catalogState(catalogScroll), returnPlace: placeId, ...next }, '', path);
+    document.title = 'MoodMix — каталог и подборка';
+  }
+
+  function returnToPlace(place, reason) {
+    if (history.state?.returnPlace === place.id) history.back();
+    else openPlace(place, reason);
+  }
+
+  function goBack() {
+    if (history.state?.placeOrigin) history.back();
+    else {
+      history.replaceState(catalogState(catalogScroll), '', path);
+      restoreRoute(history.state);
+    }
+  }
+
+  function restoreRoute(state) {
+    if (byId('pf').open) modal.close();
+    document.querySelector('.gallery-lightbox[open]')?.close();
+    const placeId = routePlace();
+    if (placeId !== null) {
+      detail.show(placeId, state?.reason);
+      scrollTo(0, 0);
+      return;
+    }
+    if (state?.view === 'profile') {
+      profiles.open().then(() => scrollTo(0, state.scroll || 0)).catch(error => toast(error.message));
+      return;
+    }
+    if (state?.view === 'messages' && session.mode !== 'guest') {
+      const from = placeById(state.returnPlace);
+      const show = state.threadId ? social.openChat(state.threadId, from ? () => returnToPlace(from) : null) : social.openChats();
+      show.catch(error => {
+        showCatalog(false);
+        toast(error.message);
+      });
+      return;
+    }
+    showCatalog(false);
+    catalog.restore(state?.catalog);
+    const target = state?.focusPlace && catalogRegion.querySelector('[data-place="' + CSS.escape(state.focusPlace) + '"] .ttl');
+    (target || byId('out')).focus({ preventScroll: true });
+    scrollTo(0, state?.scroll || 0);
+  }
+  window.addEventListener('popstate', event => restoreRoute(event.state));
 
   function switchView(view) {
     if (app.dataset.view === 'catalog' && view !== 'catalog') catalogScroll = window.scrollY;
     app.dataset.view = view;
+    byId('app-loading').hidden = true;
     quizRegion.hidden = view !== 'quiz';
     catalogRegion.hidden = view !== 'catalog';
     workspaceRegion.hidden = view === 'quiz' || view === 'catalog';
     byId('skip-link').hidden = view !== 'catalog';
     for (const [name, id] of Object.entries({ catalog: 'nav-catalog', quiz: 'nav-quiz', profile: 'profile', messages: 'chats' })) {
-      if (name === view) byId(id).setAttribute('aria-current', 'page');
+      if (name === view || name === 'catalog' && view === 'place') byId(id).setAttribute('aria-current', 'page');
       else byId(id).removeAttribute('aria-current');
     }
     if (view !== 'quiz') theme.setMood(result?.theme);
   }
 
-  function showCatalog(focus) {
+  function showCatalog(focus, keepPlaceRoute = false) {
+    if (!keepPlaceRoute) leavePlaceRoute();
     switchView('catalog');
+    document.title = 'MoodMix — каталог и подборка';
     if (focus) byId('out').focus();
   }
 
   function showQuiz() {
+    leavePlaceRoute();
     switchView('quiz');
     scrollTo(0, 0);
     quiz.choose();
@@ -140,15 +222,17 @@ async function initialize() {
   async function refreshMode() {
     session = await api.session();
     result = temporaryResults.get(sessionKey()) || session.profile.moods.at(-1) || null;
-    showCatalog(false);
+    if (routePlace() === null) showCatalog(false, true);
     catalog.reset();
     catalog.setView('all');
     await afterWrite({ redraw: true });
     scrollTo(0, 0);
+    if (routePlace() !== null) detail.show(routePlace(), history.state?.reason);
   }
 
   byId('start-quiz').addEventListener('click', showQuiz);
   byId('nav-catalog').addEventListener('click', () => {
+    if (workspace.active === 'place') { goBack(); return; }
     catalog.setView('all');
     showCatalog(false);
     scrollTo(0, 0);
@@ -169,18 +253,24 @@ async function initialize() {
       const previous = sessionKey();
       session = await api.session();
       if (previous !== sessionKey()) { modal.close(); await refreshMode(); }
-      else { await social.refreshChat(); await afterWrite({ redraw: !modalIsOpen() }); }
+      else {
+        await social.refreshChat();
+        await afterWrite({ redraw: !modalIsOpen() });
+        if (workspace.active === 'place') await detail.refresh();
+      }
     } catch (error) { toast(error.message); }
   });
 
   function modalIsOpen() { return byId('pf').open; }
 
   await refreshMode();
-  if (entry === 'quiz') showQuiz();
+  if (routePlace() === null && history.state?.catalog) restoreRoute(history.state);
+  if (routePlace() === null && entry === 'quiz') showQuiz();
 }
 
 initialize().catch(error => {
   const notice = byId('startup-note') || byId('storage-note');
+  byId('app-loading').hidden = false;
   notice.hidden = false;
   notice.textContent = 'Не удалось загрузить MoodMix. Обновите страницу. ' + error.message;
   console.error(error);

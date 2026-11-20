@@ -29,6 +29,10 @@ const shapes = {
   museum: '<path d="m3 8 9-5 9 5v2H3ZM4 21h16m-14-2v-6m4 6v-6m4 6v-6m4 6v-6"/>',
   pyramid: '<path d="m12 3 9 15-9 3-9-3L12 3Zm0 0v18M6 13l6 2 6-2"/>',
   music: '<path d="M9 18V6l11-2v12M9 10l11-2"/><ellipse cx="6" cy="18" rx="3" ry="2"/><ellipse cx="17" cy="16" rx="3" ry="2"/>',
+  external: '<path d="M13 4h7v7m0-7-9 9m6 0v7H4V7h7"/>',
+  expand: '<path d="M9 4H4v5m11-5h5v5M4 15v5h5m11-5v5h-5"/>',
+  share: '<path d="M12 16V3m-4 4 4-4 4 4M7 11H5v10h14V11h-2"/>',
+  image: '<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8" cy="9" r="1.4"/><path d="m4 18 5-5 3 3 4-5 4 4"/>',
   menu: '<path d="M5 7h14M5 12h14M5 17h14"/>'
 };
 

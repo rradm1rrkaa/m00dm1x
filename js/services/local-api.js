@@ -1,4 +1,4 @@
-import { STORAGE_KEY, avatarSource, createStorage, demoSpace, newProfile } from './storage.js';
+import { STORAGE_KEY, avatarSource, createStorage, demoSpace, newProfile, wallpapers } from './storage.js';
 import { placeById } from './catalog.js';
 
 const now = () => new Date().toISOString();
@@ -38,11 +38,11 @@ export function createLocalApi(store = browserStorage(), repository = createStor
     const { user, space } = getState(repository.read(), true);
     return run(space, user);
   };
-  const socialWrite = run => repository.update(state => {
+  const socialWrite = (run, options) => repository.update(state => {
     const { user, space } = getState(state, true);
     return run(space, user);
-  });
-  const userWrite = run => repository.update(state => run(getState(state).user));
+  }, options);
+  const userWrite = (run, options) => repository.update(state => run(getState(state).user), options);
   function publicProfile(profile) {
     const { id, name, avatar, createdAt, preferences } = profile;
     return {
@@ -77,6 +77,10 @@ export function createLocalApi(store = browserStorage(), repository = createStor
     async setTheme(theme) {
       if (!['auto', 'dark', 'light', 'sad', 'fun'].includes(theme)) throw new Error('Неизвестная тема.');
       repository.update(state => { state.settings.theme = theme; });
+    },
+    async setChatWallpaper(wallpaper) {
+      if (!wallpapers.includes(wallpaper)) throw new Error('Неизвестные обои.');
+      repository.update(state => { state.settings.chatWallpaper = wallpaper; }, { durable: true });
     },
     async session() {
       const { user, space } = getState(repository.read());
@@ -132,13 +136,13 @@ export function createLocalApi(store = browserStorage(), repository = createStor
         }
       });
     },
-    async toggleFavorite(placeId) {
+    async toggleFavorite(placeId, options) {
       requirePlace(placeId);
       return userWrite(profile => {
         const saved = !profile.favorites.includes(placeId);
         profile.favorites = saved ? [...profile.favorites, placeId] : profile.favorites.filter(value => value !== placeId);
         return saved;
-      });
+      }, options);
     },
     async toggleVisit(placeId) {
       requirePlace(placeId);
@@ -163,7 +167,7 @@ export function createLocalApi(store = browserStorage(), repository = createStor
       return (space?.reviews || []).filter(row => row.placeId === placeId).slice().reverse()
         .map(row => ({ ...row, author: publicProfile(profileAt(space, row.authorId)) }));
     },
-    async saveReview(placeId, rating, text) {
+    async saveReview(placeId, rating, text, options) {
       requirePlace(placeId);
       if (!Number.isInteger(rating) || rating < 1 || rating > 5) throw new Error('Выберите оценку от 1 до 5.');
       return socialWrite((space, user) => {
@@ -171,7 +175,7 @@ export function createLocalApi(store = browserStorage(), repository = createStor
         const review = { id: previous?.id || id(), authorId: user.id, placeId, rating, text: userText(text, 1000, true), at: now() };
         space.reviews = [...space.reviews.filter(row => row.id !== review.id), review];
         return review;
-      });
+      }, options);
     },
     async deleteReview(reviewId) {
       socialWrite((space, user) => {
@@ -264,7 +268,7 @@ export function createLocalApi(store = browserStorage(), repository = createStor
       });
       return data;
     },
-    async send(profileId, text, placeId) {
+    async send(profileId, text, placeId, walkAt) {
       socialWrite((space, user) => {
         validOther(space, user, profileId);
         if (!related(space, user.id, profileId)) throw new Error('Отправлять сообщения можно друзьям.');
@@ -273,13 +277,17 @@ export function createLocalApi(store = browserStorage(), repository = createStor
         const message = { id: id(), from: user.id, to: profileId, text: userText(text, placeId ? 300 : 1000, !!placeId), at };
         if (placeId) {
           requirePlace(placeId);
+          if (walkAt !== undefined && (!Number.isFinite(Date.parse(walkAt)) || Date.parse(walkAt) <= Date.now())) {
+            throw new Error('Выберите дату и время в будущем.');
+          }
           if (space.messages.some(row => row.status === 'pending' && row.placeId === placeId && involves(row, user.id) && otherParticipant(row, user.id) === profileId)) {
             throw new Error('Приглашение на это место уже ждёт ответа.');
           }
           Object.assign(message, { placeId, status: 'pending' });
+          if (walkAt) message.walkAt = new Date(walkAt).toISOString();
         }
         space.messages.push(message);
-      });
+      }, walkAt ? { durable: true } : undefined);
     },
     async replyWalk(messageId, status) {
       socialWrite((space, user) => {

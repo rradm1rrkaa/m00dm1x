@@ -2,14 +2,15 @@ import { createLocalApi } from './services/local-api.js';
 import { createTheme } from './theme/theme.js';
 import { avatar, byId, node, toast } from './components/ui.js';
 import { paintIcons, ratingStars } from './components/icons.js';
-import { placeById } from './services/catalog.js';
+import { placeById, placeHref } from './services/catalog.js';
 import { demoSpace } from './data/demo-data.js';
 
 paintIcons();
 const api = createLocalApi();
 const previews = document.querySelectorAll('[data-choose-theme]');
-Promise.all([createTheme(api, byId('theme-slot'), toast, previews), api.session()]).then(([theme, session]) => {
-  theme.setMood(session.profile.moods.at(-1)?.theme);
+createTheme(api, byId('theme-slot'), toast, {
+  previews,
+  readMood: async () => (await api.session()).profile.moods.at(-1)?.theme
 }).catch(error => toast(error.message));
 
 function placeImage(photo) {
@@ -31,7 +32,11 @@ for (const [id, note] of [['mm-001', 'Прогулка среди зелени']
   credit.href = photo.source;
   credit.target = '_blank';
   credit.rel = 'noopener noreferrer';
-  caption.append(node('span', '', note), node('h3', '', place.name), credit);
+  const name = node('h3');
+  const open = node('a', 'place-window-title', place.name);
+  open.href = placeHref(place.id);
+  name.append(open);
+  caption.append(node('span', '', note), name, credit);
   figure.append(placeImage(photo), caption);
   places.append(figure);
 }

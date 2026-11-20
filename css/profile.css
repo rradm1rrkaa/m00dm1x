@@ -1,4 +1,4 @@
-.profile-page { margin-block: clamp(16px,3vw,36px) var(--space-4); background: var(--paper); border: 0; box-shadow: none; backdrop-filter: none; }
+.profile-page { margin-block: clamp(16px,3vw,36px) var(--space-4); background: var(--scene-panel); border: 0; border-top: 2px solid var(--scene-edge); box-shadow: none; backdrop-filter: none; }
 .profile-banner {
   display: grid; grid-template-columns: auto minmax(0,1fr) auto; align-items: center;
   gap: var(--space-5); padding: clamp(18px,4vw,48px); border-bottom: 1px solid var(--line);

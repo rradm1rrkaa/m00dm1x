@@ -55,7 +55,7 @@ export function createProfiles({ api, modal, workspace, getSession, afterWrite, 
       for (const profile of collection) {
         const current = session.mode === mode && session.profile.id === profile.id;
         const item = button('', runAction(() => changeMode(mode, profile.id)), 'profile-pick');
-        item.append(avatar(profile, 'sm'), node('span', '', profile.name), icon(current ? 'check' : 'chevron'));
+        item.append(avatar(profile, 'sm'), node('span', '', profile.name));
         item.setAttribute('aria-pressed', String(current));
         modes.append(item);
       }
@@ -188,9 +188,8 @@ export function createProfiles({ api, modal, workspace, getSession, afterWrite, 
       const place = placeById(entry.placeId);
       if (!place) continue;
       const row = button('', () => openPlace(place), 'profile-row');
-      row.append(icon('pin'), node('span', '', place.name));
+      row.append(node('span', '', place.name));
       if (entry.at) row.append(node('small', 'm', formatDate(entry.at)));
-      row.append(icon('chevron'));
       rows.append(row);
     }
     if (!rows.children.length) rows.append(node('p', 'm', empty));
@@ -210,7 +209,6 @@ export function createProfiles({ api, modal, workspace, getSession, afterWrite, 
       node('p', 'm', social ? 'Избранное, активность и настройки этого браузера.' : 'Ваши сохранённые места и история подбора.'));
     const controls = node('div', 'profile-controls');
     const editButton = button('Редактировать профиль', () => edit(section));
-    editButton.prepend(icon('pen'));
     const more = node('details', 'profile-more');
     const summary = node('summary', 'btn icon-button');
     summary.setAttribute('aria-label', 'Действия профиля');
@@ -242,7 +240,7 @@ export function createProfiles({ api, modal, workspace, getSession, afterWrite, 
       if (!profile.moods.length) timeline.append(node('p', 'm', 'Здесь появятся сохранённые результаты тестов.'));
       for (const result of profile.moods.slice(-10).reverse()) {
         const row = node('div', 'history-row');
-        row.append(icon('spark'), node('span', '', result.mood));
+        row.append(node('span', '', result.mood));
         if (result.at) row.append(node('small', 'm', formatDate(result.at)));
         timeline.append(row);
       }

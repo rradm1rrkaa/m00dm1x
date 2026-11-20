@@ -15,18 +15,18 @@ export function createQuiz(root, { leave, finish, setTheme, preference }) {
     if (panel.getBoundingClientRect().top < 0) panel.scrollIntoView({ block: 'start' });
   }
 
-  function choice(name, length, summary, glyph, action) {
+  function choice(name, length, summary, action) {
     const item = button('', action, 'quiz-choice');
     const copy = node('span', 'quiz-choice-copy');
     copy.append(node('strong', '', name), node('small', 'm', length), node('span', 'm', summary));
-    item.append(icon(glyph), copy, icon('chevron'));
+    item.append(copy);
     return item;
   }
 
   function choose() {
     const choices = node('div', 'quiz-choices');
-    choices.append(choice('Быстрый подбор', '7 вопросов', 'Для спонтанной прогулки и планов на сегодня.', 'spark', () => start('quick')),
-      choice('Подробный подбор', '25 вопросов', 'Найдите место с учётом привычек и предпочтений.', 'compass', () => start('full')));
+    choices.append(choice('Быстрый подбор', '7 вопросов', 'Для спонтанной прогулки и планов на сегодня.', () => start('quick')),
+      choice('Подробный подбор', '25 вопросов', 'Найдите место с учётом привычек и предпочтений.', () => start('full')));
     show(node('h1', '', 'Какой отдых вам подойдёт сегодня?'), choices,
       button('Перейти к каталогу', leave, 'btn quiet'));
   }
@@ -47,7 +47,7 @@ export function createQuiz(root, { leave, finish, setTheme, preference }) {
     bar.value = index + 1;
     bar.setAttribute('aria-label', 'Прогресс теста');
     const progress = node('div', 'quiz-progress');
-    progress.append(node('span', 'quiz-wordmark', 'MoodMix'), node('span', 'm', 'Вопрос ' + (index + 1) + ' из ' + questions.length));
+    progress.append(node('span', 'quiz-wordmark brand-script', 'MoodMix'), node('span', 'm', 'Вопрос ' + (index + 1) + ' из ' + questions.length));
     const group = node('div', 'opts');
     options.forEach(([label], answer) => {
       const selected = answers[index] === answer;
@@ -94,7 +94,6 @@ export function createQuiz(root, { leave, finish, setTheme, preference }) {
     const nav = node('div', 'quiz-nav');
     nav.append(button('Изменить ответ', question, 'btn quiet'), button('Начать заново', () => start(mode), 'btn quiet'));
     const primary = button('Показать подборку', runAction(() => finish(selection, history.checked)), 'btn c');
-    primary.append(icon('arrow'));
     const actions = node('div', 'field-row result-actions');
     actions.append(primary, button('Открыть каталог', leave));
     show(node('h2', '', selection.mood),

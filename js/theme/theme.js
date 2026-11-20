@@ -1,35 +1,36 @@
-import { mountSky } from './sky.js';
+import { mountAtmosphere } from './atmosphere.js';
+import { ATMOSPHERE_CHANGE, DEFAULT_THEME, atmospheres, isAtmosphere } from './themes.js';
 import { button, node } from '../components/ui.js';
-import { icon } from '../components/icons.js';
 
-const choices = [['auto', 'Авто — по настроению'], ['light', 'Восход'], ['dark', 'Закат'], ['sad', 'Грусть'], ['fun', 'Веселье']];
+const choices = [['auto', 'Авто — по настроению'], ...Object.entries(atmospheres).map(([value, { label }]) => [value, label])];
 
-export async function createTheme(api, mount, onError, previews = []) {
+export async function createTheme(api, mount, onError, { previews = [], readMood, mood } = {}) {
   const { theme } = await api.settings();
   let selection = theme;
-  let moodTheme = null;
-  const effective = () => selection === 'auto' ? moodTheme || 'dark' : selection;
-  const sky = document.getElementById('sky') ? mountSky(effective()) : null;
+  let savedSelection = theme;
+  const initialMood = readMood ? await readMood() : mood;
+  let moodTheme = isAtmosphere(initialMood) ? initialMood : null;
+  let selectionVersion = 0;
+  let pendingChoice = false;
+  const effective = () => selection === 'auto' ? moodTheme || DEFAULT_THEME : selection;
+  const artwork = document.querySelector('.scene-art');
+  const scene = mountAtmosphere(artwork, { context: artwork.dataset.context, onError });
   const wrapper = node('div', 'theme-control');
   const trigger = button('', () => setOpen(menu.hidden), 'theme-trigger');
   const label = node('span', 'theme-current');
   trigger.setAttribute('aria-expanded', 'false');
   trigger.setAttribute('aria-controls', 'theme-options');
-  trigger.append(icon('palette'), label, icon('chevron'));
+  trigger.append(label);
   const menu = node('div', 'theme-options');
   menu.id = 'theme-options';
   menu.hidden = true;
   menu.setAttribute('role', 'group');
   menu.setAttribute('aria-label', 'Варианты оформления');
   const options = choices.map(([value, name]) => {
-    const option = button('', () => {
+    const option = button(name, () => {
       setOpen(false, true);
       choose(value);
     }, 'theme-option');
-    const swatch = node('span', 'theme-swatch');
-    swatch.dataset.themeSwatch = value;
-    swatch.setAttribute('aria-hidden', 'true');
-    option.append(swatch, node('span', '', name), icon('check'));
     menu.append(option);
     return option;
   });
@@ -42,8 +43,10 @@ export async function createTheme(api, mount, onError, previews = []) {
     trigger.setAttribute('aria-label', 'Тема оформления · ' + name);
     choices.forEach(([value], index) => options[index].setAttribute('aria-pressed', String(selection === value)));
     for (const preview of previews) preview.setAttribute('aria-pressed', String(selection === preview.dataset.chooseTheme));
-    if (sky) sky.setTheme(effective());
-    else document.documentElement.dataset.theme = effective();
+    return scene.show(effective(), current => {
+      document.documentElement.dataset.theme = current;
+      document.dispatchEvent(new CustomEvent(ATMOSPHERE_CHANGE, { detail: current }));
+    });
   }
 
   function setOpen(open, restoreFocus = false) {
@@ -54,13 +57,22 @@ export async function createTheme(api, mount, onError, previews = []) {
   }
 
   async function choose(value) {
-    if (value === selection) return;
+    const version = ++selectionVersion;
+    pendingChoice = true;
     selection = value;
-    repaint();
     try {
+      const ready = await repaint();
+      if (version !== selectionVersion) return;
+      if (!ready) {
+        selection = savedSelection;
+        repaint();
+        return;
+      }
       await api.setTheme(value);
+      savedSelection = value;
       if (api.storageIssue()) onError?.(api.storageIssue());
     } catch (error) { onError?.(error.message); }
+    finally { if (version === selectionVersion) pendingChoice = false; }
   }
 
   wrapper.addEventListener('keydown', event => {
@@ -71,7 +83,9 @@ export async function createTheme(api, mount, onError, previews = []) {
       return;
     }
     const index = options.indexOf(document.activeElement);
-    const positions = { ArrowUp: (index - 1 + options.length) % options.length, ArrowDown: (index + 1) % options.length, Home: 0, End: options.length - 1 };
+    const previous = (index - 1 + options.length) % options.length;
+    const next = (index + 1) % options.length;
+    const positions = { ArrowUp: previous, ArrowLeft: previous, ArrowDown: next, ArrowRight: next, Home: 0, End: options.length - 1 };
     if (!Object.hasOwn(positions, event.key)) return;
     event.preventDefault();
     options[positions[event.key]].focus();
@@ -83,12 +97,27 @@ export async function createTheme(api, mount, onError, previews = []) {
     if (!wrapper.contains(event.target)) setOpen(false);
   });
   for (const preview of previews) preview.addEventListener('click', () => choose(preview.dataset.chooseTheme));
+  async function readSettings() {
+    if (pendingChoice) return;
+    const version = selectionVersion;
+    const [{ theme: saved }, mood] = await Promise.all([api.settings(), readMood?.()]);
+    if (pendingChoice || version !== selectionVersion) return;
+    selection = savedSelection = saved;
+    if (readMood) moodTheme = isAtmosphere(mood) ? mood : null;
+    repaint();
+  }
+  window.addEventListener('pageshow', event => {
+    if (event.persisted) readSettings().catch(error => onError?.(error.message));
+  });
+  window.addEventListener('storage', event => {
+    if (event.key === api.storageKey) readSettings().catch(error => onError?.(error.message));
+  });
   repaint();
 
   return {
     setMood(next) {
-      moodTheme = ['light', 'dark', 'sad', 'fun'].includes(next) ? next : null;
-      repaint();
+      moodTheme = isAtmosphere(next) ? next : null;
+      return repaint();
     }
   };
 }

@@ -55,37 +55,38 @@ for (const [mode, total] of [['Быстрый', 7], ['Подробный', 25]])
   });
 }
 
-test('saving and marking a place persists; dialog handles keyboard focus', async ({ page }) => {
+test('saving and marking a place persists; lightbox handles keyboard focus', async ({ page }) => {
   await page.goto('/app.html');
-  const opener = card(page, 'Ботанический сад').getByRole('button', { name: 'Подробнее' });
+  const opener = card(page, 'Ботанический сад').getByRole('link', { name: 'Ботанический сад' });
   await opener.focus();
   await page.keyboard.press('Enter');
-  const panel = dialog(page);
-  const title = panel.getByRole('heading', { name: 'Ботанический сад' });
-  await expect(title).toBeFocused();
-  await page.keyboard.press('Shift+Tab');
-  await expect(panel.getByRole('button', { name: 'Закрыть', exact: true })).toBeFocused();
-  await page.keyboard.press('Tab');
-  await expect(panel.getByRole('button', { name: 'Закрыть окно', exact: true })).toBeFocused();
-  await page.keyboard.press('Tab');
-  await expect(panel.getByRole('button', { name: 'Предыдущее фото' })).toBeFocused();
-  await page.keyboard.press('Tab');
-  await expect(panel.getByRole('button', { name: 'Следующее фото' })).toBeFocused();
-  await page.keyboard.press('Enter');
+  const panel = page.locator('.place-page');
+  await expect(panel.getByRole('heading', { name: 'Ботанический сад', level: 1 })).toBeFocused();
+  await panel.getByRole('button', { name: 'Следующее фото' }).click();
   await expect(panel.getByText('Фото 2 из 2')).toBeVisible();
-  await expect.poll(() => panel.locator('img').evaluate(image => image.naturalWidth)).toBeGreaterThan(0);
-  await panel.getByRole('button', { name: 'Сохранить' }).focus();
+  const fullscreen = panel.getByRole('button', { name: 'Открыть полноэкранный просмотр' });
+  await fullscreen.click();
+  const viewer = page.getByRole('dialog', { name: 'Фотографии · Ботанический сад' });
+  await expect(viewer.getByRole('button', { name: 'Закрыть просмотр' })).toBeFocused();
+  await page.keyboard.press('ArrowLeft');
+  await expect(viewer.getByText('Фото 1 из 2')).toBeVisible();
+  await expect.poll(() => viewer.locator('img').evaluate(image => image.naturalWidth)).toBeGreaterThan(0);
+  await page.keyboard.press('Escape');
+  await expect(viewer).toBeHidden();
+  await expect(fullscreen).toBeFocused();
+  await panel.getByRole('button', { name: 'Сохранить в избранное' }).focus();
   await page.keyboard.press('Enter');
   await expect(panel.getByRole('button', { name: 'Сохранено' })).toHaveAttribute('aria-pressed', 'true');
   await panel.getByRole('button', { name: 'Был здесь' }).click();
-  await page.keyboard.press('Escape');
+  await page.goBack();
   await expect(panel).toBeHidden();
   await expect(opener).toBeFocused();
+  await expect(card(page, 'Ботанический сад').getByRole('button', { name: 'Сохранено' })).toHaveAttribute('aria-pressed', 'true');
   await page.reload();
   await tabs(page).getByRole('button', { name: 'Избранное' }).click();
   await expect(card(page, 'Ботанический сад')).toBeVisible();
-  await card(page, 'Ботанический сад').getByRole('button', { name: 'Подробнее' }).click();
-  await expect(dialog(page).getByRole('button', { name: 'Вы были здесь' })).toBeVisible();
+  await opener.click();
+  await expect(page.locator('.place-page').getByRole('button', { name: 'Вы были здесь' })).toBeVisible();
 });
 
 test('demo ratings, query and filters combine; reset recovers an empty result', async ({ page }) => {
@@ -305,9 +306,9 @@ test('long local messages wrap at 320 px and stay within the messenger', async (
 test('demo review updates card rating and profile export contains the review', async ({ page }) => {
   await page.goto('/app.html?demo=1');
   const place = card(page, 'Ботанический сад');
-  await place.getByRole('button', { name: 'Подробнее' }).click();
-  const panel = dialog(page);
-  await panel.getByRole('button', { name: 'Отзывы', exact: true }).click();
+  await place.getByRole('link', { name: 'Ботанический сад' }).click();
+  const panel = page.locator('.place-reviews');
+  await panel.getByRole('button', { name: 'Редактировать отзыв' }).click();
   const rating = panel.getByRole('group', { name: 'Оценка' });
   await rating.getByRole('radio', { name: '5 из 5' }).focus();
   await page.keyboard.press('ArrowLeft');
@@ -316,7 +317,7 @@ test('demo review updates card rating and profile export contains the review', a
   await panel.getByRole('textbox', { name: 'Текст отзыва' }).fill('Демо: понравились тихие дорожки.');
   await panel.getByRole('button', { name: 'Обновить отзыв' }).click();
   await expect(panel.getByText('Демо: понравились тихие дорожки.', { exact: true })).toBeVisible();
-  await page.keyboard.press('Escape');
+  await page.goBack();
   await expect(place).toContainText('3.0');
   await page.locator('#profile').click();
   const exported = page.waitForEvent('download');
@@ -332,7 +333,7 @@ test('demo review updates card rating and profile export contains the review', a
   expect(data.profile.id).toBe('demo-aliya');
 });
 
-test('layout fits nine requested widths on landing, catalog, modal and quiz', async ({ page }) => {
+test('layout fits nine requested widths on landing, catalog, place page and quiz', async ({ page }) => {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   const fits = () => page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth);
   const widths = [320, 360, 375, 390, 430, 768, 1024, 1440, 1920];
@@ -348,10 +349,11 @@ test('layout fits nine requested widths on landing, catalog, modal and quiz', as
   for (const width of widths) {
     await page.setViewportSize({ width, height: 900 });
     expect(await fits(), 'catalog at ' + width).toBe(true);
-    await card(page, 'Ботанический сад').getByRole('button', { name: 'Подробнее' }).click();
-    const box = await dialog(page).boundingBox();
-    expect(box.width, 'dialog at ' + width).toBeLessThanOrEqual(width);
-    await page.keyboard.press('Escape');
+    await card(page, 'Ботанический сад').getByRole('link', { name: 'Ботанический сад' }).click();
+    await expect(page.locator('.place-page')).toBeVisible();
+    expect(await fits(), 'place page at ' + width).toBe(true);
+    await page.locator('.place-breadcrumb').getByRole('button', { name: 'К списку мест' }).click();
+    await expect(page.locator('.showcase-grid')).toBeVisible();
   }
   await page.getByRole('button', { name: 'Подобрать место', exact: true }).click();
   await page.getByRole('button', { name: /Быстрый подбор/ }).click();
