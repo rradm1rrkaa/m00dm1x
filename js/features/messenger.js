@@ -16,11 +16,11 @@ export function createMessenger({ api, workspace, modal, getSession, afterWrite,
   let updateThread;
   const drafts = new Map();
 
-  async function show(selectedId = null, back = null) {
+  async function show(selectedId = null, back = null, query = '') {
     modal.close();
     const { profile } = getSession();
     const conversations = await api.chats();
-    const layout = node('div', 'messenger surface-panel');
+    const layout = node('div', 'messenger');
     const sidebar = node('aside', 'messenger-sidebar');
     const listTitle = node('div', 'messenger-list-title');
     const leave = button('', runAction(async () => {
@@ -29,10 +29,12 @@ export function createMessenger({ api, workspace, modal, getSession, afterWrite,
     }), 'btn quiet icon-button');
     leave.setAttribute('aria-label', 'Выйти из сообщений');
     leave.append(icon('back'));
-    listTitle.append(leave, node('h1', '', 'Сообщения'));
+    const heading = node('h1', '', 'Direct');
+    listTitle.append(heading, leave);
     const search = node('input');
     search.type = 'search';
     search.placeholder = 'Поиск диалогов';
+    search.value = query;
     search.setAttribute('aria-label', 'Поиск диалогов');
     const searchbox = node('div', 'messenger-search');
     searchbox.append(icon('search'), search);
@@ -40,20 +42,27 @@ export function createMessenger({ api, workspace, modal, getSession, afterWrite,
     list.setAttribute('aria-label', 'Диалоги');
     sidebar.append(listTitle, searchbox, list);
     const active = node('section', 'messenger-thread');
+    active.setAttribute('aria-label', 'Переписка');
     layout.append(sidebar, active);
     if (selectedId) layout.dataset.thread = 'open';
 
     function paintList(chats) {
+      const focused = list.contains(document.activeElement) ? document.activeElement.dataset.chatId : null;
       list.replaceChildren();
       const query = search.value.trim().toLocaleLowerCase('ru');
       for (const chat of chats) {
         if (![chat.name, textFor(chat.last)].some(text => text.toLocaleLowerCase('ru').includes(query))) continue;
-        const item = button('', runAction(() => show(chat.id, back)), 'chat-list-button');
+        const item = button('', runAction(() => show(chat.id, back, search.value)), 'chat-list-button');
+        item.dataset.chatId = chat.id;
         if (chat.id === selectedId) item.setAttribute('aria-current', 'page');
         const copy = node('span', 'conversation-copy');
         const line = node('span', 'conversation-title');
         line.append(node('strong', '', chat.name));
-        if (chat.last?.at) line.append(node('time', 'm', displayTime(chat.last.at, true)));
+        if (chat.last?.at) {
+          const time = node('time', 'm', displayTime(chat.last.at, true));
+          time.dateTime = chat.last.at;
+          line.append(time);
+        }
         const preview = node('span', 'conversation-preview');
         const excerpt = textFor(chat.last);
         preview.append(node('span', 'm', excerpt.length > 92 ? excerpt.slice(0, 92) + '…' : excerpt));
@@ -68,8 +77,9 @@ export function createMessenger({ api, workspace, modal, getSession, afterWrite,
       }
       if (!list.children.length) {
         list.append(node('p', 'conversation-empty m', query ? 'Диалоги по этому запросу не найдены.' : 'Диалогов пока нет.'));
-        if (!query) list.append(button('Найти друзей', runAction(openPeople), 'btn'));
+        if (!query) list.append(button('Найти друзей', runAction(() => openPeople()), 'vb'));
       }
+      if (focused) [...list.children].find(item => item.dataset.chatId === focused)?.focus({ preventScroll: true });
     }
 
     let visibleChats = conversations;
@@ -80,7 +90,6 @@ export function createMessenger({ api, workspace, modal, getSession, afterWrite,
       const empty = node('div', 'messenger-empty');
       empty.append(icon('chat'), node('h2', '', conversations.length ? 'Выберите диалог' : 'Начните переписку'),
         node('p', 'm', conversations.length ? 'Здесь откроется история сообщений.' : 'Найдите друзей и напишите первое сообщение.'));
-      if (!conversations.length) empty.append(button('Найти друзей', runAction(openPeople)));
       active.append(empty);
       updateThread = async () => {
         if (!layout.isConnected) return;
@@ -93,7 +102,7 @@ export function createMessenger({ api, workspace, modal, getSession, afterWrite,
 
     const firstThread = await api.chat(selectedId);
     const header = node('header', 'thread-header');
-    const backButton = button('', runAction(() => show(null, back)), 'btn quiet icon-button thread-back');
+    const backButton = button('', runAction(() => show(null, back, search.value)), 'btn quiet icon-button thread-back');
     backButton.setAttribute('aria-label', 'К списку диалогов');
     backButton.append(icon('back'));
     const identity = node('div', 'thread-identity');
@@ -114,7 +123,7 @@ export function createMessenger({ api, workspace, modal, getSession, afterWrite,
     input.value = drafts.get(draftKey) || '';
     input.setAttribute('aria-label', 'Сообщение');
     input.placeholder = 'Напишите сообщение';
-    const submit = node('button', 'btn c icon-button');
+    const submit = node('button', 'btn c icon-button chat-send');
     submit.type = 'submit';
     submit.setAttribute('aria-label', 'Отправить');
     submit.append(icon('send'));
@@ -151,7 +160,7 @@ export function createMessenger({ api, workspace, modal, getSession, afterWrite,
             await refresh();
             await afterWrite();
             if (!input.closest('[hidden]')) input.focus();
-          }), 'vb'));
+          }), status === 'accepted' ? 'btn c' : 'vb'));
         }
         bubble.append(actions);
       }

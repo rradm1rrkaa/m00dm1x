@@ -24,28 +24,30 @@
   </div>
   <a class="skip" id="skip-link" href="#out">Перейти к каталогу</a>
   <div id="app" data-view="catalog">
-    <header class="app-header content-width surface-panel">
-      <a class="brand" href="index.html"><span data-icon="compass"></span>MoodMix</a>
-      <nav class="head-primary" aria-label="Навигация">
-        <button id="nav-catalog" type="button" class="nav-link" aria-current="page"><span data-icon="compass"></span>Каталог</button>
-        <button id="nav-quiz" type="button" class="nav-link"><span data-icon="spark"></span>Подборка</button>
-        <button id="friends" type="button" class="nav-link" hidden><span data-icon="users"></span>Друзья <span class="bd" id="friend-badge" hidden></span></button>
-        <button id="chats" type="button" class="nav-link" hidden><span data-icon="chat"></span>Сообщения <span class="bd" id="chat-badge" hidden></span></button>
-      </nav>
-      <div class="head-utilities"><span id="theme-slot"></span><button id="profile" type="button" class="tbtn">Профиль</button></div>
+    <header class="app-header">
+      <div class="head-inner content-width">
+        <a class="brand" href="index.html"><span data-icon="compass"></span>MoodMix</a>
+        <nav class="head-primary" aria-label="Навигация">
+          <button id="nav-catalog" type="button" class="nav-link" aria-current="page"><span data-icon="compass"></span>Каталог</button>
+          <button id="nav-quiz" type="button" class="nav-link"><span data-icon="spark"></span>Подборка</button>
+          <button id="friends" type="button" class="nav-link" hidden><span data-icon="users"></span>Друзья <span class="bd" id="friend-badge" hidden></span></button>
+          <button id="chats" type="button" class="nav-link" aria-label="Direct · Сообщения" hidden><span data-icon="chat"></span>Direct <span class="bd" id="chat-badge" hidden></span></button>
+        </nav>
+        <div class="head-utilities"><div id="theme-slot"></div><button id="profile" type="button" class="tbtn">Профиль</button></div>
+      </div>
     </header>
     <section id="quiz" class="gate content-width" aria-label="Тест по настроению" hidden></section>
     <section id="workspace" class="content-width" hidden></section>
     <section id="catalog" class="content-width" aria-label="Каталог MoodMix">
       <div class="bar" id="catalog-toolbar">
-        <section class="app-intro surface-panel">
+        <section class="app-intro">
           <div class="intro-copy">
             <p class="destination"><span data-icon="pin"></span>Астана и окрестности</p>
             <h1>Куда сходить?</h1>
             <p class="intro-lead">Найдите место под настроение и планы на день.</p>
             <div class="intro-actions">
               <button id="start-quiz" class="btn c" type="button">Подобрать место<span data-icon="arrow"></span></button>
-              <button id="profiles" class="btn" type="button">Демо-профили</button>
+              <button id="profiles" class="btn quiet" type="button">Демо-профили</button>
             </div>
             <p id="mode-note" class="m">Места и идеи для отдыха</p>
           </div>
@@ -70,7 +72,7 @@
       <main id="out" tabindex="-1"><p class="m" id="startup-note">Загружаем каталог…</p></main>
       <noscript><p>Включите JavaScript для просмотра каталога.</p></noscript>
     </section>
-    <footer class="app-footer content-width">MoodMix <span>Часы работы и цены уточняйте перед поездкой.</span></footer>
+    <footer class="app-footer"><div class="content-width"><a href="index.html">MoodMix</a><span>Часы работы и цены уточняйте перед поездкой.</span></div></footer>
   </div>
   <dialog id="pf" aria-labelledby="dialog-title">
     <div class="pc" id="pfc"></div>

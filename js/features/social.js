@@ -1,6 +1,6 @@
 import { placeById } from '../services/catalog.js';
 import { createMessenger } from './messenger.js';
-import { icon } from '../components/icons.js';
+import { icon, ratingStars } from '../components/icons.js';
 import { avatar, button, field, formatDate, node, runAction, toast } from '../components/ui.js';
 
 function personRow(profile) {
@@ -10,6 +10,23 @@ function personRow(profile) {
   card.append(title);
   if (profile.lastMood) card.append(node('p', 'm', profile.lastMood));
   return card;
+}
+
+function reviewRating(current) {
+  const fieldset = node('fieldset', 'rating-field');
+  const picker = node('div', 'rating-picker');
+  for (let value = 1; value <= 5; value++) {
+    const choice = node('label', 'rating-choice');
+    const input = node('input', 'visually-hidden');
+    input.type = 'radio';
+    input.name = 'rating';
+    input.value = String(value);
+    input.checked = current === value;
+    choice.append(input, icon('star'), node('span', 'visually-hidden', value + ' из 5'));
+    picker.append(choice);
+  }
+  fieldset.append(node('legend', '', 'Оценка'), picker);
+  return fieldset;
 }
 
 export function createSocial({ api, modal, getSession, getResult, afterWrite, workspace }) {
@@ -121,25 +138,18 @@ export function createSocial({ api, modal, getSession, getResult, afterWrite, wo
     const reviews = await api.reviews(place.id);
     const own = reviews.find(row => row.authorId === profile.id);
     const form = node('form', 'review-form');
-    const rating = node('select');
-    for (let i = 1; i <= 5; i++) {
-      const option = node('option', '', String(i) + ' из 5');
-      option.value = i;
-      rating.append(option);
-    }
-    rating.value = String(own?.rating || 5);
     const comment = node('textarea');
     comment.maxLength = 1000;
     comment.value = own?.text || '';
     const submit = node('button', 'btn c', own ? 'Обновить отзыв' : 'Опубликовать отзыв');
     submit.type = 'submit';
-    form.append(field('Оценка', rating), field('Текст отзыва', comment), submit);
+    form.append(reviewRating(own?.rating || 5), field('Текст отзыва', comment), submit);
     form.addEventListener('submit', async event => {
       event.preventDefault();
       if (submit.disabled) return;
       submit.disabled = true;
       try {
-        await api.saveReview(place.id, Number(rating.value), comment.value);
+        await api.saveReview(place.id, Number(form.elements.rating.value), comment.value);
         await afterWrite({ redraw: true });
         await openReviews(place, back);
         toast('Отзыв сохранён');
@@ -151,8 +161,8 @@ export function createSocial({ api, modal, getSession, getResult, afterWrite, wo
     for (const row of reviews) {
       const card = personRow(row.author);
       const reactions = await api.reactions(row.id);
-      const rating = node('p', 'rating');
-      rating.append(icon('star'), node('span', '', row.rating + ' / 5  ' + formatDate(row.at)));
+      const rating = node('p', 'review-meta');
+      rating.append(ratingStars(row.rating), node('span', 'm', formatDate(row.at)));
       card.append(rating);
       if (row.text) card.append(node('p', 'message-text', row.text));
       const controls = node('div', 'place-actions');

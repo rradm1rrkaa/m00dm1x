@@ -24,8 +24,8 @@ export function demoSpace() {
   profiles[2].preferences.shareMood = true;
   space.profiles = Object.fromEntries(profiles.map(profile => [profile.id, profile]));
   space.reviews = [
-    { id: 'demo-review-1', authorId: 'demo-aliya', placeId: 'mm-001', rating: 5, text: 'Пример отзыва о спокойной прогулке.', at: date },
-    { id: 'demo-review-2', authorId: 'demo-timur', placeId: 'mm-170', rating: 4, text: 'Пример отзыва о смотровой площадке.', at: date }
+    { id: 'demo-review-1', authorId: 'demo-aliya', placeId: 'mm-001', rating: 5, text: 'После работы прошлась по дальним аллеям. Там тихо даже в пятницу, а у воды можно посидеть с кофе.', at: date },
+    { id: 'demo-review-2', authorId: 'demo-timur', placeId: 'mm-170', rating: 4, text: 'Поднялся до заката и успел увидеть, как загорается бульвар. У лифта пришлось немного подождать.', at: date }
   ];
   space.friendships = [['demo-aliya', 'demo-timur']];
   space.requests = [{ id: 'demo-request-1', from: 'demo-dana', to: 'demo-timur', at: date }];

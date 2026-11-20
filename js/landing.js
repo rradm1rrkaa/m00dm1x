@@ -1,47 +1,59 @@
 import { createLocalApi } from './services/local-api.js';
 import { createTheme } from './theme/theme.js';
 import { avatar, byId, node, toast } from './components/ui.js';
-import { icon, paintIcons } from './components/icons.js';
+import { paintIcons, ratingStars } from './components/icons.js';
 import { placeById } from './services/catalog.js';
 import { demoSpace } from './data/demo-data.js';
 
 paintIcons();
-createTheme(createLocalApi(), byId('theme-slot'), toast).catch(error => toast(error.message));
+const api = createLocalApi();
+const previews = document.querySelectorAll('[data-choose-theme]');
+Promise.all([createTheme(api, byId('theme-slot'), toast, previews), api.session()]).then(([theme, session]) => {
+  theme.setMood(session.profile.moods.at(-1)?.theme);
+}).catch(error => toast(error.message));
 
-const title = byId('wt');
-const name = title.textContent;
-title.setAttribute('aria-label', name);
-title.replaceChildren();
-let offset = 0;
-for (const word of name.split(' ')) {
-  if (offset) title.append(' ');
-  const part = node('span', 'w');
-  part.setAttribute('aria-hidden', 'true');
-  for (const letter of word) {
-    const item = node('span', 'lt', letter);
-    item.style.animationDelay = (.1 + offset++ * .032) + 's';
-    part.append(item);
-  }
-  title.append(part);
+function placeImage(photo) {
+  const image = node('img');
+  image.src = photo.src;
+  image.alt = photo.alt;
+  image.loading = 'lazy';
+  image.decoding = 'async';
+  return image;
+}
+
+const places = byId('landing-places');
+for (const [id, note] of [['mm-001', 'Прогулка среди зелени'], ['mm-170', 'Город с высоты']]) {
+  const place = placeById(id);
+  const photo = place.images[0];
+  const figure = node('figure', 'place-window');
+  const caption = node('figcaption');
+  const credit = node('a', '', photo.author + ' · ' + photo.license);
+  credit.href = photo.source;
+  credit.target = '_blank';
+  credit.rel = 'noopener noreferrer';
+  caption.append(node('span', '', note), node('h3', '', place.name), credit);
+  figure.append(placeImage(photo), caption);
+  places.append(figure);
 }
 
 const samples = demoSpace();
 const reviews = byId('demo-reviews');
+const titles = { 'mm-001': 'Тихий час в саду', 'mm-170': 'Город перед закатом' };
 for (const review of samples.reviews) {
+  const place = placeById(review.placeId);
   const profile = samples.profiles[review.authorId];
-  const identity = node('div');
-  identity.append(node('strong', '', profile.name), node('p', 'm', placeById(review.placeId)?.name || 'Место'));
-  const header = node('header', 'review-author');
-  header.append(avatar(profile), identity);
-  const stars = node('div', 'review-stars');
-  stars.setAttribute('role', 'img');
-  stars.setAttribute('aria-label', 'Оценка ' + review.rating + ' из 5');
-  for (let i = 0; i < 5; i++) {
-    const star = icon('star');
-    if (i < review.rating) star.classList.add('is-filled');
-    stars.append(star);
-  }
-  const card = node('article', 'win demo-review');
-  card.append(header, stars, node('blockquote', '', review.text));
+  const photo = place.images[0];
+  const cover = node('a', 'review-cover');
+  cover.href = photo.source;
+  cover.target = '_blank';
+  cover.rel = 'noopener noreferrer';
+  cover.title = photo.author + ' · ' + photo.license;
+  cover.append(placeImage(photo), node('span', '', place.name));
+  const author = node('div', 'review-author');
+  author.append(avatar(profile, 'sm'), node('strong', '', profile.name));
+  const copy = node('div', 'review-copy');
+  copy.append(node('h3', '', titles[place.id]), ratingStars(review.rating), node('blockquote', '', review.text), author);
+  const card = node('article', 'demo-review');
+  card.append(cover, copy);
   reviews.append(card);
 }

@@ -1,6 +1,6 @@
 // Each ID is permanent. Add new IDs without reusing or renumbering existing ones.
 export const placeGroups = [
-  { id: "quiet", icon: "🌿", name: "Уединение", places: [
+  { id: "quiet", icon: "leaf", name: "Уединение", places: [
     {"id":"mm-001","name":"Ботанический сад","description":"Тихие аллеи, оранжереи и пруды — спокойное место, чтобы побыть наедине.","legacyLocation":"Район Ишима, ул. Достык"},
     {"id":"mm-002","name":"Национальный музей РК","description":"Просторные залы, где мало людей в будни; можно провести полдня.","legacyLocation":"Пл. Независимости"},
     {"id":"mm-003","name":"Парк «Жастар»","description":"Зелёный парк с прудом и скамейками вдали от шума проспектов.","legacyLocation":"Левый берег"},
@@ -21,7 +21,7 @@ export const placeGroups = [
     {"id":"mm-018","name":"Арт-галереи и выставочные залы","description":"Неспешные выставки современного искусства.","type":"idea"},
     {"id":"mm-019","name":"Студии йоги и медитации","description":"Занятия для восстановления и внутреннего спокойствия.","type":"idea"}
   ] },
-  { id: "nightlife", icon: "🎉", name: "Вечеринки", places: [
+  { id: "nightlife", icon: "spark", name: "Вечеринки", places: [
     {"id":"mm-020","name":"Лаунж-бар Ritz-Carlton","description":"Коктейли и панорама города для стильного вечера.","legacyLocation":"Левый берег"},
     {"id":"mm-021","name":"Rixos President — бары","description":"Отельные бары и рестораны для встреч с друзьями.","legacyLocation":"Левый берег"},
     {"id":"mm-022","name":"Караоке-залы в ТРЦ","description":"Приватные комнаты для дней рождения и корпоративов.","legacyLocation":"Разные ТРЦ","type":"idea"},
@@ -41,7 +41,7 @@ export const placeGroups = [
     {"id":"mm-036","name":"Бары на набережной","description":"Вечер с видом на реку и огни города.","type":"idea"},
     {"id":"mm-037","name":"Танцевальные вечера","description":"Сальса, бачата и вечеринки для всех уровней.","type":"idea"}
   ] },
-  { id: "walks", icon: "🚶", name: "Прогулки", places: [
+  { id: "walks", icon: "compass", name: "Прогулки", places: [
     {"id":"mm-038","name":"Набережная Ишима","description":"Главный променад города с видом на Байтерек и мосты.","legacyLocation":"Центр"},
     {"id":"mm-039","name":"Центральный парк","description":"Аллеи, фонтаны, пруд и лодки; удобно гулять всей семьёй.","legacyLocation":"Левый берег"},
     {"id":"mm-040","name":"Президентский парк","description":"Просторный парк рядом с Акордой, ровные дорожки.","legacyLocation":"Левый берег"},
@@ -62,7 +62,7 @@ export const placeGroups = [
     {"id":"mm-055","name":"Парк Ататюрк","description":"Тенистые аллеи на правом берегу Ишима.","legacyLocation":"Правый берег"},
     {"id":"mm-056","name":"Дворец Независимости","description":"Масштабная архитектура и большая площадь для прогулки."}
   ] },
-  { id: "shopping", icon: "🛍️", name: "Шопинг и ТЦ", places: [
+  { id: "shopping", icon: "bag", name: "Шопинг и ТЦ", places: [
     {"id":"mm-057","name":"Хан Шатыр","description":"Шатёр-ТРЦ Нормана Фостера: магазины, кино, зоны отдыха.","legacyLocation":"пр. Тауелсиздик, 15"},
     {"id":"mm-058","name":"Mega Silk Way","description":"Один из крупнейших центров с брендами и рестораном.","legacyLocation":"пр. Кабанбай батыра, 62"},
     {"id":"mm-059","name":"Dostyk Plaza","description":"Модные магазины, кофейни и детские зоны.","legacyLocation":"ул. Достык, 24"},
@@ -83,7 +83,7 @@ export const placeGroups = [
     {"id":"mm-074","name":"Магазины электроники","description":"Гаджеты и техника в крупных сетях.","type":"idea"},
     {"id":"mm-075","name":"Детские магазины и игрушки","description":"Всё для малышей в одном месте.","type":"idea"}
   ] },
-  { id: "water", icon: "🏊", name: "Бассейны", places: [
+  { id: "water", icon: "waves", name: "Бассейны", places: [
     {"id":"mm-076","name":"Oasis Beach Club","description":"Открытый бассейн у Центрального парка; летом — диджеи и вечеринки.","legacyLocation":"пр. Туран, 8/1а"},
     {"id":"mm-077","name":"Sky Beach Club (Хан Шатыр)","description":"Тропический пляж под куполом круглый год.","legacyLocation":"Хан Шатыр"},
     {"id":"mm-078","name":"Teplo","description":"Бассейны, хамам, бар и анимация; бывают «пенные вечеринки».","legacyLocation":"шоссе Каркаралы, 11"},
@@ -103,7 +103,7 @@ export const placeGroups = [
     {"id":"mm-092","name":"Открытые бассейны за городом","description":"Летний отдых у воды на базах отдыха.","type":"idea"},
     {"id":"mm-093","name":"Бассейны в SPA-центрах","description":"Тёплая вода и расслабление после процедур.","type":"idea"}
   ] },
-  { id: "spa", icon: "🧖", name: "Сауны и бани", places: [
+  { id: "spa", icon: "waves", name: "Сауны и бани", places: [
     {"id":"mm-094","name":"Bath Village","description":"Русская баня, фурако и зона настольных игр.","legacyLocation":"Астана"},
     {"id":"mm-095","name":"Банный комплекс «888»","description":"Популярный комплекс для компаний и семей.","legacyLocation":"Астана"},
     {"id":"mm-096","name":"«Люкс»","description":"Кедровая баня на дровах без ограничения по времени.","legacyLocation":"Астана"},
@@ -124,7 +124,7 @@ export const placeGroups = [
     {"id":"mm-111","name":"Массаж и пилинги","description":"Процедуры после парной.","type":"idea"},
     {"id":"mm-112","name":"Кедровые бочки","description":"Тёплый пар и аромат кедра.","type":"idea"}
   ] },
-  { id: "outdoors", icon: "🌲", name: "Вдали от суеты", places: [
+  { id: "outdoors", icon: "leaf", name: "Вдали от суеты", places: [
     {"id":"mm-113","name":"Бурабай","description":"Сосновые леса и озёра, около 3–4 часов на машине.","legacyLocation":"Акмолинская обл."},
     {"id":"mm-114","name":"Коргальжинский заповедник","description":"Озёра и фламинго, отличное место для тишины.","legacyLocation":"~130 км от города"},
     {"id":"mm-115","name":"BalQaragai","description":"Загородный отдых у природы недалеко от Астаны.","legacyLocation":"Пригород"},
@@ -145,7 +145,7 @@ export const placeGroups = [
     {"id":"mm-130","name":"Конные прогулки за городом","description":"Степь, воздух и неспешные маршруты.","type":"idea"},
     {"id":"mm-131","name":"Рыбалка на озёрах области","description":"Спокойный день с удочкой у воды.","type":"idea"}
   ] },
-  { id: "food", icon: "🍽️", name: "Кафе и рестораны", places: [
+  { id: "food", icon: "cup", name: "Кафе и рестораны", places: [
     {"id":"mm-132","name":"Line Brew","description":"Популярная кофейня и завтраки.","legacyLocation":"Астана"},
     {"id":"mm-133","name":"Rumi","description":"Ресторан узбекской кухни с уютной атмосферой.","legacyLocation":"Астана"},
     {"id":"mm-134","name":"Hazara","description":"Восточная кухня и большие компании.","legacyLocation":"Астана"},
@@ -167,7 +167,7 @@ export const placeGroups = [
     {"id":"mm-150","name":"Кафе «Ямайка»","description":"Уютное кафе в центре, которому уже около двух десятилетий."},
     {"id":"mm-151","name":"Кафе «Целинников»","description":"Кавказская кухня и дух застолья."}
   ] },
-  { id: "games", icon: "🎮", name: "Игровые клубы", places: [
+  { id: "games", icon: "game", name: "Игровые клубы", places: [
     {"id":"mm-152","name":"Боулинг в Mega Silk Way","description":"Дорожки и игровая зона для компаний.","legacyLocation":"Mega Silk Way"},
     {"id":"mm-153","name":"Timezone в Dostyk Plaza","description":"Аркадные автоматы и игры для всех возрастов.","legacyLocation":"Dostyk Plaza"},
     {"id":"mm-154","name":"Квест-комнаты","description":"Командные квесты и настольные клубы по всему городу.","legacyLocation":"Разные адреса","type":"idea"},
@@ -187,7 +187,7 @@ export const placeGroups = [
     {"id":"mm-168","name":"Шахматные клубы","description":"Турниры и партии для любого уровня.","type":"idea"},
     {"id":"mm-169","name":"Детские игровые комнаты","description":"Безопасные игры и анимация для малышей.","type":"idea"}
   ] },
-  { id: "attractions", icon: "🎡", name: "Аттракционы", places: [
+  { id: "attractions", icon: "pin", name: "Аттракционы", places: [
     {"id":"mm-170","name":"Байтерек","description":"Смотровая площадка на 97 м — символ Астаны.","legacyLocation":"Левый берег"},
     {"id":"mm-171","name":"Парк аттракционов Центрального парка","description":"Колесо обозрения и карусели.","legacyLocation":"Центральный парк"},
     {"id":"mm-172","name":"Астанинский зоопарк","description":"Животные со всего мира; хорошо для детей.","legacyLocation":"Астана"},

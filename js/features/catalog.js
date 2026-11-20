@@ -7,6 +7,16 @@ const PAGE_SIZE = 24;
 const labels = { free: 'Бесплатно', paid: 'Платно', unknown: 'Цена не указана' };
 const statusLabels = { open: 'По графику открыто', closed: 'По графику закрыто', unknown: 'График не указан' };
 const allOptions = ['','Все'];
+const landmarkIcons = { 'mm-002': 'museum', 'mm-004': 'pyramid', 'mm-011': 'music' };
+
+function placeIllustration(place, className) {
+  const glyph = landmarkIcons[place.id] || categories[place.categoryIndex].icon;
+  const illustration = node('div', className);
+  illustration.dataset.illustration = glyph;
+  illustration.setAttribute('aria-hidden', 'true');
+  illustration.append(icon(glyph));
+  return illustration;
+}
 
 export function createCatalog({ api, modal, getSession, getResult, afterWrite, social }) {
   const out = byId('out');
@@ -112,6 +122,7 @@ export function createCatalog({ api, modal, getSession, getResult, afterWrite, s
     article.dataset.place = place.id;
     const container = node('div', 'card-kicker');
     const category = categories[place.categoryIndex];
+    article.dataset.category = category.id;
     container.append(node('span', '', category.name));
     if (place.type === 'idea') container.append(node('span', 'status-label', 'Идея'));
     const cover = place.images[0];
@@ -121,6 +132,8 @@ export function createCatalog({ api, modal, getSession, getResult, afterWrite, s
       image.alt = '';
       image.loading = 'lazy';
       article.append(image);
+    } else {
+      article.append(placeIllustration(place, 'card-cover card-cover-art'));
     }
     const heading = node('h3');
     heading.append(button(place.name, () => openPlace(place, reason), 'ttl'));
@@ -146,7 +159,7 @@ export function createCatalog({ api, modal, getSession, getResult, afterWrite, s
       toast(isSaved ? 'Место сохранено' : 'Место убрано из избранного');
     }), 'vb');
     toggleLabel(save, 'heart', saved ? 'Сохранено' : 'Сохранить', saved);
-    const details = button('Подробнее', () => openPlace(place, reason), 'btn');
+    const details = button('Подробнее', () => openPlace(place, reason), 'btn quiet');
     details.append(icon('arrow'));
     actions.append(save, details);
     article.append(actions);
@@ -214,12 +227,7 @@ export function createCatalog({ api, modal, getSession, getResult, afterWrite, s
     const images = place.images.map(image => ({
       ...image, src: imageSource(image.src)
     })).filter(image => image.src);
-    if (!images.length) {
-      holder.classList.add('place-illustration');
-      holder.append(icon('compass'));
-      holder.setAttribute('aria-hidden', 'true');
-      return holder;
-    }
+    if (!images.length) return placeIllustration(place, 'place-illustration');
     let index = 0;
     const image = node('img');
     image.loading = 'lazy';

@@ -21,6 +21,14 @@ const shapes = {
   calendar: '<rect x="4" y="6" width="16" height="14" rx="2"/><path d="M8 3.5v5m8-5v5M4 10h16"/>',
   camera: '<path d="M4 8h4l1.5-3h5L16 8h4v11H4Z"/><circle cx="12" cy="13" r="3"/>',
   clock: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3 2"/>',
+  leaf: '<path d="M5 16C3 7 12 4 20 4c0 8-3 17-12 15M4 21l10-10"/>',
+  bag: '<path d="M5 8h14l1.5 12h-17L5 8Zm4 1V6a3 3 0 0 1 6 0v3"/>',
+  waves: '<path d="M3 8c3-3 6-3 9 0s6 3 9 0M3 13c3-3 6-3 9 0s6 3 9 0M3 18c3-3 6-3 9 0s6 3 9 0"/>',
+  cup: '<path d="M4 8h13v4a6.5 6.5 0 0 1-13 0V8Zm13 1h2a2 2 0 0 1 0 4h-2M3 21h17M8 3v2m5-2v2"/>',
+  game: '<path d="M7.5 7h9c4.5 0 7 10 3.5 11-1.3.4-3-1-4.5-2.5h-7C7 17 5.3 18.4 4 18 0.5 17 3 7 7.5 7ZM7.5 10v4m-2-2h4m6 0h.01m3 1.5h.01"/>',
+  museum: '<path d="m3 8 9-5 9 5v2H3ZM4 21h16m-14-2v-6m4 6v-6m4 6v-6m4 6v-6"/>',
+  pyramid: '<path d="m12 3 9 15-9 3-9-3L12 3Zm0 0v18M6 13l6 2 6-2"/>',
+  music: '<path d="M9 18V6l11-2v12M9 10l11-2"/><ellipse cx="6" cy="18" rx="3" ry="2"/><ellipse cx="17" cy="16" rx="3" ry="2"/>',
   menu: '<path d="M5 7h14M5 12h14M5 17h14"/>'
 };
 
@@ -40,5 +48,22 @@ export function icon(name) {
 }
 
 export function paintIcons(root = document) {
-  for (const target of root.querySelectorAll('[data-icon]')) target.replaceWith(icon(target.dataset.icon));
+  for (const target of root.querySelectorAll('[data-icon]')) {
+    const graphic = icon(target.dataset.icon);
+    if (target.className) graphic.classList.add(...target.classList);
+    target.replaceWith(graphic);
+  }
+}
+
+export function ratingStars(value) {
+  const stars = document.createElement('span');
+  stars.className = 'review-stars';
+  stars.setAttribute('role', 'img');
+  stars.setAttribute('aria-label', 'Оценка ' + value + ' из 5');
+  for (let index = 1; index <= 5; index++) {
+    const star = icon('star');
+    if (index <= value) star.classList.add('is-filled');
+    stars.append(star);
+  }
+  return stars;
 }

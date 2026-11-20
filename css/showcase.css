@@ -25,20 +25,21 @@ dialog#pf::backdrop { background: rgb(13 13 25 / 65%); backdrop-filter: blur(5px
 #toast.on { opacity: 1; visibility: visible; transform: translate(-50%,0); }
 .skip { position: fixed; z-index: var(--layer-toast); top: .5rem; left: .5rem; padding: .75rem; background: var(--paper); transform: translateY(-160%); }
 .skip:focus { transform: none; }
-.theme-control { position: relative; min-width: 0; white-space: nowrap; }
-.theme-control .theme-select { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
-.theme-control > .icon:nth-of-type(2) { width: 12px; transform: rotate(90deg); }
-.theme-compact { display: none; }
-.theme-control:focus-within { outline: 2px solid var(--accent); outline-offset: 2px; }
-@media (max-width: 560px) {
-  .theme-control { padding-inline: .55rem; font-size: var(--text-xs); gap: .25rem; }
-  .theme-full { display: none; }
-  .theme-compact { display: inline; }
-}
 .rating { display: inline-flex; align-items: center; gap: .36rem; font-weight: 600; }
 .rating > .icon { color: var(--accent); }
+.review-stars { display: inline-flex; gap: .19rem; align-items: center; color: var(--accent); }
+.review-stars .is-filled { fill: currentColor; }
+.review-meta { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem .7rem; font-size: var(--text-xs); }
+.rating-field { margin: 0; padding: 0; border: 0; }
+.rating-field legend { padding: 0; font-size: var(--text-sm); font-weight: 600; }
+.rating-picker { display: flex; align-items: center; gap: .16rem; color: var(--accent); }
+.review-form .rating-choice { display: grid; place-items: center; width: min(16vw,44px); height: 44px; border-radius: 7px; cursor: pointer; }
+.rating-choice .icon { width: 23px; height: 23px; }
+.rating-choice:has(:checked) .icon, .rating-choice:has(~ .rating-choice :checked) .icon { fill: currentColor; }
+.rating-choice:has(:focus-visible) { outline: 2px solid var(--accent); outline-offset: -1px; }
+.rating-choice:hover { background: var(--raised); }
 .social-list { display: grid; gap: var(--space-3); }
-.rv { min-width: 0; border: 1px solid var(--line); border-radius: var(--radius-card); padding: var(--space-4); overflow-wrap: anywhere; }
+.rv { min-width: 0; border-bottom: 1px solid var(--line); padding: var(--space-3) 0; overflow-wrap: anywhere; }
 .rv p { margin-block: .35rem; }
 .rv .place-actions { margin-top: .55rem; }
 .people-panel { display: grid; gap: var(--space-3); }
